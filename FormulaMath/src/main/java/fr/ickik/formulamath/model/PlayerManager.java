@@ -62,15 +62,21 @@ public class PlayerManager {
 	}
 
 	public void play(Vector vector) {
+		AIPlay();
 	}
 
-	public void AIPlay() {
+	private void AIPlay() {
 		while (playerList.get(indexPlayerGame).getType() == PlayerType.COMPUTER) {
 			// jouer tout seul
 
 			indexPlayerGame++;
 			indexPlayerGame = indexPlayerGame % playerList.size();
 		}
+		play(playerList.get(indexPlayerGame));
+	}
+	
+	private void play(Player human) {
+		fireUpdatePossibilitiesListener(human);
 	}
 
 	public void initStartPosition() throws FormulaMathException {
@@ -104,31 +110,36 @@ public class PlayerManager {
 		log.debug("number of start position : {}", list.size());
 		BitSet set = new BitSet(list.size());
 		List<Player> playerList = getPlayerList().subList(getPlayerList().indexOf(player) + 1, getPlayerList().size());
-		for (Player p : playerList) {
-			log.debug("boucle for");
-			if (p.getType().equals(PlayerType.COMPUTER)) {
-				log.debug("computer");
-				int index = set.nextClearBit(0);
-				p.getPosition().setX(list.get(index).getX());
-				p.getPosition().setY(list.get(index).getY());
-				log.debug("computer start position : ({}, {})", p.getPosition().getX(), p.getPosition().getY());
-				set.set(index);
-				mapManager.getCase(list.get(index).getY(), list.get(index).getX()).setIdPlayer(p.getId());
-				fireUpdateCaseListener(list.get(index).getX(), list.get(index).getY(), p);
-				log.debug("fire");
-			} else {
-				log.debug("set cardinality position : {}", set.cardinality());
-				new StartFrame(this, list, set, p, mapManager);
-				break;
+		if (!playerList.isEmpty()) {
+			for (Player p : playerList) {
+				log.debug("boucle for");
+				if (p.getType().equals(PlayerType.COMPUTER)) {
+					log.debug("computer");
+					int index = set.nextClearBit(0);
+					p.getPosition().setX(list.get(index).getX());
+					p.getPosition().setY(list.get(index).getY());
+					log.debug("computer start position : ({}, {})", p.getPosition().getX(), p.getPosition().getY());
+					set.set(index);
+					mapManager.getCase(list.get(index).getY(), list.get(index).getX()).setIdPlayer(p.getId());
+					fireUpdateCaseListener(list.get(index).getX(), list.get(index).getY(), p);
+					log.debug("fire");
+				} else {
+					log.debug("set cardinality position : {}", set.cardinality());
+					new StartFrame(this, list, set, p, mapManager);
+					break;
+				}
 			}
+		} else {
+			AIPlay();
 		}
 		log.debug("initStartPosition exiting");
 	}
-
+	
 	public void updatePlayer(Player p, int index) throws FormulaMathException {
 		List<Position> list = mapManager.getStartPosition();
-		mapManager.getCase(list.get(index).getY(), list.get(index).getX())
-				.setIdPlayer(p.getId());
+		p.getPosition().setX(list.get(index).getX());
+		p.getPosition().setY(list.get(index).getY());
+		mapManager.getCase(list.get(index).getY(), list.get(index).getX()).setIdPlayer(p.getId());
 		fireUpdateCaseListener(list.get(index).getX(), list.get(index).getY(), p);
 	}
 
@@ -141,10 +152,9 @@ public class PlayerManager {
 		return playerList.get(idPlayer - 1).getPlayerColor();
 	}
 
-	public void addUpdateCaseListener(UpdateCaseListener updateCaseListener)
-			throws FormulaMathException {
+	public void addUpdateCaseListener(UpdateCaseListener updateCaseListener) {
 		if (updateCaseListener == null) {
-			throw new FormulaMathException();
+			return;
 		}
 		updateCaseListenerList.add(updateCaseListener);
 	}
@@ -161,6 +171,12 @@ public class PlayerManager {
 	protected void fireUpdateCaseListener(int x, int y, Player p) {
 		for (UpdateCaseListener u : updateCaseListenerList) {
 			u.updatePlayerCase(x, y, p);
+		}
+	}
+	
+	protected void fireUpdatePossibilitiesListener(Player p) {
+		for (UpdateCaseListener u : updateCaseListenerList) {
+			u.updatePlayerPossibilities(p);
 		}
 	}
 

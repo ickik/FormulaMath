@@ -69,30 +69,28 @@ public class MainFrame {
 	private JSplitPane getSplitPane() {
 		trayPanel = new JPanel();
 		trayPanel.add(getTrayPanel());
-		try {
-			playerManager.addUpdateCaseListener(new UpdateCaseListener() {
+		playerManager.addUpdateCaseListener(new UpdateCaseListener() {
 
-				public void updatePlayerCase(int x, int y, Player p) {
-					int xTrayPanel = x - leftCorner.getX();
-					int yTrayPanel = y - leftCorner.getY();
-					log.debug("Position to update : ( {} , {} )", x, y);
-					log.debug("Position on tray panel : ( {} , {} )",
-							xTrayPanel, yTrayPanel);
-					if (xTrayPanel > 0 && xTrayPanel < gridSize
-							&& yTrayPanel > 0 && yTrayPanel < gridSize) {
-						caseList.get(yTrayPanel).get(xTrayPanel)
-								.setBackground(p.getPlayerColor());
-						caseList.get(yTrayPanel).get(xTrayPanel).repaint();
-						trayPanel.repaint();
-						trayPanel.validate();
-					}
-
+			public void updatePlayerCase(int x, int y, Player p) {
+				int xTrayPanel = x - leftCorner.getX();
+				int yTrayPanel = y - leftCorner.getY();
+				log.debug("Position to update : ( {} , {} )", x, y);
+				log.debug("Position on tray panel : ( {} , {} )",
+						xTrayPanel, yTrayPanel);
+				if (xTrayPanel > 0 && xTrayPanel < gridSize
+						&& yTrayPanel > 0 && yTrayPanel < gridSize) {
+					caseList.get(yTrayPanel).get(xTrayPanel)
+							.setBackground(p.getPlayerColor());
+					caseList.get(yTrayPanel).get(xTrayPanel).repaint();
+					trayPanel.repaint();
+					trayPanel.validate();
 				}
-			});
-		} catch (FormulaMathException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+			}
+
+			@Override
+			public void updatePlayerPossibilities(Player player) {}
+		});
 		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 				trayPanel, getMenuPanel());
 		return split;
@@ -162,20 +160,37 @@ public class MainFrame {
 	}
 
 	private JPanel getMenuPanel() {
-		JPanel panel = new JPanel(new GridLayout(7, 1));
+		final JPanel panel = new JPanel(new GridLayout(7, 1));
 		final JCheckBox[] solution = new JCheckBox[5];
 		Player player = playerManager.getPlayer(0);
-		final List<Vector> vectorList = playerManager
-				.getVectorsPossibilities(player);
+		final List<Vector> vectorList = playerManager.getVectorsPossibilities(player);
 		ButtonGroup group = new ButtonGroup();
 		for (int i = 0; i < 5; i++) {
 			Vector v = vectorList.get(i);
-			JCheckBox box = new JCheckBox("( " + v.getXMoving() + ", "
-					+ v.getYMoving() + " )");
+			JCheckBox box = new JCheckBox("( " + v.getXMoving() + ", " + v.getYMoving() + " )");
 			group.add(box);
 			solution[i] = box;
 			panel.add(box);
 		}
+		
+		playerManager.addUpdateCaseListener(new UpdateCaseListener() {
+			
+			@Override
+			public void updatePlayerPossibilities(Player player) {
+				vectorList.clear();
+				vectorList.addAll(playerManager.getVectorsPossibilities(player));
+				
+				for (int i = 0; i < 5; i++) {
+					Vector v = vectorList.get(i);
+					solution[i].setText("( " + v.getXMoving() + ", " + v.getYMoving() + " )");
+					solution[i].setSelected(false);
+				}
+				panel.revalidate();
+			}
+			
+			@Override
+			public void updatePlayerCase(int x, int y, Player p) {}
+		});
 
 		JButton play = new JButton("Play");
 		play.addActionListener(new ActionListener() {

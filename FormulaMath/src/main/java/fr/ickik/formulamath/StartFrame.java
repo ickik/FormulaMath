@@ -21,6 +21,11 @@ import org.slf4j.LoggerFactory;
 import fr.ickik.formulamath.model.MapManager;
 import fr.ickik.formulamath.model.PlayerManager;
 
+/**
+ * Frame which gives available positions on the start line.
+ * @author ickik.
+ * @version 0.1.000, 30 sept. 2011.
+ */
 public class StartFrame {
 
 	private static final Logger log = LoggerFactory.getLogger(StartFrame.class);
@@ -69,18 +74,9 @@ public class StartFrame {
 				if (selected == -1) {
 					return;
 				}
-				p.getPosition().setX(
-						listPosition.get(listPositionIndex.get(selected))
-								.getX());
-				p.getPosition().setY(
-						listPosition.get(listPositionIndex.get(selected))
-								.getY());
 				bitSet.set(listPositionIndex.get(selected));
 				frame.dispose();
 				try {
-
-					// mapManager.updateCase(listPosition.get(selected).getY(),
-					// listPosition.get(selected).getX(), p);
 					playerManager.updatePlayer(p, listPositionIndex.get(selected));
 					playerManager.initStartPosition(p);
 				} catch (FormulaMathException e) {

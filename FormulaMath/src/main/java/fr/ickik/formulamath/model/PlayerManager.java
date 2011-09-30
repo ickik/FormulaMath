@@ -86,10 +86,35 @@ public class PlayerManager {
 				p.getPosition().setX(list.get(index).getX());
 				p.getPosition().setY(list.get(index).getY());
 				set.set(index);
-				mapManager.getCase(list.get(index).getY(),
-						list.get(index).getX()).setIdPlayer(p.getId());
-				fireUpdateCaseListener(list.get(index).getX(), list.get(index)
-						.getY(), p);
+				mapManager.getCase(list.get(index).getY(), list.get(index).getX()).setIdPlayer(p.getId());
+				fireUpdateCaseListener(list.get(index).getX(), list.get(index).getY(), p);
+				log.debug("fire");
+			} else {
+				log.debug("set cardinality position : {}", set.cardinality());
+				new StartFrame(this, list, set, p, mapManager);
+				break;
+			}
+		}
+		log.debug("initStartPosition exiting");
+	}
+
+	public void initStartPosition(Player player) throws FormulaMathException {
+		log.debug("initStartPosition entering");
+		List<Position> list = mapManager.getStartPosition();
+		log.debug("number of start position : {}", list.size());
+		BitSet set = new BitSet(list.size());
+		List<Player> playerList = getPlayerList().subList(getPlayerList().indexOf(player) + 1, getPlayerList().size());
+		for (Player p : playerList) {
+			log.debug("boucle for");
+			if (p.getType().equals(PlayerType.COMPUTER)) {
+				log.debug("computer");
+				int index = set.nextClearBit(0);
+				p.getPosition().setX(list.get(index).getX());
+				p.getPosition().setY(list.get(index).getY());
+				log.debug("computer start position : ({}, {})", p.getPosition().getX(), p.getPosition().getY());
+				set.set(index);
+				mapManager.getCase(list.get(index).getY(), list.get(index).getX()).setIdPlayer(p.getId());
+				fireUpdateCaseListener(list.get(index).getX(), list.get(index).getY(), p);
 				log.debug("fire");
 			} else {
 				log.debug("set cardinality position : {}", set.cardinality());
@@ -104,41 +129,14 @@ public class PlayerManager {
 		List<Position> list = mapManager.getStartPosition();
 		mapManager.getCase(list.get(index).getY(), list.get(index).getX())
 				.setIdPlayer(p.getId());
-		fireUpdateCaseListener(list.get(index).getX(), list.get(index).getY(),
-				p);
+		fireUpdateCaseListener(list.get(index).getX(), list.get(index).getY(), p);
 	}
 
-	public void initStartPosition(Player player) throws FormulaMathException {
-		log.debug("initStartPosition entering");
-		List<Position> list = mapManager.getStartPosition();
-		log.debug("number of start position : {}", list.size());
-		BitSet set = new BitSet(list.size());
-		List<Player> playerList = getPlayerList().subList(
-				getPlayerList().indexOf(player) + 1, getPlayerList().size());
-		for (Player p : playerList) {
-			log.debug("boucle for");
-			if (p.getType().equals(PlayerType.COMPUTER)) {
-				log.debug("computer");
-				int index = set.nextClearBit(0);
-				p.getPosition().setX(list.get(index).getX());
-				p.getPosition().setY(list.get(index).getY());
-				log.debug("computer start position : ({}, {})", p.getPosition()
-						.getX(), p.getPosition().getY());
-				set.set(index);
-				mapManager.getCase(list.get(index).getY(),
-						list.get(index).getX()).setIdPlayer(p.getId());
-				fireUpdateCaseListener(list.get(index).getX(), list.get(index)
-						.getY(), p);
-				log.debug("fire");
-			} else {
-				log.debug("set cardinality position : {}", set.cardinality());
-				new StartFrame(this, list, set, p, mapManager);
-				break;
-			}
-		}
-		log.debug("initStartPosition exiting");
-	}
-
+	/**
+	 * Get the color of the player depending the id of them.
+	 * @param idPlayer the id of the player.
+	 * @return the {@link Color} associates to the player.
+	 */
 	public Color getColorById(int idPlayer) {
 		return playerList.get(idPlayer - 1).getPlayerColor();
 	}

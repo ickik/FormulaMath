@@ -25,6 +25,11 @@ import fr.ickik.formulamath.controler.UpdateCaseListener;
 import fr.ickik.formulamath.model.MapManager;
 import fr.ickik.formulamath.model.PlayerManager;
 
+/**
+ * This class create the main frame of the application.
+ * @author Ickik.
+ * @version 0.1.000, 30 sept. 2011.
+ */
 public class MainFrame {
 
 	private final JFrame mainFrame;
@@ -116,27 +121,31 @@ public class MainFrame {
 						&& yDepart + i < mapManager.getMapSize()) {
 					Case c = mapManager.getCase(yDepart + i, xDepart + j);
 
-					switch (c.getTerrain()) {
-					case HERBE:
-						// log.debug("[{}, {}] HERBE", xDepart + j, yDepart +
-						// i);
-						label.setBackground(Terrain.HERBE.getColor());
-						break;
-					case ROUTE:
-						// log.debug("[{}, {}] ROUTE", xDepart + j, yDepart +
-						// i);
-						label.setBackground(Terrain.ROUTE.getColor());
-						break;
-					case START_LINE:
-						// log.debug("[{}, {}] START lINE", xDepart + j, yDepart
-						// + i);
-						label.setBackground(Terrain.START_LINE.getColor());
-						break;
-					case END_LINE:
-						// log.debug("[{}, {}] END LINE", xDepart + j, yDepart +
-						// i);
-						label.setBackground(Terrain.END_LINE.getColor());
-						break;
+					if (c.getIdPlayer() == 0) {
+						switch (c.getTerrain()) {
+						case HERBE:
+							// log.debug("[{}, {}] HERBE", xDepart + j, yDepart +
+							// i);
+							label.setBackground(Terrain.HERBE.getColor());
+							break;
+						case ROUTE:
+							// log.debug("[{}, {}] ROUTE", xDepart + j, yDepart +
+							// i);
+							label.setBackground(Terrain.ROUTE.getColor());
+							break;
+						case START_LINE:
+							// log.debug("[{}, {}] START lINE", xDepart + j, yDepart
+							// + i);
+							label.setBackground(Terrain.START_LINE.getColor());
+							break;
+						case END_LINE:
+							// log.debug("[{}, {}] END LINE", xDepart + j, yDepart +
+							// i);
+							label.setBackground(Terrain.END_LINE.getColor());
+							break;
+						}
+					} else {
+						label.setBackground(playerManager.getColorById(c.getIdPlayer()));
 					}
 
 				} else {

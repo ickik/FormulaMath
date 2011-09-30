@@ -56,7 +56,7 @@ public class StartFrame {
 							+ " )");
 			group.add(radio);
 			radioButtonArray[i] = radio;
-			listPositionIndex.add(i);
+			listPositionIndex.add(index);
 			panel.add(radio);
 			index++;
 		}
@@ -81,7 +81,7 @@ public class StartFrame {
 
 					// mapManager.updateCase(listPosition.get(selected).getY(),
 					// listPosition.get(selected).getX(), p);
-					playerManager.updatePlayer(p, selected);
+					playerManager.updatePlayer(p, listPositionIndex.get(selected));
 					playerManager.initStartPosition(p);
 				} catch (FormulaMathException e) {
 					// TODO Auto-generated catch block

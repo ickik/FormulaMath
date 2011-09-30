@@ -13,6 +13,11 @@ import fr.ickik.formulamath.Orientation;
 import fr.ickik.formulamath.Position;
 import fr.ickik.formulamath.Terrain;
 
+/**
+ * Contains and handles the map of the application.
+ * @author Ickik.
+ * @version 0.1.000, 30 sept. 2011.
+ */
 public class MapManager {
 
 	private final List<List<Case>> carte;

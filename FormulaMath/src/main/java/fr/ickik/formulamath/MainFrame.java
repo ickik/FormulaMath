@@ -34,7 +34,7 @@ public class MainFrame {
 	private final MapManager mapManager;
 	private final PlayerManager playerManager;
 	private static final Logger log = LoggerFactory.getLogger(MainFrame.class);
-	private final List<List<JLabel>> caseList = new ArrayList<List<JLabel>>();
+	private List<List<JLabel>> caseList = new ArrayList<List<JLabel>>(11);
 	private JPanel trayPanel;
 	private static final int CASE_SIZE = 30;
 	private Position leftCorner;
@@ -62,7 +62,8 @@ public class MainFrame {
 	}
 
 	private JSplitPane getSplitPane() {
-		trayPanel = getTrayPanel();
+		trayPanel = new JPanel();
+		trayPanel.add(getTrayPanel());
 		try {
 			playerManager.addUpdateCaseListener(new UpdateCaseListener() {
 
@@ -104,7 +105,7 @@ public class MainFrame {
 		log.debug("Start coordinates : [{}, {}]", xDepart, yDepart);
 		leftCorner = new Position(xDepart, yDepart);
 		for (int i = 0; i < gridSize; i++) {
-			List<JLabel> labelList = new ArrayList<JLabel>();
+			List<JLabel> labelList = new ArrayList<JLabel>(gridSize);
 			for (int j = 0; j < gridSize; j++) {
 				JLabel label = new JLabel();
 				label.setOpaque(true);
@@ -190,16 +191,24 @@ public class MainFrame {
 		zoom.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-
+				leftCorner.setX(leftCorner.getX() + 1);
+				leftCorner.setY(leftCorner.getY() + 1);
+				gridSize-=2;
+				trayPanel.removeAll();
+				trayPanel.add(getTrayPanel());
+				trayPanel.validate();
 			}
 		});
 		JButton dezoom = new JButton("-");
 		dezoom.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-
+				leftCorner.setX(leftCorner.getX() - 1);
+				leftCorner.setY(leftCorner.getY() - 1);
+				gridSize+=2;
+				trayPanel.removeAll();
+				trayPanel.add(getTrayPanel());
+				trayPanel.validate();
 			}
 		});
 		zoomPanel.add(zoom);

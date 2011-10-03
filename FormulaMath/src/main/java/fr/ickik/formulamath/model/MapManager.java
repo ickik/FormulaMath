@@ -24,7 +24,8 @@ public class MapManager {
 	private final int mapSize;
 	private final int ROAD_SIZE = 4;
 	private final List<Position> startPositionList = new ArrayList<Position>(2);
-
+	public static final int EMPTY_PLAYER = 0;
+	
 	private static final Logger log = LoggerFactory.getLogger(MapManager.class);
 
 	public MapManager(int size) {

@@ -3,7 +3,6 @@ package fr.ickik.formulamath;
 /**
  * The position is a couple of coordinates, an horizontal and a vertical. The
  * position indicates the situation on the map.
- * 
  * @author Ickik
  * @version 0.1.000
  */

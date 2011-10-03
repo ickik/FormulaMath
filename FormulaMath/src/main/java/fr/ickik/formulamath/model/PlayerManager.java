@@ -23,7 +23,7 @@ public class PlayerManager {
 	private final MapManager mapManager;
 	private boolean fireUpdateCaseListener;
 	private final List<UpdateCaseListener> updateCaseListenerList = new ArrayList<UpdateCaseListener>();
-
+	
 	private static final Logger log = LoggerFactory
 			.getLogger(PlayerManager.class);
 
@@ -62,6 +62,15 @@ public class PlayerManager {
 	}
 
 	public void play(Vector vector) {
+		Player p = playerList.get(indexPlayerGame);
+		mapManager.getCase(p.getPosition().getX(), p.getPosition().getY()).setIdPlayer(MapManager.EMPTY_PLAYER);
+		p.getPosition().setX(p.getPosition().getX() + vector.getXMoving());
+		p.getPosition().setY(p.getPosition().getY() - vector.getYMoving());
+		p.setXMoving(vector.getXMoving());
+		p.setYMoving(vector.getYMoving());
+		mapManager.getCase(p.getPosition().getX(), p.getPosition().getY()).setIdPlayer(p.getId());
+		fireUpdateCaseListener(p);
+		updateIndexPlayerGame();
 		AIPlay();
 	}
 
@@ -69,10 +78,14 @@ public class PlayerManager {
 		while (playerList.get(indexPlayerGame).getType() == PlayerType.COMPUTER) {
 			// jouer tout seul
 
-			indexPlayerGame++;
-			indexPlayerGame = indexPlayerGame % playerList.size();
+			updateIndexPlayerGame();
 		}
 		play(playerList.get(indexPlayerGame));
+	}
+	
+	private void updateIndexPlayerGame() {
+		indexPlayerGame++;
+		indexPlayerGame = indexPlayerGame % playerList.size();
 	}
 	
 	private void play(Player human) {
@@ -171,6 +184,12 @@ public class PlayerManager {
 	protected void fireUpdateCaseListener(int x, int y, Player p) {
 		for (UpdateCaseListener u : updateCaseListenerList) {
 			u.updatePlayerCase(x, y, p);
+		}
+	}
+	
+	protected void fireUpdateCaseListener(Player p) {
+		for (UpdateCaseListener u : updateCaseListenerList) {
+			u.updatePlayerCase(p.getPosition().getX(), p.getPosition().getY(), p);
 		}
 	}
 	

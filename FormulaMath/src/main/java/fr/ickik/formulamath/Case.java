@@ -18,11 +18,12 @@ public class Case {
 		return terrain;
 	}
 
-	public void setIdPlayer(int idPlayer) throws FormulaMathException {
+	public boolean setIdPlayer(int idPlayer) {
 		if (terrain == Terrain.HERBE) {
-			throw new FormulaMathException();
+			return false;
 		}
 		this.idPlayer = idPlayer;
+		return true;
 	}
 
 	public int getIdPlayer() {

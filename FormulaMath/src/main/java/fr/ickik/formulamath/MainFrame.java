@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.border.Border;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,12 +77,9 @@ public class MainFrame {
 				int xTrayPanel = x - leftCorner.getX();
 				int yTrayPanel = y - leftCorner.getY();
 				log.debug("Position to update : ( {} , {} )", x, y);
-				log.debug("Position on tray panel : ( {} , {} )",
-						xTrayPanel, yTrayPanel);
-				if (xTrayPanel > 0 && xTrayPanel < gridSize
-						&& yTrayPanel > 0 && yTrayPanel < gridSize) {
-					caseList.get(yTrayPanel).get(xTrayPanel)
-							.setBackground(p.getPlayerColor());
+				log.debug("Position on tray panel : ( {} , {} )", xTrayPanel, yTrayPanel);
+				if (xTrayPanel > 0 && xTrayPanel < gridSize && yTrayPanel > 0 && yTrayPanel < gridSize) {
+					caseList.get(yTrayPanel).get(xTrayPanel).setBackground(p.getPlayerColor());
 					caseList.get(yTrayPanel).get(xTrayPanel).repaint();
 					trayPanel.repaint();
 					trayPanel.validate();
@@ -100,14 +98,18 @@ public class MainFrame {
 	private JPanel getTrayPanel() {
 		GridLayout gridLayout = new GridLayout(gridSize, gridSize);
 		JPanel tray = new JPanel(gridLayout);
-		Position center = mapManager.getStartPosition().get(
-				mapManager.getStartPosition().size() / 2);
-
 		int distance = (gridSize - 1) / 2;
-		int xDepart = center.getX() - distance;
-		int yDepart = center.getY() - distance;
-		log.debug("Start coordinates : [{}, {}]", xDepart, yDepart);
-		leftCorner = new Position(xDepart, yDepart);
+		int xDepart, yDepart;
+		if (leftCorner == null) {
+			Position center = mapManager.getStartPosition().get(mapManager.getStartPosition().size() / 2);
+			xDepart = center.getX() - distance;
+			yDepart = center.getY() - distance;
+			log.debug("Start coordinates : [{}, {}]", xDepart, yDepart);
+			leftCorner = new Position(xDepart, yDepart);
+		} else {
+			xDepart = leftCorner.getX() + distance;
+			yDepart = leftCorner.getY() + distance;
+		}
 		for (int i = 0; i < gridSize; i++) {
 			List<JLabel> labelList = new ArrayList<JLabel>(gridSize);
 			for (int j = 0; j < gridSize; j++) {
@@ -161,14 +163,21 @@ public class MainFrame {
 	}
 
 	private JPanel getMenuPanel() {
-		final JPanel panel = new JPanel(new GridLayout(7, 1));
+		final JPanel panel = new JPanel(new GridLayout(8, 1));
 		final JCheckBox[] solution = new JCheckBox[5];
 		Player player = playerManager.getPlayer(0);
 		final List<Vector> vectorList = playerManager.getVectorsPossibilities(player);
 		ButtonGroup group = new ButtonGroup();
 		for (int i = 0; i < 5; i++) {
 			Vector v = vectorList.get(i);
-			JCheckBox box = new JCheckBox("( " + v.getXMoving() + ", " + v.getYMoving() + " )");
+			JCheckBox box = null;
+			if (v != null) {
+				box = new JCheckBox("( " + v.getXMoving() + ", " + v.getYMoving() + " )");
+			} else {
+				box = new JCheckBox("");
+			}
+			box.setEnabled(v != null);
+			box.setSelected(false);
 			group.add(box);
 			solution[i] = box;
 			panel.add(box);
@@ -183,7 +192,12 @@ public class MainFrame {
 				
 				for (int i = 0; i < 5; i++) {
 					Vector v = vectorList.get(i);
-					solution[i].setText("( " + v.getXMoving() + ", " + v.getYMoving() + " )");
+					if (v != null) {
+						solution[i].setText("( " + v.getXMoving() + ", " + v.getYMoving() + " )");
+					} else {
+						solution[i].setText("");
+					}
+					solution[i].setEnabled(v != null);
 					solution[i].setSelected(false);
 				}
 				panel.revalidate();
@@ -202,10 +216,13 @@ public class MainFrame {
 					displayErrorMessage("No possibility selected");
 					return;
 				}
+				leftCorner.setX(leftCorner.getX() + vectorList.get(selectedPossibility).getXMoving());
+				leftCorner.setY(leftCorner.getY() + vectorList.get(selectedPossibility).getYMoving());
 				playerManager.play(vectorList.get(selectedPossibility));
 			}
 		});
 		panel.add(play);
+		panel.add(getDirectionalPanel());
 		panel.add(getZoomPanel());
 		return panel;
 	}
@@ -216,29 +233,80 @@ public class MainFrame {
 		zoom.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
-				leftCorner.setX(leftCorner.getX() + 1);
-				leftCorner.setY(leftCorner.getY() + 1);
-				gridSize-=2;
-				trayPanel.removeAll();
-				trayPanel.add(getTrayPanel());
-				trayPanel.validate();
+				if (gridSize > 3) {
+					leftCorner.setX(leftCorner.getX() + 1);
+					leftCorner.setY(leftCorner.getY() + 1);
+					gridSize-=2;
+					trayPanel.removeAll();
+					trayPanel.add(getTrayPanel());
+					trayPanel.validate();
+				}
 			}
 		});
 		JButton dezoom = new JButton("-");
 		dezoom.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				leftCorner.setX(leftCorner.getX() - 1);
-				leftCorner.setY(leftCorner.getY() - 1);
-				gridSize+=2;
-				trayPanel.removeAll();
-				trayPanel.add(getTrayPanel());
-				trayPanel.validate();
+				if (gridSize < 25) {
+					leftCorner.setX(leftCorner.getX() - 1);
+					leftCorner.setY(leftCorner.getY() - 1);
+					gridSize+=2;
+					trayPanel.removeAll();
+					trayPanel.add(getTrayPanel());
+					trayPanel.validate();
+				}
 			}
 		});
 		zoomPanel.add(zoom);
 		zoomPanel.add(dezoom);
 		return zoomPanel;
+	}
+
+	private JPanel getDirectionalPanel() {
+		JPanel panel = new JPanel(new BorderLayout());
+		JButton up = new JButton("up");
+		up.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				leftCorner.setY(leftCorner.getY() + 1);
+				trayPanel.removeAll();
+				trayPanel.add(getTrayPanel());
+				trayPanel.validate();
+			}
+		});
+		JButton down = new JButton("d");
+		down.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		JButton left = new JButton("l");
+		left.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		JButton right = new JButton("r");
+		right.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		panel.add(up, BorderLayout.NORTH);
+		panel.add(left, BorderLayout.WEST);
+		panel.add(right, BorderLayout.EAST);
+		panel.add(down, BorderLayout.SOUTH);
+		return panel;
 	}
 
 	private int getSelectedCheckBox(JCheckBox[] checkboxArray) {

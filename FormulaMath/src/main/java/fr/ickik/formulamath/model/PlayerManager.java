@@ -47,15 +47,31 @@ public class PlayerManager {
 	public List<Vector> getVectorsPossibilities(Player player) {
 		log.debug("getVectorsPossibilities entering");
 		List<Vector> list = new ArrayList<Vector>(5);
-		list.add(player.getVector());
-		list.add(new Vector(player.getVector().getXMoving() - 1, player
-				.getVector().getYMoving()));
-		list.add(new Vector(player.getVector().getXMoving() + 1, player
-				.getVector().getYMoving()));
-		list.add(new Vector(player.getVector().getXMoving(), player.getVector()
-				.getYMoving() - 1));
-		list.add(new Vector(player.getVector().getXMoving(), player.getVector()
-				.getYMoving() + 1));
+		if (mapManager.getCase(player.getPosition().getX() + player.getVector().getXMoving(), player.getPosition().getY() + player.getVector().getYMoving()) != null) {
+			list.add(player.getVector());
+		} else {
+			list.add(null);
+		}
+		if (mapManager.getCase(player.getPosition().getX() + player.getVector().getXMoving() - 1, player.getPosition().getY() + player.getVector().getYMoving()) != null) {
+			list.add(new Vector(player.getVector().getXMoving() - 1, player.getVector().getYMoving()));
+		} else {
+			list.add(null);
+		}
+		if (mapManager.getCase(player.getPosition().getX() + player.getVector().getXMoving() + 1, player.getPosition().getY() + player.getVector().getYMoving()) != null) {
+			list.add(new Vector(player.getVector().getXMoving() + 1, player.getVector().getYMoving()));
+		} else {
+			list.add(null);
+		}
+		if (mapManager.getCase(player.getPosition().getX() + player.getVector().getXMoving(), player.getPosition().getY() + player.getVector().getYMoving() - 1) != null) {
+			list.add(new Vector(player.getVector().getXMoving(), player.getVector().getYMoving() + 1));
+		} else {
+			list.add(null);
+		}
+		if (mapManager.getCase(player.getPosition().getX() + player.getVector().getXMoving(), player.getPosition().getY() + player.getVector().getYMoving() + 1) != null) {
+			list.add(new Vector(player.getVector().getXMoving(), player.getVector().getYMoving() - 1));
+		} else {
+			list.add(null);
+		}
 		log.debug("number of vectors : {}", list.size());
 		log.debug("getVectorsPossibilities exiting");
 		return list;

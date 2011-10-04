@@ -448,6 +448,9 @@ public class MapManager {
 	}
 
 	public Case getCase(int h, int w) {
+		if (h < 0 || h >= carte.size() || w < 0 || w >= carte.get(h).size()) {
+			return null;
+		}
 		return carte.get(h).get(w);
 	}
 

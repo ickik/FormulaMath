@@ -107,8 +107,8 @@ public class MainFrame {
 			log.debug("Start coordinates : [{}, {}]", xDepart, yDepart);
 			leftCorner = new Position(xDepart, yDepart);
 		} else {
-			xDepart = leftCorner.getX() + distance;
-			yDepart = leftCorner.getY() + distance;
+			xDepart = leftCorner.getX();
+			yDepart = leftCorner.getY();
 		}
 		for (int i = 0; i < gridSize; i++) {
 			List<JLabel> labelList = new ArrayList<JLabel>(gridSize);
@@ -269,7 +269,7 @@ public class MainFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				leftCorner.setY(leftCorner.getY() + 1);
+				leftCorner.setY(leftCorner.getY() - 1);
 				trayPanel.removeAll();
 				trayPanel.add(getTrayPanel());
 				trayPanel.validate();
@@ -280,8 +280,10 @@ public class MainFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				
+				leftCorner.setY(leftCorner.getY() + 1);
+				trayPanel.removeAll();
+				trayPanel.add(getTrayPanel());
+				trayPanel.validate();
 			}
 		});
 		JButton left = new JButton("l");
@@ -289,8 +291,10 @@ public class MainFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				
+				leftCorner.setX(leftCorner.getX() - 1);
+				trayPanel.removeAll();
+				trayPanel.add(getTrayPanel());
+				trayPanel.validate();
 			}
 		});
 		JButton right = new JButton("r");
@@ -298,8 +302,10 @@ public class MainFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				
+				leftCorner.setX(leftCorner.getX() + 1);
+				trayPanel.removeAll();
+				trayPanel.add(getTrayPanel());
+				trayPanel.validate();
 			}
 		});
 		panel.add(up, BorderLayout.NORTH);

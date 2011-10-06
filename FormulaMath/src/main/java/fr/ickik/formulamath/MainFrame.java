@@ -216,9 +216,10 @@ public class MainFrame {
 					displayErrorMessage("No possibility selected");
 					return;
 				}
-				leftCorner.setX(leftCorner.getX() + vectorList.get(selectedPossibility).getXMoving());
-				leftCorner.setY(leftCorner.getY() + vectorList.get(selectedPossibility).getYMoving());
-				playerManager.play(vectorList.get(selectedPossibility));
+				if (playerManager.play(vectorList.get(selectedPossibility))) {
+					leftCorner.setX(leftCorner.getX() + vectorList.get(selectedPossibility).getXMoving());
+					leftCorner.setY(leftCorner.getY() + vectorList.get(selectedPossibility).getYMoving());
+				}
 			}
 		});
 		panel.add(play);

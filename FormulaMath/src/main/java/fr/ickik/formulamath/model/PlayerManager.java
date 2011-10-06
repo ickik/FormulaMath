@@ -77,8 +77,13 @@ public class PlayerManager {
 		return list;
 	}
 
-	public void play(Vector vector) {
+	public boolean play(Vector vector) {
 		Player p = playerList.get(indexPlayerGame);
+		if (mapManager.getCase(p.getPosition().getX(), p.getPosition().getY()) == null
+				&& mapManager.getCase(p.getPosition().getX() + vector.getXMoving(), p.getPosition().getY() - vector.getYMoving()) == null) {
+			return false;
+		}
+		
 		mapManager.getCase(p.getPosition().getX(), p.getPosition().getY()).setIdPlayer(MapManager.EMPTY_PLAYER);
 		p.getPosition().setX(p.getPosition().getX() + vector.getXMoving());
 		p.getPosition().setY(p.getPosition().getY() - vector.getYMoving());
@@ -88,6 +93,7 @@ public class PlayerManager {
 		fireUpdateCaseListener(p);
 		updateIndexPlayerGame();
 		AIPlay();
+		return true;
 	}
 
 	private void AIPlay() {

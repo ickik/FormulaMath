@@ -18,7 +18,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.border.Border;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -47,28 +47,28 @@ public class PlayerManager {
 	public List<Vector> getVectorsPossibilities(Player player) {
 		log.debug("getVectorsPossibilities entering");
 		List<Vector> list = new ArrayList<Vector>(5);
-		if (mapManager.getCase(player.getPosition().getX() + player.getVector().getXMoving(), player.getPosition().getY() + player.getVector().getYMoving()) != null) {
+		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving()) != null) {
 			list.add(player.getVector());
 		} else {
 			list.add(null);
 		}
-		if (mapManager.getCase(player.getPosition().getX() + player.getVector().getXMoving() - 1, player.getPosition().getY() + player.getVector().getYMoving()) != null) {
+		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() - 1) != null) {
 			list.add(new Vector(player.getVector().getXMoving() - 1, player.getVector().getYMoving()));
 		} else {
 			list.add(null);
 		}
-		if (mapManager.getCase(player.getPosition().getX() + player.getVector().getXMoving() + 1, player.getPosition().getY() + player.getVector().getYMoving()) != null) {
+		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() + 1) != null) {
 			list.add(new Vector(player.getVector().getXMoving() + 1, player.getVector().getYMoving()));
 		} else {
 			list.add(null);
 		}
-		if (mapManager.getCase(player.getPosition().getX() + player.getVector().getXMoving(), player.getPosition().getY() + player.getVector().getYMoving() - 1) != null) {
-			list.add(new Vector(player.getVector().getXMoving(), player.getVector().getYMoving() + 1));
+		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() - 1, player.getPosition().getX() + player.getVector().getXMoving()) != null) {
+			list.add(new Vector(player.getVector().getXMoving(), player.getVector().getYMoving() - 1));
 		} else {
 			list.add(null);
 		}
-		if (mapManager.getCase(player.getPosition().getX() + player.getVector().getXMoving(), player.getPosition().getY() + player.getVector().getYMoving() + 1) != null) {
-			list.add(new Vector(player.getVector().getXMoving(), player.getVector().getYMoving() - 1));
+		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() + 1, player.getPosition().getX() + player.getVector().getXMoving()) != null) {
+			list.add(new Vector(player.getVector().getXMoving(), player.getVector().getYMoving() + 1));
 		} else {
 			list.add(null);
 		}
@@ -79,17 +79,17 @@ public class PlayerManager {
 
 	public boolean play(Vector vector) {
 		Player p = playerList.get(indexPlayerGame);
-		if (mapManager.getCase(p.getPosition().getX(), p.getPosition().getY()) == null
-				&& mapManager.getCase(p.getPosition().getX() + vector.getXMoving(), p.getPosition().getY() - vector.getYMoving()) == null) {
+		if (mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()) == null
+				|| mapManager.getCase(p.getPosition().getY() - vector.getYMoving(), p.getPosition().getX() + vector.getXMoving()) == null) {
 			return false;
 		}
 		
-		mapManager.getCase(p.getPosition().getX(), p.getPosition().getY()).setIdPlayer(MapManager.EMPTY_PLAYER);
+		mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
 		p.getPosition().setX(p.getPosition().getX() + vector.getXMoving());
 		p.getPosition().setY(p.getPosition().getY() - vector.getYMoving());
 		p.setXMoving(vector.getXMoving());
 		p.setYMoving(vector.getYMoving());
-		mapManager.getCase(p.getPosition().getX(), p.getPosition().getY()).setIdPlayer(p.getId());
+		mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(p.getId());
 		fireUpdateCaseListener(p);
 		updateIndexPlayerGame();
 		AIPlay();
@@ -170,6 +170,12 @@ public class PlayerManager {
 		log.debug("initStartPosition exiting");
 	}
 	
+	/**
+	 * Update the position of the player, depending the index of the available positions.
+	 * @param p the player to update.
+	 * @param index
+	 * @throws FormulaMathException
+	 */
 	public void updatePlayer(Player p, int index) throws FormulaMathException {
 		List<Position> list = mapManager.getStartPosition();
 		p.getPosition().setX(list.get(index).getX());

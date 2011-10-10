@@ -39,4 +39,14 @@ public class Case {
 		}
 		return true;
 	}
+	
+	@Override
+	public String toString() {
+		String str = new String();
+		if (isOccuped()) {
+			str = "Player ID : " + idPlayer + " - ";
+		}
+		str += getTerrain().toString();
+		return str;
+	}
 }

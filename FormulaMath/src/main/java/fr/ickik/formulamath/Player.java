@@ -77,4 +77,8 @@ public class Player {
 		return colorList[id - 1];
 	}
 
+	@Override
+	public String toString() {
+		return id + " " + name + " (" + type + ") :" + position.toString();
+	}
 }

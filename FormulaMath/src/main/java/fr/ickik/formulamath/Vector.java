@@ -29,4 +29,9 @@ public class Vector {
 	public int getYMoving() {
 		return yMoving;
 	}
+	
+	@Override
+	public String toString() {
+		return "Vector moving x=" + getXMoving() + ", y=" + getYMoving();
+	}
 }

@@ -16,6 +16,11 @@ import fr.ickik.formulamath.StartFrame;
 import fr.ickik.formulamath.Vector;
 import fr.ickik.formulamath.controler.UpdateCaseListener;
 
+/**
+ * The class which manages all players.
+ * @author Ickik.
+ * @version 0.1.000, 17 oct. 2011.
+ */
 public class PlayerManager {
 
 	private final List<Player> playerList;
@@ -24,8 +29,7 @@ public class PlayerManager {
 	private boolean fireUpdateCaseListener;
 	private final List<UpdateCaseListener> updateCaseListenerList = new ArrayList<UpdateCaseListener>();
 	
-	private static final Logger log = LoggerFactory
-			.getLogger(PlayerManager.class);
+	private static final Logger log = LoggerFactory.getLogger(PlayerManager.class);
 
 	public PlayerManager(int nbPlayer, MapManager mapManager) {
 		this.mapManager = mapManager;

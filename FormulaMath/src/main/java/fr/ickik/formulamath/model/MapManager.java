@@ -443,8 +443,7 @@ public class MapManager {
 	}
 
 	private int getRandomNumber(int max) {
-		Random r = new Random();
-		return r.nextInt(max);
+		return getRandomNumber(0, max);
 	}
 
 	public Case getCase(int h, int w) {

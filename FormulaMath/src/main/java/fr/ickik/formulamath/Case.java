@@ -19,17 +19,17 @@ public class Case {
 	}
 
 	public boolean setIdPlayer(int idPlayer) {
-		if (terrain == Terrain.HERBE) {
-			return false;
-		}
+//		if (terrain == Terrain.HERBE) {
+//			return false;
+//		}
 		this.idPlayer = idPlayer;
 		return true;
 	}
 
 	public int getIdPlayer() {
-		if (terrain == Terrain.HERBE) {
-			return 0;
-		}
+//		if (terrain == Terrain.HERBE) {
+//			return 0;
+//		}
 		return idPlayer;
 	}
 

@@ -78,8 +78,19 @@ public class MainFrame {
 				log.debug("Position to update : ( {} , {} )", x, y);
 				log.debug("Position on tray panel : ( {} , {} )", xTrayPanel, yTrayPanel);
 				if (xTrayPanel > 0 && xTrayPanel < gridSize && yTrayPanel > 0 && yTrayPanel < gridSize) {
-					caseList.get(yTrayPanel).get(xTrayPanel).setBackground(p.getPlayerColor());
-					caseList.get(yTrayPanel).get(xTrayPanel).repaint();
+					//Case c = mapManager.getCase(y, x);
+					//caseList.get(yTrayPanel).get(xTrayPanel).setBackground(c.getTerrain().getColor());
+					//caseList.get(yTrayPanel).get(xTrayPanel).repaint();
+					trayPanel.removeAll();
+					trayPanel.add(getTrayPanel());
+				}
+				xTrayPanel = p.getPosition().getX() - leftCorner.getX();
+				yTrayPanel = p.getPosition().getY() - leftCorner.getY();
+				if (xTrayPanel > 0 && xTrayPanel < gridSize && yTrayPanel > 0 && yTrayPanel < gridSize) {
+					//caseList.get(yTrayPanel).get(xTrayPanel).setBackground(p.getPlayerColor());
+					//caseList.get(yTrayPanel).get(xTrayPanel).repaint();
+					trayPanel.removeAll();
+					trayPanel.add(getTrayPanel());
 					trayPanel.repaint();
 					trayPanel.validate();
 				}
@@ -124,23 +135,15 @@ public class MainFrame {
 					if (c.getIdPlayer() == 0) {
 						switch (c.getTerrain()) {
 						case HERBE:
-							// log.debug("[{}, {}] HERBE", xDepart + j, yDepart +
-							// i);
 							label.setBackground(Terrain.HERBE.getColor());
 							break;
 						case ROUTE:
-							// log.debug("[{}, {}] ROUTE", xDepart + j, yDepart +
-							// i);
 							label.setBackground(Terrain.ROUTE.getColor());
 							break;
 						case START_LINE:
-							// log.debug("[{}, {}] START lINE", xDepart + j, yDepart
-							// + i);
 							label.setBackground(Terrain.START_LINE.getColor());
 							break;
 						case END_LINE:
-							// log.debug("[{}, {}] END LINE", xDepart + j, yDepart +
-							// i);
 							label.setBackground(Terrain.END_LINE.getColor());
 							break;
 						}

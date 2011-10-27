@@ -43,6 +43,8 @@ public class MainFrame {
 	private List<List<JLabel>> caseList = new ArrayList<List<JLabel>>(11);
 	private JPanel trayPanel;
 	private static final int CASE_SIZE = 30;
+	private static final int MIN_ZOOM_SIZE = 3;
+	private static final int MAX_ZOOM_SIZE = 30;
 	private Position leftCorner;
 
 	public MainFrame(PlayerManager playerManager, MapManager mapManager) {
@@ -73,26 +75,10 @@ public class MainFrame {
 		playerManager.addUpdateCaseListener(new UpdateCaseListener() {
 
 			public void updatePlayerCase(int x, int y, Player p) {
-				int xTrayPanel = x - leftCorner.getX();
-				int yTrayPanel = y - leftCorner.getY();
-				log.debug("Position to update : ( {} , {} )", x, y);
-				log.debug("Position on tray panel : ( {} , {} )", xTrayPanel, yTrayPanel);
+				int xTrayPanel = p.getPosition().getX() - leftCorner.getX();
+				int yTrayPanel = p.getPosition().getY() - leftCorner.getY();
 				if (xTrayPanel > 0 && xTrayPanel < gridSize && yTrayPanel > 0 && yTrayPanel < gridSize) {
-					//Case c = mapManager.getCase(y, x);
-					//caseList.get(yTrayPanel).get(xTrayPanel).setBackground(c.getTerrain().getColor());
-					//caseList.get(yTrayPanel).get(xTrayPanel).repaint();
-					trayPanel.removeAll();
-					trayPanel.add(getTrayPanel());
-				}
-				xTrayPanel = p.getPosition().getX() - leftCorner.getX();
-				yTrayPanel = p.getPosition().getY() - leftCorner.getY();
-				if (xTrayPanel > 0 && xTrayPanel < gridSize && yTrayPanel > 0 && yTrayPanel < gridSize) {
-					//caseList.get(yTrayPanel).get(xTrayPanel).setBackground(p.getPlayerColor());
-					//caseList.get(yTrayPanel).get(xTrayPanel).repaint();
-					trayPanel.removeAll();
-					trayPanel.add(getTrayPanel());
-					trayPanel.repaint();
-					trayPanel.validate();
+					updateTrayPanel();
 				}
 
 			}
@@ -154,8 +140,6 @@ public class MainFrame {
 				} else {
 					label.setBackground(Color.WHITE);
 				}
-				// log.debug("Color of the case({}, {}) : {}", new
-				// Object[]{xDepart + i, yDepart + j,label.getBackground()});
 				tray.add(label);
 				labelList.add(label);
 			}
@@ -167,18 +151,12 @@ public class MainFrame {
 	private JPanel getMenuPanel() {
 		final JPanel panel = new JPanel(new GridLayout(8, 1));
 		final JCheckBox[] solution = new JCheckBox[5];
-		Player player = playerManager.getPlayer(0);
-		final List<Vector> vectorList = playerManager.getVectorsPossibilities(player);
+		final List<Vector> vectorList = new ArrayList<Vector>(5);
 		ButtonGroup group = new ButtonGroup();
 		for (int i = 0; i < 5; i++) {
-			Vector v = vectorList.get(i);
 			JCheckBox box = null;
-			if (v != null) {
-				box = new JCheckBox("( " + v.getXMoving() + ", " + v.getYMoving() + " )");
-			} else {
-				box = new JCheckBox("");
-			}
-			box.setEnabled(v != null);
+			box = new JCheckBox("");
+			box.setEnabled(false);
 			box.setSelected(false);
 			group.add(box);
 			solution[i] = box;
@@ -220,7 +198,7 @@ public class MainFrame {
 				}
 				if (playerManager.play(vectorList.get(selectedPossibility))) {
 					leftCorner.setX(leftCorner.getX() + vectorList.get(selectedPossibility).getXMoving());
-					leftCorner.setY(leftCorner.getY() + vectorList.get(selectedPossibility).getYMoving());
+					leftCorner.setY(leftCorner.getY() - vectorList.get(selectedPossibility).getYMoving());
 				}
 			}
 		});
@@ -236,13 +214,11 @@ public class MainFrame {
 		zoom.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
-				if (gridSize > 3) {
+				if (gridSize > MIN_ZOOM_SIZE) {
 					leftCorner.setX(leftCorner.getX() + 1);
 					leftCorner.setY(leftCorner.getY() + 1);
 					gridSize-=2;
-					trayPanel.removeAll();
-					trayPanel.add(getTrayPanel());
-					trayPanel.validate();
+					updateTrayPanel();
 				}
 			}
 		});
@@ -250,13 +226,11 @@ public class MainFrame {
 		dezoom.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				if (gridSize < 25) {
+				if (gridSize < MAX_ZOOM_SIZE) {
 					leftCorner.setX(leftCorner.getX() - 1);
 					leftCorner.setY(leftCorner.getY() - 1);
 					gridSize+=2;
-					trayPanel.removeAll();
-					trayPanel.add(getTrayPanel());
-					trayPanel.validate();
+					updateTrayPanel();
 				}
 			}
 		});
@@ -273,9 +247,7 @@ public class MainFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				leftCorner.setY(leftCorner.getY() - 1);
-				trayPanel.removeAll();
-				trayPanel.add(getTrayPanel());
-				trayPanel.validate();
+				updateTrayPanel();
 			}
 		});
 		JButton down = new JButton("d");
@@ -284,9 +256,7 @@ public class MainFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				leftCorner.setY(leftCorner.getY() + 1);
-				trayPanel.removeAll();
-				trayPanel.add(getTrayPanel());
-				trayPanel.validate();
+				updateTrayPanel();
 			}
 		});
 		JButton left = new JButton("l");
@@ -295,9 +265,7 @@ public class MainFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				leftCorner.setX(leftCorner.getX() - 1);
-				trayPanel.removeAll();
-				trayPanel.add(getTrayPanel());
-				trayPanel.validate();
+				updateTrayPanel();
 			}
 		});
 		JButton right = new JButton("r");
@@ -306,9 +274,7 @@ public class MainFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				leftCorner.setX(leftCorner.getX() + 1);
-				trayPanel.removeAll();
-				trayPanel.add(getTrayPanel());
-				trayPanel.validate();
+				updateTrayPanel();
 			}
 		});
 		panel.add(up, BorderLayout.NORTH);
@@ -316,6 +282,12 @@ public class MainFrame {
 		panel.add(right, BorderLayout.EAST);
 		panel.add(down, BorderLayout.SOUTH);
 		return panel;
+	}
+	
+	private void updateTrayPanel() {
+		trayPanel.removeAll();
+		trayPanel.add(getTrayPanel());
+		trayPanel.validate();
 	}
 
 	private int getSelectedCheckBox(JCheckBox[] checkboxArray) {

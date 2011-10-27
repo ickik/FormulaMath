@@ -66,12 +66,12 @@ public class PlayerManager {
 		} else {
 			list.add(null);
 		}
-		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() - 1, player.getPosition().getX() + player.getVector().getXMoving()) != null) {
+		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() + 1, player.getPosition().getX() + player.getVector().getXMoving()) != null) {
 			list.add(new Vector(player.getVector().getXMoving(), player.getVector().getYMoving() - 1));
 		} else {
 			list.add(null);
 		}
-		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() + 1, player.getPosition().getX() + player.getVector().getXMoving()) != null) {
+		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() - 1, player.getPosition().getX() + player.getVector().getXMoving()) != null) {
 			list.add(new Vector(player.getVector().getXMoving(), player.getVector().getYMoving() + 1));
 		} else {
 			list.add(null);
@@ -83,6 +83,7 @@ public class PlayerManager {
 
 	public boolean play(Vector vector) {
 		Player p = playerList.get(indexPlayerGame);
+		//Vector vector = getVectorsPossibilities(p).get(selection);
 		if (mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()) == null
 				|| mapManager.getCase(p.getPosition().getY() - vector.getYMoving(), p.getPosition().getX() + vector.getXMoving()) == null) {
 			return false;

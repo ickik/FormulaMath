@@ -14,7 +14,7 @@ import fr.ickik.formulamath.Position;
 import fr.ickik.formulamath.Terrain;
 
 /**
- * Contains and handles the map of the application.
+ * Contains and handles the map of the application. The map is a everytime a square.
  * @author Ickik.
  * @version 0.1.000, 30 sept. 2011.
  */
@@ -28,6 +28,11 @@ public class MapManager {
 	
 	private static final Logger log = LoggerFactory.getLogger(MapManager.class);
 
+	/**
+	 * Constructor of the map manager. It needs the size of the map.
+	 * The size of the map is the number of case on one side of the square.
+	 * @param size the number of cases of square's side.
+	 */
 	public MapManager(int size) {
 		log.debug("Constructor begin");
 		this.mapSize = size;
@@ -77,8 +82,7 @@ public class MapManager {
 		log.debug("constructRoad begin");
 		Position positionDepart = new Position();
 		Position positionDepart2 = new Position();
-		Orientation coteDepart = traceLigneDepart(positionDepart,
-				positionDepart2);
+		Orientation coteDepart = traceStartLine(positionDepart, positionDepart2);
 
 		initStartPosition(positionDepart, positionDepart2);
 
@@ -89,10 +93,8 @@ public class MapManager {
 			case NORD:
 				switch (direction) {
 				case GAUCHE:
-					if (mapSize - positionDepart2.getX() > ROAD_SIZE
-							&& mapSize - positionDepart2.getY() > ROAD_SIZE) {
-						log.debug("{} => {} entering", coteDepart.name(),
-								direction.name());
+					if (mapSize - positionDepart2.getX() > ROAD_SIZE && mapSize - positionDepart2.getY() > ROAD_SIZE) {
+						log.debug("{} => {} entering", coteDepart.name(),direction.name());
 						positionDepart.setX(positionDepart2.getX() - 1);
 						positionDepart2.setX(positionDepart2.getX() - 1);
 						positionDepart.setY(positionDepart2.getY() + 1);
@@ -102,8 +104,7 @@ public class MapManager {
 							positionDepart2.setX(positionDepart2.getX() + 1);
 							traceLargeur(positionDepart, positionDepart2);
 						}
-						log.debug("{} => {} exiting", coteDepart.name(),
-								direction.name());
+						log.debug("{} => {} exiting", coteDepart.name(),direction.name());
 						coteDepart = Orientation.EST;
 					}
 					break;
@@ -348,7 +349,7 @@ public class MapManager {
 		log.debug("constructRoad end");
 	}
 
-	private Orientation traceLigneDepart(Position positionDepart,
+	private Orientation traceStartLine(Position positionDepart,
 			Position positionDepart2) {
 		log.debug("traceLigneDepart entering");
 		int posDepart = getRandomNumber(1, mapSize - ROAD_SIZE);

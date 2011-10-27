@@ -22,17 +22,13 @@ import fr.ickik.formulamath.model.PlayerManager;
 public class ConfigurationFrame {
 
 	private final JFrame configurationFrame;
-	private final List<List<JRadioButton>> radioButtonPlayerTypeList = new ArrayList<List<JRadioButton>>(
-			NUMBER_OF_PLAYER_MAX);
-	private final List<JTextField> nameTextFieldList = new ArrayList<JTextField>(
-			NUMBER_OF_PLAYER_MAX);
-	private final List<JLabel> labelList = new ArrayList<JLabel>(
-			NUMBER_OF_PLAYER_MAX);
+	private final List<List<JRadioButton>> radioButtonPlayerTypeList = new ArrayList<List<JRadioButton>>(NUMBER_OF_PLAYER_MAX);
+	private final List<JTextField> nameTextFieldList = new ArrayList<JTextField>(NUMBER_OF_PLAYER_MAX);
+	private final List<JLabel> labelList = new ArrayList<JLabel>(NUMBER_OF_PLAYER_MAX);
 	private static final int NUMBER_OF_PLAYER_MAX = 4;
 
 	public ConfigurationFrame() {
-		configurationFrame = new JFrame(MainFrame.NAME + " "
-				+ MainFrame.VERSION);
+		configurationFrame = new JFrame(MainFrame.NAME + " " + MainFrame.VERSION);
 		createMainFrame();
 	}
 
@@ -61,7 +57,7 @@ public class ConfigurationFrame {
 						max = i + 1;
 					}
 				}
-				MapManager mapManager = new MapManager(20);
+				MapManager mapManager = new MapManager(100);
 				PlayerManager pm = new PlayerManager(max, mapManager);
 				for (int i = 0; i < max; i++) {
 					PlayerType type = PlayerType.COMPUTER;
@@ -93,7 +89,7 @@ public class ConfigurationFrame {
 
 		JLabel label = new JLabel("Number of player : ");
 		String[] nbPlayer = { "1", "2", "3", "4" };
-		final JComboBox comboBox = new JComboBox(nbPlayer);
+		final JComboBox<String> comboBox = new JComboBox<String>(nbPlayer);
 		comboBox.addActionListener(new ActionListener() {
 
 			@Override

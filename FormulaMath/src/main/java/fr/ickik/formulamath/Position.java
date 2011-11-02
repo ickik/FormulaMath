@@ -6,7 +6,7 @@ package fr.ickik.formulamath;
  * @author Ickik
  * @version 0.1.000
  */
-public class Position {
+public class Position implements Cloneable {
 
 	private int x;
 	private int y;
@@ -67,6 +67,11 @@ public class Position {
 	 */
 	public int getY() {
 		return y;
+	}
+
+	@Override
+	public Position clone() {
+		return new Position(x, y);
 	}
 
 	@Override

@@ -104,7 +104,7 @@ public class PlayerManager {
 	private void AIPlay() {
 		while (playerList.get(indexPlayerGame).getType() == PlayerType.COMPUTER) {
 			// jouer tout seul
-
+			Player p = playerList.get(indexPlayerGame);
 			updateIndexPlayerGame();
 		}
 		play(playerList.get(indexPlayerGame));
@@ -113,6 +113,10 @@ public class PlayerManager {
 	private void updateIndexPlayerGame() {
 		indexPlayerGame++;
 		indexPlayerGame = indexPlayerGame % playerList.size();
+	}
+	
+	private void checkWinner(Player p, Vector v) {
+		List<Position> list = mapManager.getEndLinePosition();
 	}
 	
 	private void play(Player human) {

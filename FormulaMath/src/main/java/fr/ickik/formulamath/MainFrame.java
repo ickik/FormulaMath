@@ -130,7 +130,8 @@ public class MainFrame {
 							label.setBackground(Terrain.START_LINE.getColor());
 							break;
 						case END_LINE:
-							label.setBackground(Terrain.END_LINE.getColor());
+							label.add(getEndLineLabel());
+							//label.setBackground(Terrain.END_LINE.getColor());
 							break;
 						}
 					} else {
@@ -146,6 +147,21 @@ public class MainFrame {
 			caseList.add(labelList);
 		}
 		return tray;
+	}
+	
+	private JPanel getEndLineLabel() {
+		JPanel panel = new JPanel(new GridLayout(4, 4));
+		for (int i = 0; i < 16; i++) {
+			JLabel lbl = new JLabel();
+			lbl.setOpaque(true);
+			if (i % 2 == 0) {
+				lbl.setBackground(Color.WHITE);
+			} else {
+				lbl.setBackground(Terrain.END_LINE.getColor());
+			}
+			panel.add(lbl);
+		}
+		return panel;
 	}
 
 	private JPanel getMenuPanel() {

@@ -114,34 +114,36 @@ public class MapManager {
 						if (!checkNewDirection(Orientation.NORD, Direction.GAUCHE, positionDepart.clone(), positionDepart2.clone())) {
 							break;
 						}
-						positionDepart.setX(positionDepart2.getX() - 1);
-						positionDepart2.setX(positionDepart2.getX() - 1);
-						positionDepart.setY(positionDepart2.getY() + 1);
-						positionDepart2.setY(positionDepart.getY() + ROAD_SIZE);
+						positionDepart.setX(positionDepart2.getX() + 1);
+						positionDepart2.setX(positionDepart2.getX() + 1);
+						positionDepart.setY(positionDepart2.getY() - 1);
+						positionDepart2.setY(positionDepart.getY() - ROAD_SIZE);
 						for (int i = 0; i < curveLength; i++) {
-							positionDepart.setX(positionDepart.getX() + 1);
-							positionDepart2.setX(positionDepart2.getX() + 1);
+							positionDepart.setX(positionDepart.getX() - 1);
+							positionDepart2.setX(positionDepart2.getX() - 1);
 							traceLargeur(positionDepart, positionDepart2);
 						}
 						log.debug("{} => {} exiting", coteDepart.name(),direction.name());
-						coteDepart = Orientation.EST;
+						coteDepart = Orientation.OUEST;
 					}
 					break;
 
 				case MILIEU:
 					log.debug("{} => {} entering", coteDepart.name(), direction.name());
-					int len = getRandomNumber(mapSize - positionDepart.getY());
-					if (mapSize - positionDepart.getY() - len < ROAD_SIZE) {
-						len = mapSize - positionDepart.getY() - 1;
+					int len = getRandomNumber(positionDepart.getY());
+					log.debug("Length : {}", len);
+					if (positionDepart.getY() - len < ROAD_SIZE) {
+						len = positionDepart.getY() - 1;
 						isFinished = true;
 					}
+					log.debug("Length : {}", len);
 					if (!checkDirection(coteDepart, len, positionDepart.clone(), positionDepart2.clone())) {
 						break;
 					}
 					log.debug("length of the way = {}", len);
 					for (int i = 0; i < len; i++) {
-						positionDepart.setY(positionDepart.getY() + 1);
-						positionDepart2.setY(positionDepart2.getY() + 1);
+						positionDepart.setY(positionDepart.getY() - 1);
+						positionDepart2.setY(positionDepart2.getY() - 1);
 						traceLargeur(positionDepart, positionDepart2);
 					}
 					log.debug("{} => {} exiting", coteDepart.name(), direction.name());
@@ -153,16 +155,17 @@ public class MapManager {
 						if (!checkNewDirection(Orientation.NORD, Direction.DROITE, positionDepart.clone(), positionDepart2.clone())) {
 							break;
 						}
-						positionDepart2.setX(positionDepart.getX());
-						positionDepart2.setY(positionDepart.getY() + 1);
-						positionDepart.setY(positionDepart.getY() + ROAD_SIZE);
+						positionDepart2.setX(positionDepart.getX() - 1);
+						positionDepart.setX(positionDepart.getX() - 1);
+						positionDepart2.setY(positionDepart.getY() - 1);
+						positionDepart.setY(positionDepart.getY() - ROAD_SIZE);
 						for (int i = 0; i < curveLength; i++) {
-							positionDepart.setX(positionDepart.getX() - 1);
-							positionDepart2.setX(positionDepart2.getX() - 1);
+							positionDepart.setX(positionDepart.getX() + 1);
+							positionDepart2.setX(positionDepart2.getX() + 1);
 							traceLargeur(positionDepart, positionDepart2);
 						}
 						log.debug(coteDepart.name() + " => " + direction.name() + " exiting");
-						coteDepart = Orientation.OUEST;
+						coteDepart = Orientation.EST;
 					}
 					break;
 				}
@@ -172,23 +175,24 @@ public class MapManager {
 				switch (direction) {
 				case GAUCHE:
 					log.debug(coteDepart.name() + " => " + direction.name() + " entering");
-					if (mapSize - positionDepart.getX() > ROAD_SIZE + 1 && positionDepart.getY() > ROAD_SIZE + 1) {
+					if (positionDepart.getX() >= ROAD_SIZE && mapSize - positionDepart.getY() >= ROAD_SIZE) {
 						if (!checkNewDirection(Orientation.OUEST, Direction.GAUCHE, positionDepart.clone(), positionDepart2.clone())) {
 							break;
 						}
 						log.debug(coteDepart.name() + " => " + direction.name());
-						positionDepart.setX(positionDepart2.getX() + 1);
-						positionDepart.setY(positionDepart2.getY());
-						positionDepart2.setX(positionDepart.getX() + ROAD_SIZE - 1);
+						positionDepart.setY(positionDepart2.getY() - 1);
+						positionDepart2.setY(positionDepart2.getY() - 1);
+						positionDepart.setX(positionDepart2.getX() - 1);
+						positionDepart2.setX(positionDepart.getX() - ROAD_SIZE);
 						for (int i = 0; i < 9; i++) {
 							if (i != 0) {
-								positionDepart.setY(positionDepart.getY() - 1);
-								positionDepart2.setY(positionDepart2.getY() - 1);
+								positionDepart.setY(positionDepart.getY() + 1);
+								positionDepart2.setY(positionDepart2.getY() + 1);
 							}
 							traceLargeur(positionDepart, positionDepart2);
 						}
 						log.debug(coteDepart.name() + " => " + direction.name() + " exiting");
-						coteDepart = Orientation.NORD;
+						coteDepart = Orientation.SUD;
 					}
 					break;
 
@@ -196,8 +200,8 @@ public class MapManager {
 					log.debug("{} => {} entering", coteDepart.name(), direction.name());
 					int len = getRandomNumber(mapSize - positionDepart.getX());
 					log.debug("random length of the way = {}", len);
-					if (mapSize - len <= ROAD_SIZE) {
-						len = mapSize - positionDepart.getX() - 1;
+					if (positionDepart.getX() - len <= ROAD_SIZE) {
+						len = positionDepart.getX() - 1;
 						isFinished = true;
 					}
 					log.debug("length of the way = {}", len);
@@ -218,24 +222,24 @@ public class MapManager {
 
 				case DROITE:
 					log.debug("{} => {} entering", coteDepart.name(), direction.name());
-					if (mapSize - positionDepart.getX() <= ROAD_SIZE && mapSize - positionDepart.getY() <= ROAD_SIZE) {
+					if (positionDepart.getX() >= ROAD_SIZE && positionDepart.getY() >= ROAD_SIZE) {
 						if (!checkNewDirection(Orientation.OUEST, Direction.DROITE, positionDepart.clone(), positionDepart2.clone())) {
 							log.debug("Refused by checkNewDirection");
 							break;
 						}
 						log.debug(coteDepart.name() + " => " + direction.name());
-						positionDepart2.setX(positionDepart.getX() + 1);
-						positionDepart2.setY(positionDepart.getY());
-						positionDepart.setX(positionDepart.getX() + ROAD_SIZE);
-
+						positionDepart2.setY(positionDepart.getY() + 1);
+						positionDepart.setY(positionDepart.getY() + 1);
+						positionDepart.setX(positionDepart.getX() - 1);
+						positionDepart2.setX(positionDepart2.getX() - ROAD_SIZE);
 						log.debug("Start Position1 [x = {}, y = {}]", positionDepart.getX(), positionDepart.getY());
 						log.debug("Start Position2 [x = {}, y = {}]", positionDepart2.getX(), positionDepart2.getY());
 						for (int i = 0; i < 9; i++) {
-							positionDepart.setY(positionDepart.getY() + 1);
-							positionDepart2.setY(positionDepart2.getY() + 1);
+							positionDepart.setY(positionDepart.getY() - 1);
+							positionDepart2.setY(positionDepart2.getY() - 1);
 							traceLargeur(positionDepart, positionDepart2);
 						}
-						coteDepart = Orientation.SUD;
+						coteDepart = Orientation.NORD;
 					}
 					break;
 				}
@@ -249,25 +253,26 @@ public class MapManager {
 							break;
 						}
 						log.debug("{} => {} entering", coteDepart.name(), direction.name());
-						positionDepart.setX(positionDepart2.getX());
-						positionDepart.setY(positionDepart2.getY());
-						positionDepart2.setX(positionDepart.getX() - ROAD_SIZE);
+						positionDepart.setX(positionDepart2.getX() - 1);
+						positionDepart2.setX(positionDepart2.getX() - 1);
+						positionDepart2.setY(positionDepart2.getY() + ROAD_SIZE);
+						positionDepart.setY(positionDepart.getY() + 1);
+						
 						for (int i = 0; i < 9; i++) {
-							positionDepart.setX(positionDepart.getX() - 1);
-							positionDepart2.setX(positionDepart2.getX() - 1);
+							positionDepart.setX(positionDepart.getX() + 1);
+							positionDepart2.setX(positionDepart2.getX() + 1);
 							traceLargeur(positionDepart, positionDepart2);
 						}
-						log.debug(coteDepart.name() + " => " + direction.name()
-								+ " exiting");
+						log.debug(coteDepart.name() + " => " + direction.name() + " exiting");
 						coteDepart = Orientation.EST;
 					}
 					break;
 
 				case MILIEU:
 					log.debug("{} => {} entering", coteDepart.name(), direction.name());
-					int len = getRandomNumber(positionDepart.getY());
-					if (positionDepart.getY() - len <= ROAD_SIZE) {
-						len = positionDepart.getY();
+					int len = getRandomNumber(mapSize - positionDepart.getY());
+					if (mapSize - positionDepart.getY() - len <= ROAD_SIZE) {
+						len = mapSize - positionDepart.getY() - 1;
 						isFinished = true;
 					}
 					if (!checkDirection(coteDepart, len, positionDepart.clone(), positionDepart2.clone())) {
@@ -275,8 +280,8 @@ public class MapManager {
 					}
 					log.debug("length of the way = {}", len);
 					for (int i = 0; i < len; i++) {
-						positionDepart.setY(positionDepart.getY() - 1);
-						positionDepart2.setY(positionDepart2.getY() - 1);
+						positionDepart.setY(positionDepart.getY() + 1);
+						positionDepart2.setY(positionDepart2.getY() + 1);
 						traceLargeur(positionDepart, positionDepart2);
 					}
 					log.debug(coteDepart.name() + " => " + direction.name() + " exiting");
@@ -288,13 +293,13 @@ public class MapManager {
 							break;
 						}
 						log.debug("{} => {} entering", coteDepart.name(), direction.name());
-						positionDepart.setY(positionDepart.getY() - 1);
-						positionDepart2.setX(positionDepart.getX());
-						positionDepart2
-								.setY(positionDepart2.getY() - ROAD_SIZE);
+						positionDepart.setX(positionDepart2.getX() + 1);
+						positionDepart2.setX(positionDepart2.getX() + 1);
+						positionDepart2.setY(positionDepart2.getY() + ROAD_SIZE);
+						positionDepart.setY(positionDepart.getY() + 1);
 						for (int i = 0; i < 9; i++) {
-							positionDepart.setX(positionDepart.getX() + 1);
-							positionDepart2.setX(positionDepart2.getX() + 1);
+							positionDepart.setX(positionDepart.getX() - 1);
+							positionDepart2.setX(positionDepart2.getX() - 1);
 							traceLargeur(positionDepart, positionDepart2);
 						}
 						log.debug(coteDepart.name() + " => " + direction.name() + " exiting");
@@ -310,26 +315,28 @@ public class MapManager {
 					if (positionDepart.getX() < mapSize - ROAD_SIZE - 1 && positionDepart.getY() < ROAD_SIZE + 1) {
 						if (!checkNewDirection(Orientation.EST, Direction.GAUCHE, positionDepart.clone(), positionDepart2.clone())) {
 							break;
-						}log.debug("{} => {} entering", coteDepart.name(), direction.name());
-						positionDepart2.setX(positionDepart.getX());
-						positionDepart2.setY(positionDepart.getY());
-						positionDepart2.setX(positionDepart.getX() - ROAD_SIZE);
+						}
+						log.debug("{} => {} entering", coteDepart.name(), direction.name());
+						positionDepart.setX(positionDepart2.getX() + 1);
+						positionDepart2.setX(positionDepart.getX() + ROAD_SIZE);
+						positionDepart.setY(positionDepart2.getY() + 1);
+						positionDepart2.setY(positionDepart2.getY() + 1);
 						for (int i = 0; i < 9; i++) {
-							positionDepart.setY(positionDepart.getY() + 1);
-							positionDepart2.setY(positionDepart2.getY() + 1);
+							positionDepart.setY(positionDepart.getY() - 1);
+							positionDepart2.setY(positionDepart2.getY() - 1);
 							traceLargeur(positionDepart, positionDepart2);
 						}
 						log.debug("{} => {} exiting", coteDepart.name(),
 								direction.name());
-						coteDepart = Orientation.SUD;
+						coteDepart = Orientation.NORD;
 					}
 					break;
 
 				case MILIEU:
 					log.debug("{} => {} entering", coteDepart.name(), direction.name());
-					int len = getRandomNumber(positionDepart.getX());
-					if (positionDepart.getX() - len < ROAD_SIZE) {
-						len = positionDepart.getX() - 1;
+					int len = getRandomNumber(mapSize - positionDepart.getX());
+					if (mapSize - positionDepart.getX() - len < ROAD_SIZE) {
+						len = mapSize - positionDepart.getX() - 1;
 						isFinished = true;
 					}
 					log.debug("length of the way = {}", len);
@@ -341,8 +348,8 @@ public class MapManager {
 						break;
 					}
 					for (int i = 0; i < len; i++) {
-						positionDepart.setX(positionDepart.getX() - 1);
-						positionDepart2.setX(positionDepart2.getX() - 1);
+						positionDepart.setX(positionDepart.getX() + 1);
+						positionDepart2.setX(positionDepart2.getX() + 1);
 						traceLargeur(positionDepart, positionDepart2);
 					}
 					log.debug("{} => {} exiting", coteDepart.name(), direction.name());
@@ -354,17 +361,18 @@ public class MapManager {
 							break;
 						}
 						log.debug("{} => {} entering", coteDepart.name(), direction.name());
-						positionDepart2.setX(positionDepart.getX());
-						positionDepart2.setY(positionDepart.getY());
-						positionDepart2.setX(positionDepart.getX() - ROAD_SIZE);
+						positionDepart.setX(positionDepart2.getX() + 1);
+						positionDepart2.setX(positionDepart.getX() + ROAD_SIZE);
+						positionDepart.setY(positionDepart2.getY() - 1);
+						positionDepart2.setY(positionDepart2.getY() - 1);
 						for (int i = 0; i < 9; i++) {
-							positionDepart.setY(positionDepart.getY() - 1);
-							positionDepart2.setY(positionDepart2.getY() - 1);
+							positionDepart.setY(positionDepart.getY() + 1);
+							positionDepart2.setY(positionDepart2.getY() + 1);
 							traceLargeur(positionDepart, positionDepart2);
 						}
 						log.debug("{} => {} exiting", coteDepart.name(),
 								direction.name());
-						coteDepart = Orientation.NORD;
+						coteDepart = Orientation.SUD;
 					}
 					break;
 				}
@@ -378,14 +386,14 @@ public class MapManager {
 		boolean solutionAvailable = true;
 		switch (orientation) {
 		case NORD:
-			if (mapSize - positionDepart.getY() - length < ROAD_SIZE) {
+			if (positionDepart.getY() - length < ROAD_SIZE) {
 				solutionAvailable = false;
 				break;
 			}
 			log.debug("length of the way = {}", length);
 			for (int i = 0; i < length; i++) {
-				positionDepart.setY(positionDepart.getY() + 1);
-				positionDepart2.setY(positionDepart2.getY() + 1);
+				positionDepart.setY(positionDepart.getY() - 1);
+				positionDepart2.setY(positionDepart2.getY() - 1);
 				if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getTerrain() == Terrain.ROUTE) {
 					solutionAvailable = false;
 					break;
@@ -394,7 +402,7 @@ public class MapManager {
 			break;
 
 		case OUEST:
-			if (mapSize - length <= ROAD_SIZE) {
+			if (positionDepart.getX() - length <= ROAD_SIZE) {
 				solutionAvailable = false;
 				break;
 			}
@@ -426,14 +434,14 @@ public class MapManager {
 			break;
 
 		case EST:
-			if (positionDepart.getX() - length < ROAD_SIZE) {
+			if (mapSize - positionDepart.getX() - length < ROAD_SIZE) {
 				solutionAvailable = false;
 				break;
 			}
 			log.debug("length of the way = {}", length);
 			for (int i = 0; i < length; i++) {
-				positionDepart.setX(positionDepart.getX() - 1);
-				positionDepart2.setX(positionDepart2.getX() - 1);
+				positionDepart.setX(positionDepart.getX() + 1);
+				positionDepart2.setX(positionDepart2.getX() + 1);
 				if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getTerrain() == Terrain.ROUTE) {
 					solutionAvailable = false;
 					log.debug(positionDepart.toString() + " " + positionDepart2.toString());
@@ -453,14 +461,14 @@ public class MapManager {
 			switch (direction) {
 			case GAUCHE:
 				if (mapSize - positionDepart2.getX() > ROAD_SIZE && mapSize - positionDepart2.getY() > ROAD_SIZE) {
-					positionDepart.setX(positionDepart2.getX() - 1);
-					positionDepart2.setX(positionDepart2.getX() - 1);
-					positionDepart.setY(positionDepart2.getY() + 1);
-					positionDepart2.setY(positionDepart.getY() + ROAD_SIZE);
+					positionDepart.setX(positionDepart2.getX() + 1);
+					positionDepart2.setX(positionDepart2.getX() + 1);
+					positionDepart.setY(positionDepart2.getY() - 1);
+					positionDepart2.setY(positionDepart.getY() - ROAD_SIZE);
 					for (int i = 0; i < curveLength; i++) {
-						positionDepart.setX(positionDepart.getX() + 1);
-						positionDepart2.setX(positionDepart2.getX() + 1);
-						if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getTerrain() == Terrain.ROUTE) {
+						positionDepart.setX(positionDepart.getX() - 1);
+						positionDepart2.setX(positionDepart2.getX() - 1);
+						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getTerrain() == Terrain.ROUTE) {
 							solutionAvailable = false;
 							break;
 						}
@@ -472,7 +480,6 @@ public class MapManager {
 
 			case DROITE:
 				if (positionDepart2.getX() > ROAD_SIZE + 1 && mapSize - positionDepart2.getY() > ROAD_SIZE) {
-					//positionDepart2.setX(positionDepart.getX());
 					positionDepart2.setX(positionDepart.getX() + 1);
 					positionDepart.setX(positionDepart.getX() + 1);
 					positionDepart2.setY(positionDepart.getY() + 1);
@@ -480,7 +487,7 @@ public class MapManager {
 					for (int i = 0; i < curveLength; i++) {
 						positionDepart.setX(positionDepart.getX() - 1);
 						positionDepart2.setX(positionDepart2.getX() - 1);
-						if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getTerrain() == Terrain.ROUTE) {
+						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getTerrain() == Terrain.ROUTE) {
 							solutionAvailable = false;
 							break;
 						}
@@ -496,13 +503,14 @@ public class MapManager {
 			switch (direction) {
 			case GAUCHE:
 				if (mapSize - positionDepart.getX() > ROAD_SIZE + 1 && positionDepart.getY() > ROAD_SIZE + 1) {
-					positionDepart.setX(positionDepart2.getX() + 1);
-					positionDepart.setY(positionDepart2.getY());
-					positionDepart2.setX(positionDepart.getX() + ROAD_SIZE - 1);
+					positionDepart.setY(positionDepart2.getY() - 1);
+					positionDepart2.setY(positionDepart2.getY() - 1);
+					positionDepart.setX(positionDepart.getX() - 1);
+					positionDepart2.setX(positionDepart2.getX() - ROAD_SIZE);
 					for (int i = 0; i < 9; i++) {
-						positionDepart.setY(positionDepart.getY() - 1);
-						positionDepart2.setY(positionDepart2.getY() - 1);
-						if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getTerrain() == Terrain.ROUTE) {
+						positionDepart.setY(positionDepart.getY() + 1);
+						positionDepart2.setY(positionDepart2.getY() + 1);
+						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getTerrain() == Terrain.ROUTE) {
 							solutionAvailable = false;
 							break;
 						}
@@ -512,16 +520,16 @@ public class MapManager {
 
 			case DROITE:
 				if (mapSize - positionDepart.getX() <= ROAD_SIZE && mapSize - positionDepart.getY() <= ROAD_SIZE) {
-					positionDepart2.setX(positionDepart.getX() + 1);
-					positionDepart2.setY(positionDepart.getY());
-					positionDepart.setX(positionDepart.getX() + ROAD_SIZE);
-
+					positionDepart2.setY(positionDepart.getY() + 1);
+					positionDepart.setY(positionDepart.getY() + 1);
+					positionDepart.setX(positionDepart.getX() - 1);
+					positionDepart2.setX(positionDepart2.getX() - ROAD_SIZE);
 					log.debug("Start Position1 [x = {}, y = {}]", positionDepart.getX(), positionDepart.getY());
 					log.debug("Start Position2 [x = {}, y = {}]", positionDepart2.getX(), positionDepart2.getY());
 					for (int i = 0; i < 9; i++) {
 						positionDepart.setY(positionDepart.getY() + 1);
 						positionDepart2.setY(positionDepart2.getY() + 1);
-						if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getTerrain() == Terrain.ROUTE) {
+						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getTerrain() == Terrain.ROUTE) {
 							solutionAvailable = false;
 							break;
 						}
@@ -534,13 +542,15 @@ public class MapManager {
 		case SUD:
 			switch (direction) {
 			case GAUCHE:
-				if (positionDepart.getX() < ROAD_SIZE + 1 && positionDepart.getY() < ROAD_SIZE + 1) {
-					positionDepart.setY(positionDepart2.getY());
-					positionDepart2.setX(positionDepart.getX() - ROAD_SIZE);
+				if (mapSize - positionDepart.getX() < ROAD_SIZE + 1 && mapSize - positionDepart.getY() < ROAD_SIZE + 1) {
+					positionDepart.setX(positionDepart2.getX() - 1);
+					positionDepart2.setX(positionDepart2.getX() - 1);
+					positionDepart2.setY(positionDepart2.getY() + ROAD_SIZE);
+					positionDepart.setY(positionDepart.getY() + 1);
 					for (int i = 0; i < 9; i++) {
-						positionDepart.setX(positionDepart.getX() - 1);
-						positionDepart2.setX(positionDepart2.getX() - 1);
-						if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getTerrain() == Terrain.ROUTE) {
+						positionDepart.setX(positionDepart.getX() + 1);
+						positionDepart2.setX(positionDepart2.getX() + 1);
+						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getTerrain() == Terrain.ROUTE) {
 							solutionAvailable = false;
 							break;
 						}
@@ -550,13 +560,14 @@ public class MapManager {
 
 			case DROITE:
 				if (mapSize - positionDepart2.getX() > ROAD_SIZE && mapSize - positionDepart2.getY() > ROAD_SIZE) {
-					positionDepart.setY(positionDepart.getY() - 1);
-					positionDepart2.setX(positionDepart.getX());
-					positionDepart2.setY(positionDepart2.getY() - ROAD_SIZE);
+					positionDepart.setX(positionDepart2.getX() + 1);
+					positionDepart2.setX(positionDepart2.getX() + 1);
+					positionDepart2.setY(positionDepart2.getY() + ROAD_SIZE);
+					positionDepart.setY(positionDepart.getY() + 1);
 					for (int i = 0; i < 9; i++) {
-						positionDepart.setX(positionDepart.getX() + 1);
-						positionDepart2.setX(positionDepart2.getX() + 1);
-						if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getTerrain() == Terrain.ROUTE) {
+						positionDepart.setX(positionDepart.getX() - 1);
+						positionDepart2.setX(positionDepart2.getX() - 1);
+						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getTerrain() == Terrain.ROUTE) {
 							solutionAvailable = false;
 							break;
 						}
@@ -570,13 +581,14 @@ public class MapManager {
 			switch (direction) {
 			case GAUCHE:
 				if (positionDepart.getX() < mapSize - ROAD_SIZE - 1 && positionDepart.getY() < ROAD_SIZE + 1) {
-					positionDepart2.setX(positionDepart.getX());
-					positionDepart2.setY(positionDepart.getY());
-					positionDepart2.setX(positionDepart.getX() - ROAD_SIZE);
+					positionDepart.setX(positionDepart2.getX() + 1);
+					positionDepart2.setX(positionDepart.getX() + ROAD_SIZE);
+					positionDepart.setY(positionDepart2.getY() + 1);
+					positionDepart2.setY(positionDepart2.getY() + 1);
 					for (int i = 0; i < 9; i++) {
-						positionDepart.setY(positionDepart.getY() + 1);
-						positionDepart2.setY(positionDepart2.getY() + 1);
-						if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getTerrain() == Terrain.ROUTE) {
+						positionDepart.setY(positionDepart.getY() - 1);
+						positionDepart2.setY(positionDepart2.getY() - 1);
+						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getTerrain() == Terrain.ROUTE) {
 							solutionAvailable = false;
 							break;
 						}
@@ -586,13 +598,14 @@ public class MapManager {
 
 			case DROITE:
 				if (positionDepart.getX() < ROAD_SIZE + 1 && positionDepart.getY() < ROAD_SIZE + 1) {
-					positionDepart2.setX(positionDepart.getX());
-					positionDepart2.setY(positionDepart.getY());
-					positionDepart2.setX(positionDepart.getX() - ROAD_SIZE);
+					positionDepart.setX(positionDepart2.getX() + 1);
+					positionDepart2.setX(positionDepart.getX() + ROAD_SIZE);
+					positionDepart.setY(positionDepart2.getY() - 1);
+					positionDepart2.setY(positionDepart2.getY() - 1);
 					for (int i = 0; i < 9; i++) {
-						positionDepart.setY(positionDepart.getY() - 1);
-						positionDepart2.setY(positionDepart2.getY() - 1);
-						if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getTerrain() == Terrain.ROUTE) {
+						positionDepart.setY(positionDepart.getY() + 1);
+						positionDepart2.setY(positionDepart2.getY() + 1);
+						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getTerrain() == Terrain.ROUTE) {
 							solutionAvailable = false;
 							break;
 						}
@@ -612,24 +625,24 @@ public class MapManager {
 		log.debug("start position depart : " + posDepart + ", direction : "	+ coteDepart);
 		switch (coteDepart) {
 		case NORD:
-			positionDepart.setX(posDepart + ROAD_SIZE - 1);
-			positionDepart2.setX(posDepart);
-			break;
-		case EST:
-			positionDepart.setX(mapSize - 1);
-			positionDepart2.setX(mapSize - 1);
-			positionDepart.setY(posDepart + ROAD_SIZE - 1);
-			positionDepart2.setY(posDepart);
-			break;
-		case SUD:
 			positionDepart.setX(posDepart);
 			positionDepart2.setX(posDepart + ROAD_SIZE - 1);
 			positionDepart.setY(mapSize - 1);
 			positionDepart2.setY(mapSize - 1);
 			break;
-		case OUEST:
+		case EST:
 			positionDepart.setY(posDepart);
 			positionDepart2.setY(posDepart + ROAD_SIZE - 1);
+			break;
+		case SUD:
+			positionDepart.setX(posDepart + ROAD_SIZE - 1);
+			positionDepart2.setX(posDepart);
+			break;
+		case OUEST:
+			positionDepart.setX(mapSize - 1);
+			positionDepart2.setX(mapSize - 1);
+			positionDepart.setY(posDepart + ROAD_SIZE - 1);
+			positionDepart2.setY(posDepart);
 			break;
 		}
 		log.debug("PositionDepart x=" + positionDepart.getX() + ", y=" + positionDepart.getY());
@@ -643,20 +656,20 @@ public class MapManager {
 		log.debug("Trace end line {}, {}", positionDepart.toString(), positionDepart2.toString());
 		switch (coteDepart) {
 		case NORD:
-			positionDepart.setY(positionDepart.getY() + 1);
-			positionDepart2.setY(positionDepart2.getY() + 1);
-			break;
-		case EST:
-			positionDepart.setX(positionDepart.getX() - 1);
-			positionDepart2.setX(positionDepart2.getX() - 1);
-			break;
-		case SUD:
 			positionDepart.setY(positionDepart.getY() - 1);
 			positionDepart2.setY(positionDepart2.getY() - 1);
 			break;
-		case OUEST:
+		case EST:
 			positionDepart.setX(positionDepart.getX() + 1);
 			positionDepart2.setX(positionDepart2.getX() + 1);
+			break;
+		case SUD:
+			positionDepart.setY(positionDepart.getY() + 1);
+			positionDepart2.setY(positionDepart2.getY() + 1);
+			break;
+		case OUEST:
+			positionDepart.setX(positionDepart.getX() - 1);
+			positionDepart2.setX(positionDepart2.getX() - 1);
 			break;
 		}
 		traceLargeur(positionDepart, positionDepart2, Terrain.END_LINE);

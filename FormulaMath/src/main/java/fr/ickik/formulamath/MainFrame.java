@@ -74,9 +74,9 @@ public class MainFrame {
 		trayPanel.add(getTrayPanel());
 		playerManager.addUpdateCaseListener(new UpdateCaseListener() {
 
-			public void updatePlayerCase(int x, int y, Player p) {
-				int xTrayPanel = p.getPosition().getX() - leftCorner.getX();
-				int yTrayPanel = p.getPosition().getY() - leftCorner.getY();
+			public void updatePlayerCase(Player player) {
+				int xTrayPanel = player.getPosition().getX() - leftCorner.getX();
+				int yTrayPanel = player.getPosition().getY() - leftCorner.getY();
 				if (xTrayPanel > 0 && xTrayPanel < gridSize && yTrayPanel > 0 && yTrayPanel < gridSize) {
 					updateTrayPanel();
 				}
@@ -85,9 +85,15 @@ public class MainFrame {
 
 			@Override
 			public void updatePlayerPossibilities(Player player) {}
+
+			@Override
+			public void updateEndGamePanel(Player player) {
+				// TODO Auto-generated method stub
+				
+			}
 		});
-		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				trayPanel, getMenuPanel());
+		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, trayPanel, getMenuPanel());
+		split.setDividerLocation(0.8);
 		return split;
 	}
 
@@ -165,7 +171,17 @@ public class MainFrame {
 	}
 
 	private JPanel getMenuPanel() {
-		final JPanel panel = new JPanel(new GridLayout(8, 1));
+		final JPanel panel = new JPanel(new GridLayout(4, 1));
+		JButton play = new JButton("Play");
+		panel.add(getChoicePanel(play));
+		panel.add(play);
+		panel.add(getDirectionalPanel());
+		panel.add(getZoomPanel());
+		return panel;
+	}
+	
+	private JPanel getChoicePanel(final JButton play) {
+		final JPanel panel = new JPanel(new GridLayout(5, 1));
 		final JCheckBox[] solution = new JCheckBox[5];
 		final List<Vector> vectorList = new ArrayList<Vector>(5);
 		ButtonGroup group = new ButtonGroup();
@@ -200,11 +216,42 @@ public class MainFrame {
 			}
 			
 			@Override
-			public void updatePlayerCase(int x, int y, Player p) {}
-		});
+			public void updatePlayerCase(Player player) {}
 
-		JButton play = new JButton("Play");
-		play.addActionListener(new ActionListener() {
+			@Override
+			public void updateEndGamePanel(Player player) {
+				play.setText("End");
+				removeButtonListener(play);
+				play.addActionListener(getEndGameListener());
+				panel.removeAll();
+				panel.add(getFinishLabel());
+				panel.validate();
+			}
+		});
+		
+		play.addActionListener(getPlayActionListener(vectorList, solution));
+		return panel;
+	}
+	
+	private void removeButtonListener(JButton button) {
+		ActionListener[] listenerArray = button.getActionListeners();
+		for (ActionListener l : listenerArray) {
+			button.removeActionListener(l);
+		}
+	}
+	
+	private ActionListener getEndGameListener() {
+		return new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		};
+	}
+	
+	private ActionListener getPlayActionListener(final List<Vector> vectorList, final JCheckBox[] solution) {
+		return new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
 				int selectedPossibility = getSelectedCheckBox(solution);
@@ -217,11 +264,12 @@ public class MainFrame {
 					leftCorner.setY(leftCorner.getY() - vectorList.get(selectedPossibility).getYMoving());
 				}
 			}
-		});
-		panel.add(play);
-		panel.add(getDirectionalPanel());
-		panel.add(getZoomPanel());
-		return panel;
+		};
+	}
+	
+	private JLabel getFinishLabel() {
+		JLabel label = new JLabel("");
+		return label;
 	}
 
 	private JPanel getZoomPanel() {

@@ -16,6 +16,7 @@ public class Player {
 	private final Vector movingVector;
 	private final String name;
 	private final PlayerType type;
+	private int goCounter = 0;
 	private final Color[] colorList = new Color[] { Color.RED, Color.BLACK, Color.BLUE, Color.YELLOW };
 
 	/**
@@ -45,22 +46,6 @@ public class Player {
 		return position;
 	}
 
-	public void setXMoving(int xMoving) {
-		movingVector.setXMoving(xMoving);
-	}
-
-	public int getXMoving() {
-		return movingVector.getXMoving();
-	}
-
-	public void setYMoving(int yMoving) {
-		movingVector.setYMoving(yMoving);
-	}
-
-	public int getYMoving() {
-		return movingVector.getYMoving();
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -80,5 +65,13 @@ public class Player {
 	@Override
 	public String toString() {
 		return id + " " + name + " (" + type + ") :" + position.toString();
+	}
+	
+	public void incrementGoCounter() {
+		goCounter++;
+	}
+	
+	public int getGoCounter() {
+		return goCounter;
 	}
 }

@@ -12,15 +12,19 @@ public interface UpdateCaseListener {
 
 	/**
 	 * Updates player's position on the map.
-	 * @param x
-	 * @param y
-	 * @param p
+	 * @param player
 	 */
-	void updatePlayerCase(int x, int y, Player p);
+	void updatePlayerCase(Player player);
 	
 	/**
 	 * Updates on screen position possible for the player.
-	 * @param p the player on who update the possibilities.
+	 * @param player the player on who update the possibilities.
 	 */
-	void updatePlayerPossibilities(Player p);
+	void updatePlayerPossibilities(Player player);
+	
+	/**
+	 * Update the screen and position of the player.
+	 * @param player
+	 */
+	void updateEndGamePanel(Player player);
 }

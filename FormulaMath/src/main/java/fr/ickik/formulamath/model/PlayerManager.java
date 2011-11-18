@@ -27,6 +27,7 @@ public class PlayerManager {
 	private int indexPlayerGame = 0;
 	private final MapManager mapManager;
 	private boolean fireUpdateCaseListener;
+	private boolean isWinner = false;
 	private final List<UpdateCaseListener> updateCaseListenerList = new ArrayList<UpdateCaseListener>();
 	
 	private static final Logger log = LoggerFactory.getLogger(PlayerManager.class);
@@ -83,7 +84,14 @@ public class PlayerManager {
 
 	public boolean play(Vector vector) {
 		Player p = playerList.get(indexPlayerGame);
-		//Vector vector = getVectorsPossibilities(p).get(selection);
+		if (isWinner) {
+			return false;
+		}
+		if (checkWinner(p, vector)) {
+			fireEndGameListener(p);
+			isWinner = true;
+			return false;
+		}
 		if (mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()) == null
 				|| mapManager.getCase(p.getPosition().getY() - vector.getYMoving(), p.getPosition().getX() + vector.getXMoving()) == null) {
 			return false;
@@ -92,19 +100,19 @@ public class PlayerManager {
 		mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
 		p.getPosition().setX(p.getPosition().getX() + vector.getXMoving());
 		p.getPosition().setY(p.getPosition().getY() - vector.getYMoving());
-		p.setXMoving(vector.getXMoving());
-		p.setYMoving(vector.getYMoving());
+		p.getVector().setXMoving(vector.getXMoving());
+		p.getVector().setYMoving(vector.getYMoving());
 		mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(p.getId());
 		fireUpdateCaseListener(p);
 		updateIndexPlayerGame();
 		AIPlay();
 		return true;
 	}
-
+	
 	private void AIPlay() {
 		while (playerList.get(indexPlayerGame).getType() == PlayerType.COMPUTER) {
-			// jouer tout seul
 			Player p = playerList.get(indexPlayerGame);
+			fireUpdateCaseListener(p);
 			updateIndexPlayerGame();
 		}
 		play(playerList.get(indexPlayerGame));
@@ -115,8 +123,35 @@ public class PlayerManager {
 		indexPlayerGame = indexPlayerGame % playerList.size();
 	}
 	
-	private void checkWinner(Player p, Vector v) {
+	private boolean checkWinner(Player p, Vector v) {
 		List<Position> list = mapManager.getEndLinePosition();
+		Position pos = p.getPosition();
+		Position pos2 = new Position(pos.getX() + v.getXMoving(), pos.getY() + v.getYMoving());
+		double a = 0;
+		double b = 0;
+		if (pos.getX() == pos2.getX()) {
+			a = pos.getX();
+		} else if (pos.getY() == pos2.getY()) {
+			b = pos.getY();
+		} else {
+			a = (pos2.getX() - pos.getX()) / (pos2.getY() - pos.getY());
+			b = pos.getY() - (a * pos.getX());
+		}
+		Position posEnd = list.get(0);
+		Position posEnd2 = list.get(1);
+		if (posEnd.getX() == posEnd2.getX()) {
+			double tmp = a * posEnd.getX() + b;
+			if ((tmp < posEnd.getY() && tmp > posEnd2.getY()) || (tmp > posEnd.getY() && tmp < posEnd2.getY())) {
+				return true;	
+			}
+		} else {
+			double tmp = a * posEnd.getX() + b;
+			double tmp2 = a * posEnd2.getX() + b;
+			if ((tmp > posEnd.getY() && tmp2 < posEnd2.getY()) || (tmp < posEnd.getY() && tmp2 > posEnd2.getY())) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	private void play(Player human) {
@@ -137,7 +172,7 @@ public class PlayerManager {
 				p.getPosition().setY(list.get(index).getY());
 				set.set(index);
 				mapManager.getCase(list.get(index).getY(), list.get(index).getX()).setIdPlayer(p.getId());
-				fireUpdateCaseListener(list.get(index).getX(), list.get(index).getY(), p);
+				fireUpdateCaseListener(p);
 				log.debug("fire");
 			} else {
 				log.debug("set cardinality position : {}", set.cardinality());
@@ -165,7 +200,7 @@ public class PlayerManager {
 					log.debug("computer start position : ({}, {})", p.getPosition().getX(), p.getPosition().getY());
 					set.set(index);
 					mapManager.getCase(list.get(index).getY(), list.get(index).getX()).setIdPlayer(p.getId());
-					fireUpdateCaseListener(list.get(index).getX(), list.get(index).getY(), p);
+					fireUpdateCaseListener(p);
 					log.debug("fire");
 				} else {
 					log.debug("set cardinality position : {}", set.cardinality());
@@ -190,7 +225,7 @@ public class PlayerManager {
 		p.getPosition().setX(list.get(index).getX());
 		p.getPosition().setY(list.get(index).getY());
 		mapManager.getCase(list.get(index).getY(), list.get(index).getX()).setIdPlayer(p.getId());
-		fireUpdateCaseListener(list.get(index).getX(), list.get(index).getY(), p);
+		fireUpdateCaseListener(p);
 	}
 
 	/**
@@ -217,16 +252,10 @@ public class PlayerManager {
 			updateCaseListenerList.remove(updateCaseListener);
 		}
 	}
-
-	protected void fireUpdateCaseListener(int x, int y, Player p) {
-		for (UpdateCaseListener u : updateCaseListenerList) {
-			u.updatePlayerCase(x, y, p);
-		}
-	}
 	
 	protected void fireUpdateCaseListener(Player p) {
 		for (UpdateCaseListener u : updateCaseListenerList) {
-			u.updatePlayerCase(p.getPosition().getX(), p.getPosition().getY(), p);
+			u.updatePlayerCase(p);
 		}
 	}
 	
@@ -236,4 +265,9 @@ public class PlayerManager {
 		}
 	}
 
+	protected void fireEndGameListener(Player player) {
+		for (UpdateCaseListener u : updateCaseListenerList) {
+			u.updateEndGamePanel(player);
+		}
+	}
 }

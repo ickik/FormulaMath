@@ -3,6 +3,7 @@ package fr.ickik.formulamath;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,7 +41,7 @@ public class MainFrame {
 	private final MapManager mapManager;
 	private final PlayerManager playerManager;
 	private static final Logger log = LoggerFactory.getLogger(MainFrame.class);
-	private List<List<JLabel>> caseList = new ArrayList<List<JLabel>>(gridSize);
+	private List<List<JCase>> caseList = new ArrayList<List<JCase>>(gridSize);
 	private JPanel trayPanel;
 	private static final int CASE_SIZE = 15;
 	private static final int MIN_ZOOM_SIZE = 3;
@@ -80,7 +81,6 @@ public class MainFrame {
 				if (xTrayPanel > 0 && xTrayPanel < gridSize && yTrayPanel > 0 && yTrayPanel < gridSize) {
 					updateTrayPanel();
 				}
-
 			}
 
 			@Override
@@ -100,6 +100,7 @@ public class MainFrame {
 	private JPanel getTrayPanel() {
 		GridLayout gridLayout = new GridLayout(gridSize, gridSize);
 		JPanel tray = new JPanel(gridLayout);
+		tray.setOpaque(true);
 		int distance = (gridSize - 1) / 2;
 		int xDepart, yDepart;
 		if (leftCorner == null) {
@@ -113,12 +114,12 @@ public class MainFrame {
 			yDepart = leftCorner.getY();
 		}
 		for (int i = 0; i < gridSize; i++) {
-			List<JLabel> labelList = new ArrayList<JLabel>(gridSize);
+			List<JCase> labelList = new ArrayList<JCase>(gridSize);
 			for (int j = 0; j < gridSize; j++) {
-				JLabel label = new JLabel();
-				label.setOpaque(true);
-				label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-				label.setPreferredSize(new Dimension(CASE_SIZE, CASE_SIZE));
+				JCase cas = new JCase();
+				cas.setOpaque(true);
+				cas.setSize(new Dimension(CASE_SIZE, CASE_SIZE));
+				cas.setMinimumSize(new Dimension(CASE_SIZE, CASE_SIZE));
 				if (xDepart + j >= 0 && yDepart + i >= 0
 						&& xDepart + j < mapManager.getMapSize()
 						&& yDepart + i < mapManager.getMapSize()) {
@@ -127,28 +128,27 @@ public class MainFrame {
 					if (c.getIdPlayer() == 0) {
 						switch (c.getTerrain()) {
 						case HERBE:
-							label.setBackground(Terrain.HERBE.getColor());
+							cas.setBackground(Terrain.HERBE.getColor());
 							break;
 						case ROUTE:
-							label.setBackground(Terrain.ROUTE.getColor());
+							cas.setBackground(Terrain.ROUTE.getColor());
 							break;
 						case START_LINE:
-							label.setBackground(Terrain.START_LINE.getColor());
+							cas.setBackground(Terrain.START_LINE.getColor());
 							break;
 						case END_LINE:
-							label.add(getEndLineLabel());
-							//label.setBackground(Terrain.END_LINE.getColor());
+							cas.add(getEndLineLabel());
 							break;
 						}
 					} else {
-						label.setBackground(playerManager.getColorById(c.getIdPlayer()));
+						cas.setBackground(playerManager.getColorById(c.getIdPlayer()));
 					}
 
 				} else {
-					label.setBackground(Color.WHITE);
+					cas.setBackground(Color.WHITE);
 				}
-				tray.add(label);
-				labelList.add(label);
+				tray.add(cas);
+				labelList.add(cas);
 			}
 			caseList.add(labelList);
 		}

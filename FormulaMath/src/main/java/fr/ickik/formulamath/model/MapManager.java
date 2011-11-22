@@ -221,7 +221,7 @@ public class MapManager {
 
 				case DROITE:
 					log.debug("{} => {} entering", coteDepart.name(), direction.name());
-					if (positionDepart2.getX() > curveLength && positionDepart2.getY() > curveLength) {
+					if (mapSize - positionDepart2.getX() > curveLength && mapSize - positionDepart2.getY() > curveLength) {
 						if (!checkNewDirection(Orientation.OUEST, Direction.DROITE, positionDepart.clone(), positionDepart2.clone())) {
 							log.debug("Refused by checkNewDirection");
 							break;
@@ -523,7 +523,7 @@ public class MapManager {
 				break;
 
 			case DROITE:
-				if (positionDepart2.getX() > curveLength && positionDepart2.getY() > curveLength) {
+				if (mapSize - positionDepart2.getX() > curveLength && mapSize - positionDepart2.getY() > curveLength) {
 					positionDepart.setY(positionDepart.getY() + 1);
 					positionDepart2.setY(positionDepart.getY());
 					positionDepart.setX(positionDepart.getX() - ROAD_SIZE);

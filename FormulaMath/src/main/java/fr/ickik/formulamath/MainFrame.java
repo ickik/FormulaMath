@@ -36,15 +36,15 @@ public class MainFrame {
 	private final JFrame mainFrame;
 	public static final String NAME = "Formula Math";
 	public static final String VERSION = "1.0.0";
-	private int gridSize = 19;
+	private int gridSize = 25;
 	private final MapManager mapManager;
 	private final PlayerManager playerManager;
 	private static final Logger log = LoggerFactory.getLogger(MainFrame.class);
-	private List<List<JLabel>> caseList = new ArrayList<List<JLabel>>(11);
+	private List<List<JLabel>> caseList = new ArrayList<List<JLabel>>(gridSize);
 	private JPanel trayPanel;
-	private static final int CASE_SIZE = 20;
+	private static final int CASE_SIZE = 15;
 	private static final int MIN_ZOOM_SIZE = 3;
-	private static final int MAX_ZOOM_SIZE = 40;
+	private static final int MAX_ZOOM_SIZE = 50;
 	private Position leftCorner;
 
 	public MainFrame(PlayerManager playerManager, MapManager mapManager) {

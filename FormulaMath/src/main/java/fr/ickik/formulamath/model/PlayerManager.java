@@ -13,6 +13,7 @@ import fr.ickik.formulamath.Player;
 import fr.ickik.formulamath.PlayerType;
 import fr.ickik.formulamath.Position;
 import fr.ickik.formulamath.StartFrame;
+import fr.ickik.formulamath.Terrain;
 import fr.ickik.formulamath.Vector;
 import fr.ickik.formulamath.controler.UpdateCaseListener;
 
@@ -52,27 +53,32 @@ public class PlayerManager {
 	public List<Vector> getVectorsPossibilities(Player player) {
 		log.debug("getVectorsPossibilities entering");
 		List<Vector> list = new ArrayList<Vector>(5);
-		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving()) != null) {
+		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving()) != null
+				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving()).getTerrain() != Terrain.HERBE) {
 			list.add(player.getVector());
 		} else {
 			list.add(null);
 		}
-		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() - 1) != null) {
+		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() - 1) != null
+				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() - 1).getTerrain() != Terrain.HERBE) {
 			list.add(new Vector(player.getVector().getXMoving() - 1, player.getVector().getYMoving()));
 		} else {
 			list.add(null);
 		}
-		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() + 1) != null) {
+		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() + 1) != null
+				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() + 1).getTerrain() != Terrain.HERBE) {
 			list.add(new Vector(player.getVector().getXMoving() + 1, player.getVector().getYMoving()));
 		} else {
 			list.add(null);
 		}
-		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() + 1, player.getPosition().getX() + player.getVector().getXMoving()) != null) {
+		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() + 1, player.getPosition().getX() + player.getVector().getXMoving()) != null
+				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() + 1, player.getPosition().getX() + player.getVector().getXMoving()).getTerrain() != Terrain.HERBE) {
 			list.add(new Vector(player.getVector().getXMoving(), player.getVector().getYMoving() - 1));
 		} else {
 			list.add(null);
 		}
-		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() - 1, player.getPosition().getX() + player.getVector().getXMoving()) != null) {
+		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() - 1, player.getPosition().getX() + player.getVector().getXMoving()) != null
+				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() - 1, player.getPosition().getX() + player.getVector().getXMoving()).getTerrain() != Terrain.HERBE) {
 			list.add(new Vector(player.getVector().getXMoving(), player.getVector().getYMoving() + 1));
 		} else {
 			list.add(null);
@@ -126,7 +132,7 @@ public class PlayerManager {
 	private boolean checkWinner(Player p, Vector v) {
 		List<Position> list = mapManager.getEndLinePosition();
 		Position pos = p.getPosition();
-		Position pos2 = new Position(pos.getX() + v.getXMoving(), pos.getY() + v.getYMoving());
+		Position pos2 = new Position(pos.getX() + v.getXMoving(), pos.getY() - v.getYMoving());
 		double a = 0;
 		double b = 0;
 		if (pos.getX() == pos2.getX()) {
@@ -145,10 +151,22 @@ public class PlayerManager {
 				return true;	
 			}
 		} else {
-			double tmp = a * posEnd.getX() + b;
-			double tmp2 = a * posEnd2.getX() + b;
-			if ((tmp > posEnd.getY() && tmp2 < posEnd2.getY()) || (tmp < posEnd.getY() && tmp2 > posEnd2.getY())) {
-				return true;
+			if (b == 0) {
+				if (a > posEnd.getX() && a < posEnd2.getX()) {
+					if (posEnd.getY() < pos.getY() && posEnd2.getY() > pos2.getY()) {
+						return true;
+					}
+				} else if (a < posEnd.getX() && a > posEnd2.getX()) {
+					if (posEnd.getY() < pos.getY() && posEnd2.getY() > pos2.getY()) {
+						return true;
+					}
+				}
+			} else {
+				double tmp = a * posEnd.getX() + b;
+				double tmp2 = a * posEnd2.getX() + b;
+				if ((tmp > posEnd.getY() && tmp2 < posEnd2.getY()) || (tmp < posEnd.getY() && tmp2 > posEnd2.getY())) {
+					return true;
+				}
 			}
 		}
 		return false;

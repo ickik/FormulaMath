@@ -1,5 +1,6 @@
 package fr.ickik.formulamath;
 
+
 public class Case {
 
 	private Terrain terrain;

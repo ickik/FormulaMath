@@ -20,11 +20,8 @@ public class Position implements Cloneable {
 
 	/**
 	 * Constructor to initialize the coordinates with the arguments.
-	 * 
-	 * @param x
-	 *            the horizontal coordinate.
-	 * @param y
-	 *            the vertical coordinate.
+	 * @param x the horizontal coordinate.
+	 * @param y the vertical coordinate.
 	 */
 	public Position(int x, int y) {
 		this.x = x;
@@ -33,9 +30,7 @@ public class Position implements Cloneable {
 
 	/**
 	 * Set the horizontal coordinate.
-	 * 
-	 * @param y
-	 *            the new horizontal coordinate.
+	 * @param y the new horizontal coordinate.
 	 */
 	public void setX(int x) {
 		this.x = x;
@@ -43,7 +38,6 @@ public class Position implements Cloneable {
 
 	/**
 	 * Return the horizontal coordinate.
-	 * 
 	 * @return the horizontal coordinate.
 	 */
 	public int getX() {
@@ -52,9 +46,7 @@ public class Position implements Cloneable {
 
 	/**
 	 * Set the vertical coordinate.
-	 * 
-	 * @param y
-	 *            the new vertical coordinate.
+	 * @param y the new vertical coordinate.
 	 */
 	public void setY(int y) {
 		this.y = y;
@@ -62,7 +54,6 @@ public class Position implements Cloneable {
 
 	/**
 	 * Return the vertical coordinate.
-	 * 
 	 * @return the vertical coordinate.
 	 */
 	public int getY() {

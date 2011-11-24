@@ -3,14 +3,13 @@ package fr.ickik.formulamath;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -116,10 +115,8 @@ public class MainFrame {
 		for (int i = 0; i < gridSize; i++) {
 			List<JCase> labelList = new ArrayList<JCase>(gridSize);
 			for (int j = 0; j < gridSize; j++) {
-				JCase cas = new JCase();
-				cas.setOpaque(true);
-				cas.setSize(new Dimension(CASE_SIZE, CASE_SIZE));
-				cas.setMinimumSize(new Dimension(CASE_SIZE, CASE_SIZE));
+				JCase cas = new JCase(CASE_SIZE);
+				
 				if (xDepart + j >= 0 && yDepart + i >= 0
 						&& xDepart + j < mapManager.getMapSize()
 						&& yDepart + i < mapManager.getMapSize()) {

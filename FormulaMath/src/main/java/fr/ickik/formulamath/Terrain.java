@@ -30,6 +30,15 @@ public enum Terrain {
 		public Color getColor() {
 			return Color.BLACK;
 		}
+	}, 
+	
+	NO_TERRAIN {
+
+		@Override
+		public Color getColor() {
+			return Color.WHITE;
+		}
+		
 	};
 
 	public abstract Color getColor();

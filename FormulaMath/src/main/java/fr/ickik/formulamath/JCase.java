@@ -17,7 +17,7 @@ public class JCase extends JPanel {
 	public JCase(int size) {
 		setSize(new Dimension(size, size));
 		setMinimumSize(new Dimension(size, size));
-		double sizeDoubleValue = (new Integer(size)).doubleValue();
+		double sizeDoubleValue = (new Integer(size+1)).doubleValue();
 		shape = new Rectangle2D.Double(0.0, 0.0, sizeDoubleValue, sizeDoubleValue);
 	}
 

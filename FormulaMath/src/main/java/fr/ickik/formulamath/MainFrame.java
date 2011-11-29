@@ -2,11 +2,9 @@ package fr.ickik.formulamath;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,12 +35,12 @@ public class MainFrame {
 	public static final String NAME = "Formula Math";
 	public static final String VERSION = "1.0.0";
 	private int gridSize = 25;
+	private int caseSize = 15;
 	private final MapManager mapManager;
 	private final PlayerManager playerManager;
 	private static final Logger log = LoggerFactory.getLogger(MainFrame.class);
-	private List<List<JCase>> caseList = new ArrayList<List<JCase>>(gridSize);
+	private List<List<JCase>> caseArrayList = new ArrayList<List<JCase>>(gridSize);
 	private JPanel trayPanel;
-	private static final int CASE_SIZE = 15;
 	private static final int MIN_ZOOM_SIZE = 3;
 	private static final int MAX_ZOOM_SIZE = 50;
 	private Position leftCorner;
@@ -112,16 +110,16 @@ public class MainFrame {
 			xDepart = leftCorner.getX();
 			yDepart = leftCorner.getY();
 		}
+		caseArrayList.clear();
 		for (int i = 0; i < gridSize; i++) {
-			List<JCase> labelList = new ArrayList<JCase>(gridSize);
+			List<JCase> caseList = new ArrayList<JCase>(gridSize);
 			for (int j = 0; j < gridSize; j++) {
-				JCase cas = new JCase(CASE_SIZE);
-				
+				JCase cas = new JCase(caseSize);
 				if (xDepart + j >= 0 && yDepart + i >= 0
 						&& xDepart + j < mapManager.getMapSize()
 						&& yDepart + i < mapManager.getMapSize()) {
 					Case c = mapManager.getCase(yDepart + i, xDepart + j);
-
+					
 					if (c.getIdPlayer() == 0) {
 						switch (c.getTerrain()) {
 						case HERBE:
@@ -145,9 +143,9 @@ public class MainFrame {
 					cas.setBackground(Color.WHITE);
 				}
 				tray.add(cas);
-				labelList.add(cas);
+				caseList.add(cas);
 			}
-			caseList.add(labelList);
+			caseArrayList.add(caseList);
 		}
 		return tray;
 	}
@@ -183,8 +181,7 @@ public class MainFrame {
 		final List<Vector> vectorList = new ArrayList<Vector>(5);
 		ButtonGroup group = new ButtonGroup();
 		for (int i = 0; i < 5; i++) {
-			JCheckBox box = null;
-			box = new JCheckBox("");
+			JCheckBox box = new JCheckBox("");
 			box.setEnabled(false);
 			box.setSelected(false);
 			group.add(box);
@@ -249,14 +246,14 @@ public class MainFrame {
 	
 	private ActionListener getPlayActionListener(final List<Vector> vectorList, final JCheckBox[] solution) {
 		return new ActionListener() {
-
 			public void actionPerformed(ActionEvent arg0) {
 				int selectedPossibility = getSelectedCheckBox(solution);
 				if (selectedPossibility == -1) {
 					displayErrorMessage("No possibility selected");
 					return;
 				}
-				if (playerManager.play(vectorList.get(selectedPossibility))) {
+				Vector vector = vectorList.get(selectedPossibility);
+				if (playerManager.play(vector)) {
 					leftCorner.setX(leftCorner.getX() + vectorList.get(selectedPossibility).getXMoving());
 					leftCorner.setY(leftCorner.getY() - vectorList.get(selectedPossibility).getYMoving());
 				}
@@ -279,7 +276,8 @@ public class MainFrame {
 					leftCorner.setX(leftCorner.getX() + 1);
 					leftCorner.setY(leftCorner.getY() + 1);
 					gridSize-=2;
-					updateTrayPanel();
+					caseSize++;
+					repaintTrayPanel();
 				}
 			}
 		});
@@ -291,7 +289,8 @@ public class MainFrame {
 					leftCorner.setX(leftCorner.getX() - 1);
 					leftCorner.setY(leftCorner.getY() - 1);
 					gridSize+=2;
-					updateTrayPanel();
+					caseSize--;
+					repaintTrayPanel();
 				}
 			}
 		});
@@ -346,9 +345,59 @@ public class MainFrame {
 	}
 	
 	private void updateTrayPanel() {
+		int distance = (gridSize - 1) / 2;
+		int xDepart, yDepart;
+		if (leftCorner == null) {
+			Position center = mapManager.getStartPosition().get(mapManager.getStartPosition().size() / 2);
+			xDepart = center.getX() - distance;
+			yDepart = center.getY() - distance;
+			log.debug("Start coordinates : [{}, {}]", xDepart, yDepart);
+			leftCorner = new Position(xDepart, yDepart);
+		} else {
+			xDepart = leftCorner.getX();
+			yDepart = leftCorner.getY();
+		}
+		for (int i = 0; i < gridSize; i++) {
+			List<JCase> caseList = caseArrayList.get(i);
+			for (int j = 0; j < gridSize; j++) {
+				JCase cas = caseList.get(j);
+				if (xDepart + j >= 0 && yDepart + i >= 0
+						&& xDepart + j < mapManager.getMapSize()
+						&& yDepart + i < mapManager.getMapSize()) {
+					Case c = mapManager.getCase(yDepart + i, xDepart + j);
+
+					if (c.getIdPlayer() == 0) {
+						switch (c.getTerrain()) {
+						case HERBE:
+							cas.setBackground(Terrain.HERBE.getColor());
+							break;
+						case ROUTE:
+							cas.setBackground(Terrain.ROUTE.getColor());
+							break;
+						case START_LINE:
+							cas.setBackground(Terrain.START_LINE.getColor());
+							break;
+						case END_LINE:
+							cas.add(getEndLineLabel());
+							break;
+						}
+					} else {
+						cas.setBackground(playerManager.getColorById(c.getIdPlayer()));
+					}
+
+				} else {
+					cas.setBackground(Color.WHITE);
+				}
+				cas.repaint();
+			}
+		}
+		trayPanel.repaint();
+	}
+	
+	private void repaintTrayPanel() {
 		trayPanel.removeAll();
 		trayPanel.add(getTrayPanel());
-		trayPanel.validate();
+		trayPanel.repaint();
 	}
 
 	private int getSelectedCheckBox(JCheckBox[] checkboxArray) {

@@ -110,7 +110,7 @@ public class MapManager {
 				switch (direction) {
 				case GAUCHE:
 					log.debug("{} => {} entering", coteDepart.name(),direction.name());
-					if (mapSize - positionDepart2.getX() > ROAD_SIZE && positionDepart2.getY() > ROAD_SIZE) {
+					if (mapSize - positionDepart2.getX() > curveLength && positionDepart2.getY() > curveLength) {
 						log.debug("{} => {} entering", coteDepart.name(),direction.name());
 						if (!checkNewDirection(Orientation.NORD, Direction.GAUCHE, positionDepart.clone(), positionDepart2.clone())) {
 							break;
@@ -176,7 +176,7 @@ public class MapManager {
 				switch (direction) {
 				case GAUCHE:
 					log.debug(coteDepart.name() + " => " + direction.name() + " entering");
-					if (positionDepart.getX() >= ROAD_SIZE && mapSize - positionDepart.getY() >= ROAD_SIZE) {
+					if (positionDepart.getX() >= curveLength && mapSize - positionDepart.getY() >= curveLength) {
 						if (!checkNewDirection(Orientation.OUEST, Direction.GAUCHE, positionDepart.clone(), positionDepart2.clone())) {
 							break;
 						}
@@ -221,7 +221,7 @@ public class MapManager {
 
 				case DROITE:
 					log.debug("{} => {} entering", coteDepart.name(), direction.name());
-					if (mapSize - positionDepart2.getX() > curveLength && mapSize - positionDepart2.getY() > curveLength) {
+					if (positionDepart2.getX() > curveLength && positionDepart2.getY() > curveLength) {
 						if (!checkNewDirection(Orientation.OUEST, Direction.DROITE, positionDepart.clone(), positionDepart2.clone())) {
 							log.debug("Refused by checkNewDirection");
 							break;
@@ -464,7 +464,7 @@ public class MapManager {
 		case NORD:
 			switch (direction) {
 			case GAUCHE:
-				if (mapSize - positionDepart2.getX() > ROAD_SIZE && mapSize - positionDepart2.getY() > ROAD_SIZE) {
+				if (mapSize - positionDepart2.getX() > curveLength && mapSize - positionDepart2.getY() > curveLength) {
 					positionDepart.setX(positionDepart2.getX() + 1);
 					positionDepart2.setX(positionDepart2.getX() + 1);
 					positionDepart.setY(positionDepart2.getY() - 1);
@@ -506,7 +506,7 @@ public class MapManager {
 		case OUEST:
 			switch (direction) {
 			case GAUCHE:
-				if (mapSize - positionDepart.getX() > ROAD_SIZE + 1 && positionDepart.getY() > ROAD_SIZE + 1) {
+				if (positionDepart.getX() >= curveLength && mapSize - positionDepart.getY() >= curveLength) {
 					positionDepart.setY(positionDepart2.getY() - 1);
 					positionDepart2.setY(positionDepart2.getY() - 1);
 					positionDepart.setX(positionDepart.getX() - 1);
@@ -523,7 +523,7 @@ public class MapManager {
 				break;
 
 			case DROITE:
-				if (mapSize - positionDepart2.getX() > curveLength && mapSize - positionDepart2.getY() > curveLength) {
+				if (positionDepart2.getX() > curveLength && positionDepart2.getY() > curveLength) {
 					positionDepart.setY(positionDepart.getY() + 1);
 					positionDepart2.setY(positionDepart.getY());
 					positionDepart.setX(positionDepart.getX() - ROAD_SIZE);
@@ -531,8 +531,8 @@ public class MapManager {
 					log.debug("Start Position1 [x = {}, y = {}]", positionDepart.getX(), positionDepart.getY());
 					log.debug("Start Position2 [x = {}, y = {}]", positionDepart2.getX(), positionDepart2.getY());
 					for (int i = 0; i < curveLength; i++) {
-						positionDepart.setY(positionDepart.getY() + 1);
-						positionDepart2.setY(positionDepart2.getY() + 1);
+						positionDepart.setY(positionDepart.getY() - 1);
+						positionDepart2.setY(positionDepart2.getY() - 1);
 						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getTerrain() == Terrain.ROUTE) {
 							solutionAvailable = false;
 							break;

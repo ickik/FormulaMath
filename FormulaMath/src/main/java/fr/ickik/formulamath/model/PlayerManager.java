@@ -26,16 +26,20 @@ public class PlayerManager {
 
 	private final List<Player> playerList;
 	private int indexPlayerGame = 0;
-	private final MapManager mapManager;
+	private MapManager mapManager;
 	private boolean fireUpdateCaseListener;
 	private boolean isWinner = false;
 	private final List<UpdateCaseListener> updateCaseListenerList = new ArrayList<UpdateCaseListener>();
-	
+	public static final int NUMBER_OF_PLAYER_MAX = 4;
+	private static final PlayerManager singleton = new PlayerManager();
 	private static final Logger log = LoggerFactory.getLogger(PlayerManager.class);
 
-	public PlayerManager(int nbPlayer, MapManager mapManager) {
-		this.mapManager = mapManager;
-		playerList = new ArrayList<Player>(nbPlayer);
+	private PlayerManager() {
+		playerList = new ArrayList<Player>(NUMBER_OF_PLAYER_MAX);
+	}
+	
+	public static PlayerManager getInstance() {
+		return singleton;
 	}
 
 	public void addPlayer(Player player) {
@@ -287,5 +291,9 @@ public class PlayerManager {
 		for (UpdateCaseListener u : updateCaseListenerList) {
 			u.updateEndGamePanel(player);
 		}
+	}
+	
+	public void setMapManager(MapManager mapManager) {
+		this.mapManager = mapManager;
 	}
 }

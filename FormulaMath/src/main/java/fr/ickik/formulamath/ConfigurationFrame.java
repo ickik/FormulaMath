@@ -22,11 +22,10 @@ import fr.ickik.formulamath.model.PlayerManager;
 public class ConfigurationFrame {
 
 	private final JFrame configurationFrame;
-	private final List<List<JRadioButton>> radioButtonPlayerTypeList = new ArrayList<List<JRadioButton>>(NUMBER_OF_PLAYER_MAX);
-	private final List<JTextField> nameTextFieldList = new ArrayList<JTextField>(NUMBER_OF_PLAYER_MAX);
-	private final List<JLabel> labelList = new ArrayList<JLabel>(NUMBER_OF_PLAYER_MAX);
-	private static final int NUMBER_OF_PLAYER_MAX = 4;
-
+	private final List<List<JRadioButton>> radioButtonPlayerTypeList = new ArrayList<List<JRadioButton>>(PlayerManager.NUMBER_OF_PLAYER_MAX);
+	private final List<JTextField> nameTextFieldList = new ArrayList<JTextField>(PlayerManager.NUMBER_OF_PLAYER_MAX);
+	private final List<JLabel> labelList = new ArrayList<JLabel>(PlayerManager.NUMBER_OF_PLAYER_MAX);
+	
 	public ConfigurationFrame() {
 		configurationFrame = new JFrame(MainFrame.NAME + " " + MainFrame.VERSION);
 		createMainFrame();
@@ -58,7 +57,8 @@ public class ConfigurationFrame {
 					}
 				}
 				MapManager mapManager = new MapManager(100);
-				PlayerManager pm = new PlayerManager(max, mapManager);
+				PlayerManager pm = PlayerManager.getInstance();
+				pm.setMapManager(mapManager);
 				for (int i = 0; i < max; i++) {
 					PlayerType type = PlayerType.COMPUTER;
 					if (radioButtonPlayerTypeList.get(i).get(0).isSelected()) {
@@ -100,7 +100,7 @@ public class ConfigurationFrame {
 					labelList.get(i).setEnabled(true);
 					nameTextFieldList.get(i).setEnabled(true);
 				}
-				for (int i = comboBox.getSelectedIndex() + 1; i < NUMBER_OF_PLAYER_MAX; i++) {
+				for (int i = comboBox.getSelectedIndex() + 1; i < PlayerManager.NUMBER_OF_PLAYER_MAX; i++) {
 					radioButtonPlayerTypeList.get(i).get(0).setEnabled(false);
 					radioButtonPlayerTypeList.get(i).get(1).setEnabled(false);
 					labelList.get(i).setEnabled(false);
@@ -116,9 +116,9 @@ public class ConfigurationFrame {
 
 	private JPanel getConfigurationPanel() {
 		JPanel panel = new JPanel();
-		GridLayout gridLayout = new GridLayout(NUMBER_OF_PLAYER_MAX, 4);
+		GridLayout gridLayout = new GridLayout(PlayerManager.NUMBER_OF_PLAYER_MAX, 4);
 		panel.setLayout(gridLayout);
-		for (int i = 0; i < NUMBER_OF_PLAYER_MAX; i++) {
+		for (int i = 0; i < PlayerManager.NUMBER_OF_PLAYER_MAX; i++) {
 			JRadioButton human = new JRadioButton("Human");
 			JRadioButton computer = new JRadioButton("Computer");
 			ButtonGroup group = new ButtonGroup();

@@ -3,6 +3,7 @@ package fr.ickik.formulamath;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -119,34 +120,37 @@ public class MainFrame {
 						&& xDepart + j < mapManager.getMapSize()
 						&& yDepart + i < mapManager.getMapSize()) {
 					Case c = mapManager.getCase(yDepart + i, xDepart + j);
-					
-					if (c.getIdPlayer() == 0) {
-						switch (c.getTerrain()) {
-						case HERBE:
-							cas.setBackground(Terrain.HERBE.getColor());
-							break;
-						case ROUTE:
-							cas.setBackground(Terrain.ROUTE.getColor());
-							break;
-						case START_LINE:
-							cas.setBackground(Terrain.START_LINE.getColor());
-							break;
-						case END_LINE:
-							cas.add(getEndLineLabel());
-							break;
-						}
-					} else {
-						cas.setBackground(playerManager.getColorById(c.getIdPlayer()));
-					}
+					cas.setModel(c);
+//					if (c.getIdPlayer() == 0) {
+//						switch (c.getTerrain()) {
+//						case HERBE:
+//							cas.setBackground(Terrain.HERBE.getColor());
+//							break;
+//						case ROUTE:
+//							cas.setBackground(Terrain.ROUTE.getColor());
+//							break;
+//						case START_LINE:
+//							cas.setBackground(Terrain.START_LINE.getColor());
+//							break;
+//						case END_LINE:
+//							cas.add(getEndLineLabel());
+//							break;
+//						}
+//					} else {
+//						cas.setBackground(playerManager.getColorById(c.getIdPlayer()));
+//					}
 
 				} else {
-					cas.setBackground(Color.WHITE);
+					cas.setModel(null);
+//					cas.setBackground(Color.WHITE);
 				}
+				cas.repaint();
 				tray.add(cas);
 				caseList.add(cas);
 			}
 			caseArrayList.add(caseList);
 		}
+		//trayPanel.validate();
 		return tray;
 	}
 	
@@ -365,30 +369,31 @@ public class MainFrame {
 						&& xDepart + j < mapManager.getMapSize()
 						&& yDepart + i < mapManager.getMapSize()) {
 					Case c = mapManager.getCase(yDepart + i, xDepart + j);
-
-					if (c.getIdPlayer() == 0) {
-						switch (c.getTerrain()) {
-						case HERBE:
-							cas.setBackground(Terrain.HERBE.getColor());
-							break;
-						case ROUTE:
-							cas.setBackground(Terrain.ROUTE.getColor());
-							break;
-						case START_LINE:
-							cas.setBackground(Terrain.START_LINE.getColor());
-							break;
-						case END_LINE:
-							cas.add(getEndLineLabel());
-							break;
-						}
-					} else {
-						cas.setBackground(playerManager.getColorById(c.getIdPlayer()));
-					}
+					cas.setModel(c);
+//					if (c.getIdPlayer() == 0) {
+//						switch (c.getTerrain()) {
+//						case HERBE:
+//							cas.setBackground(Terrain.HERBE.getColor());
+//							break;
+//						case ROUTE:
+//							cas.setBackground(Terrain.ROUTE.getColor());
+//							break;
+//						case START_LINE:
+//							cas.setBackground(Terrain.START_LINE.getColor());
+//							break;
+//						case END_LINE:
+//							cas.add(getEndLineLabel());
+//							break;
+//						}
+//					} else {
+//						cas.setBackground(playerManager.getColorById(c.getIdPlayer()));
+//					}
 
 				} else {
-					cas.setBackground(Color.WHITE);
+					cas.setModel(null);
+					//cas.setBackground(Color.WHITE);
 				}
-				cas.repaint();
+				cas.validate();
 			}
 		}
 		trayPanel.repaint();
@@ -396,8 +401,9 @@ public class MainFrame {
 	
 	private void repaintTrayPanel() {
 		trayPanel.removeAll();
-		trayPanel.add(getTrayPanel());
 		trayPanel.repaint();
+		trayPanel.add(getTrayPanel());
+		mainFrame.validate();
 	}
 
 	private int getSelectedCheckBox(JCheckBox[] checkboxArray) {
@@ -407,6 +413,17 @@ public class MainFrame {
 			}
 		}
 		return -1;
+	}
+	
+	private boolean isIntersection(Shape shape) {
+		for (List<JCase> caseList : caseArrayList) {
+			for (JCase c : caseList) {
+				if (shape.intersects(c.getLocation().getX(), c.getLocation().getY(), c.getLocation().getX() + c.getWidth(), c.getLocation().getX() + c.getHeight())) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private void displayErrorMessage(String msg) {

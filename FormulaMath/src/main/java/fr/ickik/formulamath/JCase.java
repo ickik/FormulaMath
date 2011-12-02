@@ -19,10 +19,11 @@ public class JCase extends JPanel {
 	
 	public JCase(int size) {
 		setOpaque(true);
-		setSize(new Dimension(size, size));
-		setMinimumSize(new Dimension(size, size));
-		setMaximumSize(new Dimension(size, size));
-		setPreferredSize(new Dimension(size, size));
+		Dimension dimension = new Dimension(size, size);
+		setSize(dimension);
+		setMinimumSize(dimension);
+		setMaximumSize(dimension);
+		setPreferredSize(dimension);
 		double sizeDoubleValue = (new Integer(size+1)).doubleValue();
 		shape = new Rectangle2D.Double(0.0, 0.0, sizeDoubleValue, sizeDoubleValue);
 	}
@@ -32,24 +33,22 @@ public class JCase extends JPanel {
 		super.paint(g);
 		if (isOpaque()) {
 			Graphics2D g2 = (Graphics2D) g;
-			g2.setColor(Color.BLACK);
 			if (model != null) {
 				if (model.getIdPlayer() == 0) {
 					if (model.getTerrain() == Terrain.END_LINE) {
-						g2.setBackground(Color.PINK);
 						setBackground(Color.BLUE);
 					} else {
-						g2.setBackground(model.getTerrain().getColor());
 						setBackground(model.getTerrain().getColor());
 					}
 				} else {
-					g2.setBackground(PlayerManager.getInstance().getColorById(model.getIdPlayer()));
 					setBackground(PlayerManager.getInstance().getColorById(model.getIdPlayer()));
 				}
 			} else {
-				g2.setBackground(Color.WHITE);
 				setBackground(Color.WHITE);
 			}
+			g2.setColor(getBackground());
+			g2.fill(shape);
+			g2.setColor(Color.BLACK);
 			g2.draw(shape);
 		}
 	}

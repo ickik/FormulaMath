@@ -280,7 +280,7 @@ public class MainFrame {
 					leftCorner.setX(leftCorner.getX() + 1);
 					leftCorner.setY(leftCorner.getY() + 1);
 					gridSize-=2;
-					caseSize++;
+					caseSize += 1;
 					repaintTrayPanel();
 				}
 			}
@@ -293,7 +293,7 @@ public class MainFrame {
 					leftCorner.setX(leftCorner.getX() - 1);
 					leftCorner.setY(leftCorner.getY() - 1);
 					gridSize+=2;
-					caseSize--;
+					caseSize -= 1;
 					repaintTrayPanel();
 				}
 			}

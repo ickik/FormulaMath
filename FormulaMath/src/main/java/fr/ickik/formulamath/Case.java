@@ -28,9 +28,6 @@ public class Case {
 	}
 
 	public int getIdPlayer() {
-//		if (terrain == Terrain.HERBE) {
-//			return 0;
-//		}
 		return idPlayer;
 	}
 
@@ -47,7 +44,6 @@ public class Case {
 		if (isOccuped()) {
 			str = "Player ID : " + idPlayer + " - ";
 		}
-		str += getTerrain().toString();
-		return str;
+		return str.concat(getTerrain().toString());
 	}
 }

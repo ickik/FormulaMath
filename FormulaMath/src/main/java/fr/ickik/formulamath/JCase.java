@@ -43,21 +43,7 @@ public class JCase extends JComponent {
 			Graphics2D g2 = (Graphics2D) g;
 			if (model != null && model.getIdPlayer() == 0) {
 				if (model.getTerrain() == Terrain.END_LINE) {
-					double size = shape.getBounds2D().getWidth() / 4;
-					int cpt = 0;
-					for (int i = 0; i < 4; i++) {
-						for (int j = 0; j < 4; j++) {
-							Shape s = new Rectangle2D.Double(j * size, i * size, size, size);
-							if (cpt % 2 == 0) {
-								g2.setColor(Color.BLACK);
-							} else {
-								g2.setColor(Color.WHITE);
-							}
-							g2.fill(s);
-							cpt++;
-						}
-						cpt--;
-					}
+					drawEndLine(g2);
 					g2.setColor(Color.BLACK);
 					g2.draw(shape);
 					return ;
@@ -68,6 +54,24 @@ public class JCase extends JComponent {
 			g2.fill(shape);
 			g2.setColor(Color.BLACK);
 			g2.draw(shape);
+		}
+	}
+	
+	private void drawEndLine(Graphics2D g2) {
+		double size = shape.getBounds2D().getWidth() / 4;
+		int cpt = 0;
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				Shape s = new Rectangle2D.Double(j * size, i * size, size, size);
+				if (cpt % 2 == 0) {
+					g2.setColor(Color.BLACK);
+				} else {
+					g2.setColor(Color.WHITE);
+				}
+				g2.fill(s);
+				cpt++;
+			}
+			cpt--;
 		}
 	}
 	

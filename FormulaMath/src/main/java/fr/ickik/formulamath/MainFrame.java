@@ -1,7 +1,6 @@
 package fr.ickik.formulamath;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
@@ -152,21 +151,6 @@ public class MainFrame {
 		}
 		//trayPanel.validate();
 		return tray;
-	}
-	
-	private JPanel getEndLineLabel() {
-		JPanel panel = new JPanel(new GridLayout(4, 4));
-		for (int i = 0; i < 16; i++) {
-			JLabel lbl = new JLabel();
-			lbl.setOpaque(true);
-			if (i % 2 == 0) {
-				lbl.setBackground(Color.WHITE);
-			} else {
-				lbl.setBackground(Terrain.END_LINE.getColor());
-			}
-			panel.add(lbl);
-		}
-		return panel;
 	}
 
 	private JPanel getMenuPanel() {
@@ -418,8 +402,10 @@ public class MainFrame {
 	private boolean isIntersection(Shape shape) {
 		for (List<JCase> caseList : caseArrayList) {
 			for (JCase c : caseList) {
-				if (shape.intersects(c.getLocation().getX(), c.getLocation().getY(), c.getLocation().getX() + c.getWidth(), c.getLocation().getX() + c.getHeight())) {
-					return true;
+				if (c.getModel() != null && c.getModel().getTerrain() == Terrain.END_LINE) {
+					if (shape.intersects(c.getLocation().getX(), c.getLocation().getY(), c.getLocation().getX() + c.getWidth(), c.getLocation().getX() + c.getHeight())) {
+						return true;
+					}
 				}
 			}
 		}

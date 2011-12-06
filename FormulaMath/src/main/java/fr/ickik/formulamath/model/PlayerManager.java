@@ -60,32 +60,22 @@ public class PlayerManager {
 		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving()) != null
 				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving()).getTerrain() != Terrain.HERBE) {
 			list.add(player.getVector());
-		} else {
-			list.add(null);
 		}
 		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() - 1) != null
 				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() - 1).getTerrain() != Terrain.HERBE) {
 			list.add(new Vector(player.getVector().getXMoving() - 1, player.getVector().getYMoving()));
-		} else {
-			list.add(null);
 		}
 		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() + 1) != null
 				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() + 1).getTerrain() != Terrain.HERBE) {
 			list.add(new Vector(player.getVector().getXMoving() + 1, player.getVector().getYMoving()));
-		} else {
-			list.add(null);
 		}
 		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() + 1, player.getPosition().getX() + player.getVector().getXMoving()) != null
 				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() + 1, player.getPosition().getX() + player.getVector().getXMoving()).getTerrain() != Terrain.HERBE) {
 			list.add(new Vector(player.getVector().getXMoving(), player.getVector().getYMoving() - 1));
-		} else {
-			list.add(null);
 		}
 		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() - 1, player.getPosition().getX() + player.getVector().getXMoving()) != null
 				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() - 1, player.getPosition().getX() + player.getVector().getXMoving()).getTerrain() != Terrain.HERBE) {
 			list.add(new Vector(player.getVector().getXMoving(), player.getVector().getYMoving() + 1));
-		} else {
-			list.add(null);
 		}
 		log.debug("number of vectors : {}", list.size());
 		log.debug("getVectorsPossibilities exiting");

@@ -20,9 +20,6 @@ public class Case {
 	}
 
 	public boolean setIdPlayer(int idPlayer) {
-//		if (terrain == Terrain.HERBE) {
-//			return false;
-//		}
 		this.idPlayer = idPlayer;
 		return true;
 	}

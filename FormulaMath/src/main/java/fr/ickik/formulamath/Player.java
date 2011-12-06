@@ -16,7 +16,7 @@ public class Player {
 	private final Vector movingVector;
 	private final String name;
 	private final PlayerType type;
-	private int goCounter = 0;
+	private int playingCounter = 0;
 	private final Color[] colorList = new Color[] { Color.RED, Color.BLACK, Color.BLUE, Color.YELLOW };
 
 	/**
@@ -68,10 +68,10 @@ public class Player {
 	}
 	
 	public void incrementGoCounter() {
-		goCounter++;
+		playingCounter++;
 	}
 	
 	public int getGoCounter() {
-		return goCounter;
+		return playingCounter;
 	}
 }

@@ -39,7 +39,7 @@ public class MainFrame {
 	private final MapManager mapManager;
 	private final PlayerManager playerManager;
 	private static final Logger log = LoggerFactory.getLogger(MainFrame.class);
-	private List<List<JCase>> caseArrayList = new ArrayList<List<JCase>>(gridSize);
+	private List<List<JCase>> caseArrayList;
 	private JPanel trayPanel;
 	private static final int MIN_ZOOM_SIZE = 3;
 	private static final int MAX_ZOOM_SIZE = 50;
@@ -49,6 +49,8 @@ public class MainFrame {
 		mainFrame = new JFrame(NAME + " " + VERSION);
 		this.playerManager = playerManager;
 		this.mapManager = mapManager;
+		caseArrayList = new ArrayList<List<JCase>>(mapManager.getMapSize() + 20);
+		initMap();
 		createMainFrame();
 		try {
 			// mainFrame.setEnabled(false);
@@ -58,6 +60,28 @@ public class MainFrame {
 			e.printStackTrace();
 		}
 		// playerManager.AIPlay();
+	}
+	
+	private void initMap() {
+		int sideSize = mapManager.getMapSize() + 20;
+		int x = 0;
+		int y = 0;
+		for (int i = 0; i < sideSize; i++) {
+			x = 0;
+			List<JCase> caseList = new ArrayList<JCase>(sideSize);
+			for (int j = 0; j < sideSize; j++) {
+				JCase cas = new JCase(caseSize);
+				if (i >= 10 && i <= (sideSize - 10) && j >= 10 && j <= (sideSize - 10)) {
+					cas.setModel(mapManager.getCase(y, x));
+					x++;
+				}
+				caseList.add(cas);
+			}
+			caseArrayList.add(caseList);
+			if (i >= 10 && i <= (sideSize - 10)) {
+				y++;
+			}
+		}
 	}
 
 	private void createMainFrame() {
@@ -110,46 +134,17 @@ public class MainFrame {
 			xDepart = leftCorner.getX();
 			yDepart = leftCorner.getY();
 		}
-		caseArrayList.clear();
-		for (int i = 0; i < gridSize; i++) {
-			List<JCase> caseList = new ArrayList<JCase>(gridSize);
-			for (int j = 0; j < gridSize; j++) {
-				JCase cas = new JCase(caseSize);
-				if (xDepart + j >= 0 && yDepart + i >= 0
-						&& xDepart + j < mapManager.getMapSize()
-						&& yDepart + i < mapManager.getMapSize()) {
-					Case c = mapManager.getCase(yDepart + i, xDepart + j);
-					cas.setModel(c);
-//					if (c.getIdPlayer() == 0) {
-//						switch (c.getTerrain()) {
-//						case HERBE:
-//							cas.setBackground(Terrain.HERBE.getColor());
-//							break;
-//						case ROUTE:
-//							cas.setBackground(Terrain.ROUTE.getColor());
-//							break;
-//						case START_LINE:
-//							cas.setBackground(Terrain.START_LINE.getColor());
-//							break;
-//						case END_LINE:
-//							cas.add(getEndLineLabel());
-//							break;
-//						}
-//					} else {
-//						cas.setBackground(playerManager.getColorById(c.getIdPlayer()));
-//					}
-
-				} else {
-					cas.setModel(null);
-//					cas.setBackground(Color.WHITE);
-				}
-				cas.repaint();
-				tray.add(cas);
-				caseList.add(cas);
-			}
-			caseArrayList.add(caseList);
+		if (xDepart < 0) {
+			xDepart = 0;
 		}
-		//trayPanel.validate();
+		if (yDepart < 0) {
+			yDepart = 0;
+		}
+		for (int i = 0; i < gridSize; i++) {
+			for (int j = 0; j < gridSize; j++) {
+				tray.add(caseArrayList.get(yDepart + i).get(xDepart + j));
+			}
+		}
 		return tray;
 	}
 
@@ -183,16 +178,21 @@ public class MainFrame {
 			public void updatePlayerPossibilities(Player player) {
 				vectorList.clear();
 				vectorList.addAll(playerManager.getVectorsPossibilities(player));
-				
 				for (int i = 0; i < 5; i++) {
-					Vector v = vectorList.get(i);
-					if (v != null) {
-						solution[i].setText("( " + v.getXMoving() + ", " + v.getYMoving() + " )");
-					} else {
-						solution[i].setText("");
-					}
-					solution[i].setEnabled(v != null);
-					solution[i].setSelected(false);
+					//int xTrayPanel = player.getPosition().getX() - leftCorner.getX();
+					//int yTrayPanel = player.getPosition().getY() - leftCorner.getY();
+//					Vector v = vectorList.get(i);
+//					new Line2D.Double(player.getPosition().getX(), player.getPosition().getX(), 0,0);
+				}
+				for (int i = 0; i < 5; i++) {
+//					Vector v = vectorList.get(i);
+//					if (v != null) {
+//						solution[i].setText("( " + v.getXMoving() + ", " + v.getYMoving() + " )");
+//					} else {
+//						solution[i].setText("");
+//					}
+//					solution[i].setEnabled(v != null);
+//					solution[i].setSelected(false);
 				}
 				panel.revalidate();
 			}
@@ -345,42 +345,21 @@ public class MainFrame {
 			xDepart = leftCorner.getX();
 			yDepart = leftCorner.getY();
 		}
+		if (xDepart < 0) {
+			xDepart = 0;
+		}
+		if (yDepart < 0) {
+			yDepart = 0;
+		}
+		JPanel panel = (JPanel) trayPanel.getComponent(0);
+		panel.removeAll();
 		for (int i = 0; i < gridSize; i++) {
-			List<JCase> caseList = caseArrayList.get(i);
 			for (int j = 0; j < gridSize; j++) {
-				JCase cas = caseList.get(j);
-				if (xDepart + j >= 0 && yDepart + i >= 0
-						&& xDepart + j < mapManager.getMapSize()
-						&& yDepart + i < mapManager.getMapSize()) {
-					Case c = mapManager.getCase(yDepart + i, xDepart + j);
-					cas.setModel(c);
-//					if (c.getIdPlayer() == 0) {
-//						switch (c.getTerrain()) {
-//						case HERBE:
-//							cas.setBackground(Terrain.HERBE.getColor());
-//							break;
-//						case ROUTE:
-//							cas.setBackground(Terrain.ROUTE.getColor());
-//							break;
-//						case START_LINE:
-//							cas.setBackground(Terrain.START_LINE.getColor());
-//							break;
-//						case END_LINE:
-//							cas.add(getEndLineLabel());
-//							break;
-//						}
-//					} else {
-//						cas.setBackground(playerManager.getColorById(c.getIdPlayer()));
-//					}
-
-				} else {
-					cas.setModel(null);
-					//cas.setBackground(Color.WHITE);
-				}
-				cas.validate();
+				panel.add(caseArrayList.get(yDepart + i).get(xDepart + j));
 			}
 		}
-		trayPanel.repaint();
+		mainFrame.validate();
+		//mainFrame.repaint();
 	}
 	
 	private void repaintTrayPanel() {

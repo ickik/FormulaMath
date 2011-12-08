@@ -97,11 +97,7 @@ public class MainFrame {
 		playerManager.addUpdateCaseListener(new UpdateCaseListener() {
 
 			public void updatePlayerCase(Player player) {
-				int xTrayPanel = player.getPosition().getX() - leftCorner.getX();
-				int yTrayPanel = player.getPosition().getY() - leftCorner.getY();
-				if (xTrayPanel > 0 && xTrayPanel < gridSize && yTrayPanel > 0 && yTrayPanel < gridSize) {
-					updateTrayPanel();
-				}
+				mainFrame.repaint();
 			}
 
 			@Override
@@ -185,14 +181,14 @@ public class MainFrame {
 //					new Line2D.Double(player.getPosition().getX(), player.getPosition().getX(), 0,0);
 				}
 				for (int i = 0; i < 5; i++) {
-//					Vector v = vectorList.get(i);
-//					if (v != null) {
-//						solution[i].setText("( " + v.getXMoving() + ", " + v.getYMoving() + " )");
-//					} else {
-//						solution[i].setText("");
-//					}
-//					solution[i].setEnabled(v != null);
-//					solution[i].setSelected(false);
+					Vector v = vectorList.get(i);
+					if (v != null) {
+						solution[i].setText("( " + v.getXMoving() + ", " + v.getYMoving() + " )");
+					} else {
+						solution[i].setText("");
+					}
+					solution[i].setEnabled(v != null);
+					solution[i].setSelected(false);
 				}
 				panel.revalidate();
 			}
@@ -244,6 +240,7 @@ public class MainFrame {
 				if (playerManager.play(vector)) {
 					leftCorner.setX(leftCorner.getX() + vectorList.get(selectedPossibility).getXMoving());
 					leftCorner.setY(leftCorner.getY() - vectorList.get(selectedPossibility).getYMoving());
+					updateTrayPanel();
 				}
 			}
 		};
@@ -261,10 +258,14 @@ public class MainFrame {
 
 			public void actionPerformed(ActionEvent arg0) {
 				if (gridSize > MIN_ZOOM_SIZE) {
-					leftCorner.setX(leftCorner.getX() + 1);
-					leftCorner.setY(leftCorner.getY() + 1);
+					log.debug("Left corner position {} before zoom", leftCorner.toString());
 					gridSize-=2;
 					caseSize += 1;
+					if (leftCorner.getX() < caseArrayList.size() - (gridSize - 1) / 2) {
+						leftCorner.setX(leftCorner.getX() + 1);
+					}if (leftCorner.getY() < caseArrayList.size() - (gridSize - 1) / 2) {
+						leftCorner.setY(leftCorner.getY() + 1);
+					}
 					repaintTrayPanel();
 				}
 			}
@@ -274,10 +275,13 @@ public class MainFrame {
 
 			public void actionPerformed(ActionEvent e) {
 				if (gridSize < MAX_ZOOM_SIZE) {
-					leftCorner.setX(leftCorner.getX() - 1);
-					leftCorner.setY(leftCorner.getY() - 1);
 					gridSize+=2;
 					caseSize -= 1;
+					if (leftCorner.getX() > 0) {
+						leftCorner.setX(leftCorner.getX() - 1);
+					}if (leftCorner.getY() > 0) {
+						leftCorner.setY(leftCorner.getY() - 1);
+					}
 					repaintTrayPanel();
 				}
 			}
@@ -294,7 +298,11 @@ public class MainFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				leftCorner.setY(leftCorner.getY() - 1);
+				if (leftCorner.getY() > 0) {
+					leftCorner.setY(leftCorner.getY() - 1);
+				} else {
+					leftCorner.setY(0);
+				}
 				updateTrayPanel();
 			}
 		});
@@ -303,7 +311,11 @@ public class MainFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				leftCorner.setY(leftCorner.getY() + 1);
+				if (leftCorner.getY() < caseArrayList.size() - (gridSize - 1) / 2) {
+					leftCorner.setY(leftCorner.getY() + 1);
+				} else {
+					leftCorner.setY(caseArrayList.size() - (gridSize - 1) / 2);
+				}
 				updateTrayPanel();
 			}
 		});
@@ -312,7 +324,11 @@ public class MainFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				leftCorner.setX(leftCorner.getX() - 1);
+				if (leftCorner.getX() > 0) {
+					leftCorner.setX(leftCorner.getX() - 1);
+				} else {
+					leftCorner.setX(0);
+				}
 				updateTrayPanel();
 			}
 		});
@@ -321,7 +337,11 @@ public class MainFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				leftCorner.setX(leftCorner.getX() + 1);
+				if (leftCorner.getX() < caseArrayList.size() - (gridSize - 1) / 2) {
+					leftCorner.setX(leftCorner.getX() + 1);
+				} else {
+					leftCorner.setX(caseArrayList.size() - (gridSize - 1) / 2);
+				}
 				updateTrayPanel();
 			}
 		});
@@ -359,7 +379,6 @@ public class MainFrame {
 			}
 		}
 		mainFrame.validate();
-		//mainFrame.repaint();
 	}
 	
 	private void repaintTrayPanel() {

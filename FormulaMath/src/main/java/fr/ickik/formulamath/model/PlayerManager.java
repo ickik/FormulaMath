@@ -118,6 +118,35 @@ public class PlayerManager {
 		play(playerList.get(indexPlayerGame));
 	}
 	
+	private int getNextPlay(int distance, int vitesse) {
+		if (distance == 0) {
+			return vitesse;
+		}
+		int nbLess = getNbStep(distance, vitesse - 1, 0);
+		int nbEqual = getNbStep(distance, vitesse, 0);
+		int nbMore = getNbStep(distance, vitesse + 1, 0);
+		if (nbLess < nbEqual && nbLess < nbMore) {
+			return -1;
+		} else if (nbMore < nbEqual && nbMore < nbLess) {
+			return 1;
+		}
+		return 0;
+	}
+	
+	private int getNbStep(int distance, int vitesse, int step) {
+		if (distance == 0) {
+			return step;
+		}
+		if (distance < 0) {
+			return Integer.MAX_VALUE;
+		}
+		step++;
+		int nbLess = getNbStep(distance - vitesse, vitesse - 1, step);
+		int nbEqual = getNbStep(distance - vitesse, vitesse, step);
+		int nbMore = getNbStep(distance - vitesse, vitesse + 1, step);
+		return Math.min(nbMore, Math.min(nbLess, nbEqual));
+	}
+	
 	private void updateIndexPlayerGame() {
 		indexPlayerGame++;
 		indexPlayerGame = indexPlayerGame % playerList.size();
@@ -174,6 +203,14 @@ public class PlayerManager {
 		log.debug("initStartPosition entering");
 		List<Position> list = mapManager.getStartPosition();
 		log.debug("number of start position : {}", list.size());
+		for (int i = 0; i < list.size(); ) {
+			Position p = list.get(i);
+			if (mapManager.getCase(p.getY(), p.getX()).isOccuped()) {
+				list.remove(i);
+			} else {
+				i++;
+			}
+		}
 		BitSet set = new BitSet(list.size());
 		List<Player> playerList = getPlayerList();
 		log.debug("" + playerList.size());
@@ -198,6 +235,14 @@ public class PlayerManager {
 	public void initStartPosition(Player player) throws FormulaMathException {
 		log.debug("initStartPosition entering");
 		List<Position> list = mapManager.getStartPosition();
+		for (int i = 0; i < list.size(); ) {
+			Position p = list.get(i);
+			if (mapManager.getCase(p.getY(), p.getX()).isOccuped()) {
+				list.remove(i);
+			} else {
+				i++;
+			}
+		}
 		log.debug("number of start position : {}", list.size());
 		BitSet set = new BitSet(list.size());
 		List<Player> playerList = getPlayerList().subList(getPlayerList().indexOf(player) + 1, getPlayerList().size());

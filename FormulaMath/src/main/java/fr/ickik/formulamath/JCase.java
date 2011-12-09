@@ -21,7 +21,7 @@ import fr.ickik.formulamath.model.PlayerManager;
 @SuppressWarnings("serial")
 public class JCase extends JComponent {
 
-	private final Shape shape;
+	private Shape shape;
 	private Case model;
 	
 	
@@ -29,9 +29,6 @@ public class JCase extends JComponent {
 		setOpaque(true);
 		Dimension dimension = new Dimension(size, size);
 		setSize(dimension);
-		setMinimumSize(dimension);
-		setMaximumSize(dimension);
-		setPreferredSize(dimension);
 		double sizeDoubleValue = (new Integer(size+1)).doubleValue();
 		shape = new Rectangle2D.Double(0.0, 0.0, sizeDoubleValue, sizeDoubleValue);
 	}
@@ -98,5 +95,15 @@ public class JCase extends JComponent {
 
 	public Case getModel() {
 		return model;
+	}
+	
+	@Override
+	public void setSize(Dimension d) {
+		super.setSize(d);
+		setMinimumSize(d);
+		setMaximumSize(d);
+		setPreferredSize(d);
+		shape = new Rectangle2D.Double(0.0, 0.0, d.getWidth(), d.getHeight());
+		repaint();
 	}
 }

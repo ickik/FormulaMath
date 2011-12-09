@@ -1,10 +1,12 @@
 package fr.ickik.formulamath;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
 import org.slf4j.Logger;
@@ -34,14 +37,13 @@ public class MainFrame {
 	private final JFrame mainFrame;
 	public static final String NAME = "Formula Math";
 	public static final String VERSION = "1.0.0";
-	private int gridSize = 25;
 	private int caseSize = 15;
 	private final MapManager mapManager;
 	private final PlayerManager playerManager;
 	private static final Logger log = LoggerFactory.getLogger(MainFrame.class);
+	private JScrollPane scrollPane;
 	private List<List<JCase>> caseArrayList;
-	private JPanel trayPanel;
-	private static final int MIN_ZOOM_SIZE = 3;
+	private static final int MIN_ZOOM_SIZE = 10;
 	private static final int MAX_ZOOM_SIZE = 50;
 	private Position leftCorner;
 
@@ -87,13 +89,13 @@ public class MainFrame {
 	private void createMainFrame() {
 		mainFrame.add(getSplitPane(), BorderLayout.CENTER);
 		mainFrame.pack();
+		mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.setVisible(true);
 	}
 
 	private JSplitPane getSplitPane() {
-		trayPanel = new JPanel();
-		trayPanel.add(getTrayPanel());
+		JPanel trayPanel = getTrayPanel();
 		playerManager.addUpdateCaseListener(new UpdateCaseListener() {
 
 			public void updatePlayerCase(Player player) {
@@ -109,36 +111,19 @@ public class MainFrame {
 				
 			}
 		});
-		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, trayPanel, getMenuPanel());
+		scrollPane = new JScrollPane(trayPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, getMenuPanel());
 		split.setDividerLocation(0.8);
 		return split;
 	}
 
 	private JPanel getTrayPanel() {
-		GridLayout gridLayout = new GridLayout(gridSize, gridSize);
+		GridLayout gridLayout = new GridLayout(caseArrayList.size(), caseArrayList.size());
 		JPanel tray = new JPanel(gridLayout);
 		tray.setOpaque(true);
-		int distance = (gridSize - 1) / 2;
-		int xDepart, yDepart;
-		if (leftCorner == null) {
-			Position center = mapManager.getStartPosition().get(mapManager.getStartPosition().size() / 2);
-			xDepart = center.getX() - distance;
-			yDepart = center.getY() - distance;
-			log.debug("Start coordinates : [{}, {}]", xDepart, yDepart);
-			leftCorner = new Position(xDepart, yDepart);
-		} else {
-			xDepart = leftCorner.getX();
-			yDepart = leftCorner.getY();
-		}
-		if (xDepart < 0) {
-			xDepart = 0;
-		}
-		if (yDepart < 0) {
-			yDepart = 0;
-		}
-		for (int i = 0; i < gridSize; i++) {
-			for (int j = 0; j < gridSize; j++) {
-				tray.add(caseArrayList.get(yDepart + i).get(xDepart + j));
+		for (List<JCase> list : caseArrayList) {
+			for (JCase c : list) {
+				tray.add(c);
 			}
 		}
 		return tray;
@@ -174,13 +159,26 @@ public class MainFrame {
 			public void updatePlayerPossibilities(Player player) {
 				vectorList.clear();
 				vectorList.addAll(playerManager.getVectorsPossibilities(player));
-				for (int i = 0; i < 5; i++) {
-					//int xTrayPanel = player.getPosition().getX() - leftCorner.getX();
-					//int yTrayPanel = player.getPosition().getY() - leftCorner.getY();
-//					Vector v = vectorList.get(i);
-//					new Line2D.Double(player.getPosition().getX(), player.getPosition().getX(), 0,0);
+				int distance = (caseArrayList.size() - mapManager.getMapSize()) / 2;
+				int xTrayPanel = player.getPosition().getX() + distance;
+				int yTrayPanel = player.getPosition().getY() + distance;
+				for (int i = 0; i < vectorList.size();) {
+					Vector v = vectorList.get(i);
+					JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
+					JCase c2 = caseArrayList.get(yTrayPanel + v.getYMoving()).get(xTrayPanel + v.getXMoving());
+					
+					Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
+					if (isGrassIntersection(line)) {
+						vectorList.remove(i);
+					} else {
+						i++;
+					}
 				}
-				for (int i = 0; i < 5; i++) {
+				if (vectorList.isEmpty()) {
+					displayErrorMessage("No possibility to play!!!");
+					//System.exit(0);
+				}
+				for (int i = 0; i < vectorList.size(); i++) {
 					Vector v = vectorList.get(i);
 					if (v != null) {
 						solution[i].setText("( " + v.getXMoving() + ", " + v.getYMoving() + " )");
@@ -188,6 +186,11 @@ public class MainFrame {
 						solution[i].setText("");
 					}
 					solution[i].setEnabled(v != null);
+					solution[i].setSelected(false);
+				}
+				for (int i = vectorList.size(); i < 5; i++) {
+					solution[i].setText("");
+					solution[i].setEnabled(false);
 					solution[i].setSelected(false);
 				}
 				panel.revalidate();
@@ -257,15 +260,8 @@ public class MainFrame {
 		zoom.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
-				if (gridSize > MIN_ZOOM_SIZE) {
-					log.debug("Left corner position {} before zoom", leftCorner.toString());
-					gridSize-=2;
-					caseSize += 1;
-					if (leftCorner.getX() < caseArrayList.size() - (gridSize - 1) / 2) {
-						leftCorner.setX(leftCorner.getX() + 1);
-					}if (leftCorner.getY() < caseArrayList.size() - (gridSize - 1) / 2) {
-						leftCorner.setY(leftCorner.getY() + 1);
-					}
+				if (caseSize > MIN_ZOOM_SIZE) {
+					caseSize++;
 					repaintTrayPanel();
 				}
 			}
@@ -274,14 +270,8 @@ public class MainFrame {
 		dezoom.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				if (gridSize < MAX_ZOOM_SIZE) {
-					gridSize+=2;
-					caseSize -= 1;
-					if (leftCorner.getX() > 0) {
-						leftCorner.setX(leftCorner.getX() - 1);
-					}if (leftCorner.getY() > 0) {
-						leftCorner.setY(leftCorner.getY() - 1);
-					}
+				if (caseSize < MAX_ZOOM_SIZE) {
+					caseSize--;
 					repaintTrayPanel();
 				}
 			}
@@ -303,6 +293,7 @@ public class MainFrame {
 				} else {
 					leftCorner.setY(0);
 				}
+				
 				updateTrayPanel();
 			}
 		});
@@ -311,11 +302,7 @@ public class MainFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (leftCorner.getY() < caseArrayList.size() - (gridSize - 1) / 2) {
-					leftCorner.setY(leftCorner.getY() + 1);
-				} else {
-					leftCorner.setY(caseArrayList.size() - (gridSize - 1) / 2);
-				}
+				
 				updateTrayPanel();
 			}
 		});
@@ -337,11 +324,7 @@ public class MainFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (leftCorner.getX() < caseArrayList.size() - (gridSize - 1) / 2) {
-					leftCorner.setX(leftCorner.getX() + 1);
-				} else {
-					leftCorner.setX(caseArrayList.size() - (gridSize - 1) / 2);
-				}
+				
 				updateTrayPanel();
 			}
 		});
@@ -353,38 +336,26 @@ public class MainFrame {
 	}
 	
 	private void updateTrayPanel() {
-		int distance = (gridSize - 1) / 2;
-		int xDepart, yDepart;
-		if (leftCorner == null) {
-			Position center = mapManager.getStartPosition().get(mapManager.getStartPosition().size() / 2);
-			xDepart = center.getX() - distance;
-			yDepart = center.getY() - distance;
-			log.debug("Start coordinates : [{}, {}]", xDepart, yDepart);
-			leftCorner = new Position(xDepart, yDepart);
-		} else {
-			xDepart = leftCorner.getX();
-			yDepart = leftCorner.getY();
-		}
-		if (xDepart < 0) {
-			xDepart = 0;
-		}
-		if (yDepart < 0) {
-			yDepart = 0;
-		}
-		JPanel panel = (JPanel) trayPanel.getComponent(0);
-		panel.removeAll();
-		for (int i = 0; i < gridSize; i++) {
-			for (int j = 0; j < gridSize; j++) {
-				panel.add(caseArrayList.get(yDepart + i).get(xDepart + j));
+	}
+	
+	private ActionListener getPlayerFocusListener() {
+		return new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				scrollPane.getHorizontalScrollBar().setValue(0);
+				scrollPane.getVerticalScrollBar().setValue(0);
 			}
-		}
-		mainFrame.validate();
+		};
 	}
 	
 	private void repaintTrayPanel() {
-		trayPanel.removeAll();
-		trayPanel.repaint();
-		trayPanel.add(getTrayPanel());
+		Dimension d = new Dimension(caseSize, caseSize);
+		for (List<JCase> list : caseArrayList) {
+			for (JCase c : list) {
+				c.setSize(d);
+			}
+		}
 		mainFrame.validate();
 	}
 
@@ -397,11 +368,19 @@ public class MainFrame {
 		return -1;
 	}
 	
-	private boolean isIntersection(Shape shape) {
+	private boolean isGrassIntersection(Shape shape) {
+		return checkIntersection(shape, Terrain.HERBE);
+	}
+	
+	private boolean isEndLineIntersection(Shape shape) {
+		return checkIntersection(shape, Terrain.END_LINE);
+	}
+	
+	private boolean checkIntersection(Shape shape, Terrain terrain) {
 		for (List<JCase> caseList : caseArrayList) {
 			for (JCase c : caseList) {
-				if (c.getModel() != null && c.getModel().getTerrain() == Terrain.END_LINE) {
-					if (shape.intersects(c.getLocation().getX(), c.getLocation().getY(), c.getLocation().getX() + c.getWidth(), c.getLocation().getX() + c.getHeight())) {
+				if (c.getModel() != null && c.getModel().getTerrain() == terrain) {
+					if (shape.intersects(c.getX(), c.getY(), c.getWidth(), c.getHeight())) {
 						return true;
 					}
 				}

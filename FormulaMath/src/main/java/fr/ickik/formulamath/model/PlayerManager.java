@@ -87,11 +87,6 @@ public class PlayerManager {
 		if (isWinner) {
 			return false;
 		}
-		if (checkWinner(p, vector)) {
-			fireEndGameListener(p);
-			isWinner = true;
-			return false;
-		}
 		if (mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()) == null
 				|| mapManager.getCase(p.getPosition().getY() - vector.getYMoving(), p.getPosition().getX() + vector.getXMoving()) == null) {
 			return false;
@@ -150,49 +145,6 @@ public class PlayerManager {
 	private void updateIndexPlayerGame() {
 		indexPlayerGame++;
 		indexPlayerGame = indexPlayerGame % playerList.size();
-	}
-	
-	private boolean checkWinner(Player p, Vector v) {
-		List<Position> list = mapManager.getEndLinePosition();
-		Position pos = p.getPosition();
-		Position pos2 = new Position(pos.getX() + v.getXMoving(), pos.getY() - v.getYMoving());
-		double a = 0;
-		double b = 0;
-		if (pos.getX() == pos2.getX()) {
-			a = pos.getX();
-		} else if (pos.getY() == pos2.getY()) {
-			b = pos.getY();
-		} else {
-			a = (pos2.getX() - pos.getX()) / (pos2.getY() - pos.getY());
-			b = pos.getY() - (a * pos.getX());
-		}
-		Position posEnd = list.get(0);
-		Position posEnd2 = list.get(1);
-		if (posEnd.getX() == posEnd2.getX()) {
-			double tmp = a * posEnd.getX() + b;
-			if ((tmp < posEnd.getY() && tmp > posEnd2.getY()) || (tmp > posEnd.getY() && tmp < posEnd2.getY())) {
-				return true;	
-			}
-		} else {
-			if (b == 0) {
-				if (a > posEnd.getX() && a < posEnd2.getX()) {
-					if (posEnd.getY() < pos.getY() && posEnd2.getY() > pos2.getY()) {
-						return true;
-					}
-				} else if (a < posEnd.getX() && a > posEnd2.getX()) {
-					if (posEnd.getY() < pos.getY() && posEnd2.getY() > pos2.getY()) {
-						return true;
-					}
-				}
-			} else {
-				double tmp = a * posEnd.getX() + b;
-				double tmp2 = a * posEnd2.getX() + b;
-				if ((tmp > posEnd.getY() && tmp2 < posEnd2.getY()) || (tmp < posEnd.getY() && tmp2 > posEnd2.getY())) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 	
 	private void play(Player human) {
@@ -283,6 +235,10 @@ public class PlayerManager {
 		p.getPosition().setY(list.get(index).getY());
 		mapManager.getCase(list.get(index).getY(), list.get(index).getX()).setIdPlayer(p.getId());
 		fireUpdateCaseListener(p);
+	}
+	
+	public Player getCurrentPlayer() {
+		return playerList.get(indexPlayerGame);
 	}
 
 	/**

@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Shape;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Line2D;
@@ -45,8 +46,7 @@ public class MainFrame {
 	private List<List<JCase>> caseArrayList;
 	private static final int MIN_ZOOM_SIZE = 10;
 	private static final int MAX_ZOOM_SIZE = 50;
-	private Position leftCorner;
-
+	
 	public MainFrame(PlayerManager playerManager, MapManager mapManager) {
 		mainFrame = new JFrame(NAME + " " + VERSION);
 		this.playerManager = playerManager;
@@ -87,9 +87,8 @@ public class MainFrame {
 	}
 
 	private void createMainFrame() {
-		mainFrame.add(getSplitPane(), BorderLayout.CENTER);
-		mainFrame.pack();
 		mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		mainFrame.add(getSplitPane(), BorderLayout.CENTER);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.setVisible(true);
 	}
@@ -113,7 +112,7 @@ public class MainFrame {
 		});
 		scrollPane = new JScrollPane(trayPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, getMenuPanel());
-		split.setDividerLocation(0.8);
+		split.setDividerLocation(new Double(Toolkit.getDefaultToolkit().getScreenSize().getWidth() * 0.9).intValue());
 		return split;
 	}
 
@@ -165,7 +164,7 @@ public class MainFrame {
 				for (int i = 0; i < vectorList.size();) {
 					Vector v = vectorList.get(i);
 					JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
-					JCase c2 = caseArrayList.get(yTrayPanel + v.getYMoving()).get(xTrayPanel + v.getXMoving());
+					JCase c2 = caseArrayList.get(yTrayPanel - v.getYMoving()).get(xTrayPanel + v.getXMoving());
 					
 					Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
 					if (isGrassIntersection(line)) {
@@ -240,10 +239,18 @@ public class MainFrame {
 					return;
 				}
 				Vector vector = vectorList.get(selectedPossibility);
+				Player player = playerManager.getCurrentPlayer();
+				int distance = (caseArrayList.size() - mapManager.getMapSize()) / 2;
+				JCase c = caseArrayList.get(player.getPosition().getY() + distance).get(player.getPosition().getX() + distance);
+				JCase c2 = caseArrayList.get(player.getPosition().getY() - vector.getYMoving() + distance).get(player.getPosition().getX() + vector.getXMoving() + distance);
+				
+				Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
+				
+				if (isEndLineIntersection(line)) {
+					displayErrorMessage("end");
+				}
+				
 				if (playerManager.play(vector)) {
-					leftCorner.setX(leftCorner.getX() + vectorList.get(selectedPossibility).getXMoving());
-					leftCorner.setY(leftCorner.getY() - vectorList.get(selectedPossibility).getYMoving());
-					updateTrayPanel();
 				}
 			}
 		};
@@ -284,58 +291,18 @@ public class MainFrame {
 	private JPanel getDirectionalPanel() {
 		JPanel panel = new JPanel(new BorderLayout());
 		JButton up = new JButton("up");
-		up.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (leftCorner.getY() > 0) {
-					leftCorner.setY(leftCorner.getY() - 1);
-				} else {
-					leftCorner.setY(0);
-				}
-				
-				updateTrayPanel();
-			}
-		});
+		
 		JButton down = new JButton("d");
-		down.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				updateTrayPanel();
-			}
-		});
+		
 		JButton left = new JButton("l");
-		left.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (leftCorner.getX() > 0) {
-					leftCorner.setX(leftCorner.getX() - 1);
-				} else {
-					leftCorner.setX(0);
-				}
-				updateTrayPanel();
-			}
-		});
+		
 		JButton right = new JButton("r");
-		right.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				updateTrayPanel();
-			}
-		});
+		
 		panel.add(up, BorderLayout.NORTH);
 		panel.add(left, BorderLayout.WEST);
 		panel.add(right, BorderLayout.EAST);
 		panel.add(down, BorderLayout.SOUTH);
 		return panel;
-	}
-	
-	private void updateTrayPanel() {
 	}
 	
 	private ActionListener getPlayerFocusListener() {

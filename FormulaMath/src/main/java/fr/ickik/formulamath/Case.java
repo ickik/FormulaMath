@@ -1,6 +1,11 @@
 package fr.ickik.formulamath;
 
-
+/**
+ * Model of the JCase component. It stores the type of the field and
+ * the id of the player if one is this case.
+ * @author Ickik.
+ * @version 0.1.000, 3 dec 2011.
+ */
 public class Case {
 
 	private Terrain terrain;

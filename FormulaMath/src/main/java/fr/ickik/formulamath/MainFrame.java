@@ -291,17 +291,47 @@ public class MainFrame {
 	private JPanel getDirectionalPanel() {
 		JPanel panel = new JPanel(new BorderLayout());
 		JButton up = new JButton("up");
-		
+		up.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				scrollPane.getVerticalScrollBar().getModel().setValue(scrollPane.getVerticalScrollBar().getModel().getValue() + 40);
+			}
+		});
 		JButton down = new JButton("d");
-		
+		down.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				scrollPane.getVerticalScrollBar().getModel().setValue(scrollPane.getVerticalScrollBar().getModel().getValue() - 40);
+			}
+		});
 		JButton left = new JButton("l");
-		
+		left.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				scrollPane.getHorizontalScrollBar().getModel().setValue(scrollPane.getHorizontalScrollBar().getModel().getValue() - 40);
+			}
+		});
 		JButton right = new JButton("r");
+		right.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				scrollPane.getHorizontalScrollBar().getModel().setValue(scrollPane.getHorizontalScrollBar().getModel().getValue() + 40);
+			}
+		});
 		
+//		JButton centered = new JButton("center");
+//		centered.addActionListener(new ActionListener() {
+//			
+//			@Override
+//			public void actionPerformed(ActionEvent arg0) {
+//				playerManager.getCurrentPlayer();
+//			}
+//		});
 		panel.add(up, BorderLayout.NORTH);
 		panel.add(left, BorderLayout.WEST);
 		panel.add(right, BorderLayout.EAST);
 		panel.add(down, BorderLayout.SOUTH);
+//		panel.add(centered, BorderLayout.CENTER);
 		return panel;
 	}
 	

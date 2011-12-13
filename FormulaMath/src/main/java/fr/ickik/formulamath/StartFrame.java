@@ -34,8 +34,7 @@ public class StartFrame {
 			final List<Position> listPosition, final BitSet bitSet,
 			final Player p, final MapManager mapManager) {
 		mapManager.display();
-		final JFrame frame = new JFrame(MainFrame.NAME + " "
-				+ MainFrame.VERSION);
+		final JFrame frame = new JFrame(MainFrame.NAME + " " + MainFrame.VERSION);
 		int nbPossibilities = listPosition.size() - bitSet.cardinality();
 		log.debug("number of possibilities : {}", nbPossibilities);
 
@@ -78,7 +77,7 @@ public class StartFrame {
 				frame.dispose();
 				try {
 					playerManager.updatePlayer(p, listPositionIndex.get(selected));
-					playerManager.initStartPosition(p);
+					//playerManager.initStartPosition(p);
 				} catch (FormulaMathException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

@@ -24,7 +24,7 @@ public class MapManager {
 
 	private final List<List<Case>> carte;
 	private final int mapSize;
-	private final int ROAD_SIZE = 4;
+	public final static int ROAD_SIZE = 4;
 	private final List<Position> startPositionList = new ArrayList<Position>(2);
 	private final List<Position> endLinePositionList = new ArrayList<Position>(2);
 	public static final int EMPTY_PLAYER = 0;

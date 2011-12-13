@@ -16,8 +16,11 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
@@ -54,13 +57,13 @@ public class MainFrame {
 		caseArrayList = new ArrayList<List<JCase>>(mapManager.getMapSize() + 20);
 		initMap();
 		createMainFrame();
-		try {
-			// mainFrame.setEnabled(false);
-			this.playerManager.initStartPosition();
-		} catch (FormulaMathException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			// mainFrame.setEnabled(false);
+//			this.playerManager.initStartPosition();
+//		} catch (FormulaMathException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		// playerManager.AIPlay();
 	}
 	
@@ -131,17 +134,83 @@ public class MainFrame {
 	private JPanel getMenuPanel() {
 		final JPanel panel = new JPanel(new GridLayout(4, 1));
 		JButton play = new JButton("Play");
-		panel.add(getChoicePanel(play));
+		//panel.add(getChoicePanel(play));
+		panel.add(getStartPanel(play));
 		panel.add(play);
 		panel.add(getDirectionalPanel());
 		panel.add(getZoomPanel());
 		return panel;
 	}
 	
-	private JPanel getChoicePanel(final JButton play) {
-		final JPanel panel = new JPanel(new GridLayout(5, 1));
+	private JPanel getStartPanel(final JButton play) {
+		final JPanel panel = new JPanel(new GridLayout(4, 1));
+		final JRadioButton[] solution = new JRadioButton[4];
+		final List<Position> positionList = new ArrayList<Position>();
+		positionList.addAll(mapManager.getStartPosition());
+		ButtonGroup group = new ButtonGroup();
+		for (int i = 0; i < 4; i++) {
+			JRadioButton box = new JRadioButton("");
+			box.setEnabled(false);
+			box.setSelected(false);
+			group.add(box);
+			solution[i] = box;
+			panel.add(box);
+		}
+		for (int i = 0; i < positionList.size(); ) {
+			Position p = positionList.get(i);
+			if (mapManager.getCase(p.getY(), p.getX()).isOccuped()) {
+				positionList.remove(i);
+			} else {
+				solution[i].setText(p.toString());
+				solution[i].setEnabled(true);
+				i++;
+			}
+		}
+		play.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int selected = getSelectedCheckBox(solution);
+				if (selected == -1) {
+					return;
+				}
+				try {
+					playerManager.updatePlayer(playerManager.getCurrentPlayer(), selected);
+					if (playerManager.initStartPosition()) {
+						displayMessage(playerManager.getCurrentPlayer().toString());
+						for (int i = 0; i < positionList.size(); ) {
+							Position p = positionList.get(i);
+							if (mapManager.getCase(p.getY(), p.getX()).isOccuped()) {
+								positionList.remove(i);
+							} else {
+								solution[i].setText(p.toString());
+								solution[i].setEnabled(true);
+								i++;
+							}
+						}
+						for (int i = positionList.size(); i < 4; i++) {
+							solution[i].setText("");
+							solution[i].setEnabled(false);
+						}
+					} else {
+						removeButtonListener(play);
+						panel.removeAll();
+						getChoicePanel(play, panel);
+					}
+				} catch (FormulaMathException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+			}
+		});
+		return panel;
+	}
+	
+	private JPanel getChoicePanel(final JButton play, final JPanel panel) {
+		panel.setLayout(new GridLayout(5, 1));
 		final JCheckBox[] solution = new JCheckBox[5];
 		final List<Vector> vectorList = new ArrayList<Vector>(5);
+		vectorList.addAll(playerManager.getVectorsPossibilities(playerManager.getCurrentPlayer()));
 		ButtonGroup group = new ButtonGroup();
 		for (int i = 0; i < 5; i++) {
 			JCheckBox box = new JCheckBox("");
@@ -150,6 +219,11 @@ public class MainFrame {
 			group.add(box);
 			solution[i] = box;
 			panel.add(box);
+		}
+		
+		for (int i = 0; i < vectorList.size(); i++) {
+			solution[i].setEnabled(true);
+			solution[i].setText("( " + vectorList.get(i).getXMoving() + ", " + vectorList.get(i).getYMoving() + " )");
 		}
 		
 		playerManager.addUpdateCaseListener(new UpdateCaseListener() {
@@ -193,6 +267,9 @@ public class MainFrame {
 					solution[i].setSelected(false);
 				}
 				panel.revalidate();
+				if (playerManager.getPlayerList().size() > 1) {
+					displayMessage(playerManager.getCurrentPlayer().getName());
+				}
 			}
 			
 			@Override
@@ -290,28 +367,28 @@ public class MainFrame {
 
 	private JPanel getDirectionalPanel() {
 		JPanel panel = new JPanel(new BorderLayout());
-		JButton up = new JButton("up");
+		JButton up = new JButton("↑");
 		up.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				scrollPane.getVerticalScrollBar().getModel().setValue(scrollPane.getVerticalScrollBar().getModel().getValue() + 40);
-			}
-		});
-		JButton down = new JButton("d");
-		down.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				scrollPane.getVerticalScrollBar().getModel().setValue(scrollPane.getVerticalScrollBar().getModel().getValue() - 40);
 			}
 		});
-		JButton left = new JButton("l");
+		JButton down = new JButton("↓");
+		down.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				scrollPane.getVerticalScrollBar().getModel().setValue(scrollPane.getVerticalScrollBar().getModel().getValue() + 40);
+			}
+		});
+		JButton left = new JButton("←");
 		left.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				scrollPane.getHorizontalScrollBar().getModel().setValue(scrollPane.getHorizontalScrollBar().getModel().getValue() - 40);
 			}
 		});
-		JButton right = new JButton("r");
+		JButton right = new JButton("→");
 		right.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -319,29 +396,26 @@ public class MainFrame {
 			}
 		});
 		
-//		JButton centered = new JButton("center");
-//		centered.addActionListener(new ActionListener() {
-//			
-//			@Override
-//			public void actionPerformed(ActionEvent arg0) {
-//				playerManager.getCurrentPlayer();
-//			}
-//		});
+		JButton centered = new JButton("center");
+		centered.addActionListener(getPlayerFocusListener());
 		panel.add(up, BorderLayout.NORTH);
 		panel.add(left, BorderLayout.WEST);
 		panel.add(right, BorderLayout.EAST);
 		panel.add(down, BorderLayout.SOUTH);
-//		panel.add(centered, BorderLayout.CENTER);
+		panel.add(centered, BorderLayout.CENTER);
 		return panel;
 	}
 	
 	private ActionListener getPlayerFocusListener() {
 		return new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				scrollPane.getHorizontalScrollBar().setValue(0);
-				scrollPane.getVerticalScrollBar().setValue(0);
+				Position pos = playerManager.getCurrentPlayer().getPosition();
+				double d = mapManager.getMapSize() / 100;
+				double x = d * (pos.getX() - 20);
+				double y = d * (pos.getY() - 20);
+				scrollPane.getHorizontalScrollBar().getModel().setValue(new Double(x * scrollPane.getHorizontalScrollBar().getModel().getMaximum() / 100).intValue());
+				scrollPane.getVerticalScrollBar().getModel().setValue(new Double(y * scrollPane.getVerticalScrollBar().getModel().getMaximum() / 100).intValue());
 			}
 		};
 	}
@@ -359,6 +433,15 @@ public class MainFrame {
 	private int getSelectedCheckBox(JCheckBox[] checkboxArray) {
 		for (int i = 0; i < 5; i++) {
 			if (checkboxArray[i].isSelected()) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	private int getSelectedCheckBox(JRadioButton[] radioButtonArray) {
+		for (int i = 0; i < 4; i++) {
+			if (radioButtonArray[i].isSelected()) {
 				return i;
 			}
 		}
@@ -385,8 +468,24 @@ public class MainFrame {
 		}
 		return false;
 	}
+	
+	private JMenuBar getMenuBar() {
+		JMenuBar menuBar = new JMenuBar();
+		JMenu file = new JMenu();
+		
+		return menuBar;
+	}
+	
+	private JMenu getHelp() {
+		JMenu help = new JMenu("");
+		return help;
+	}
 
 	private void displayErrorMessage(String msg) {
 		JOptionPane.showMessageDialog(mainFrame, msg, NAME + " " + VERSION + " - ERROR!", JOptionPane.ERROR_MESSAGE);
+	}
+	
+	private void displayMessage(String msg) {
+		JOptionPane.showMessageDialog(mainFrame, msg, NAME + " " + VERSION, JOptionPane.INFORMATION_MESSAGE);
 	}
 }

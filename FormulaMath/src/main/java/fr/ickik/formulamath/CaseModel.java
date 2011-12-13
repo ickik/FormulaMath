@@ -6,22 +6,27 @@ package fr.ickik.formulamath;
  * @author Ickik.
  * @version 0.1.000, 3 dec 2011.
  */
-public class Case {
+public class CaseModel {
 
-	private Terrain terrain;
+	private Field field;
 	private int idPlayer;
 
-	public Case(Terrain terrain) {
-		this.terrain = terrain;
+	/**
+	 * Constructor of the model. It initializes the model with the field
+	 * and the id of the empty player (0).
+	 * @param field the type of field of the model (this case).
+	 */
+	public CaseModel(Field field) {
+		this.field = field;
 		idPlayer = 0;
 	}
 
-	public void setTerrain(Terrain terrain) {
-		this.terrain = terrain;
+	public void setField(Field field) {
+		this.field = field;
 	}
 
-	public Terrain getTerrain() {
-		return terrain;
+	public Field getField() {
+		return field;
 	}
 
 	public boolean setIdPlayer(int idPlayer) {
@@ -34,18 +39,15 @@ public class Case {
 	}
 
 	public boolean isOccuped() {
-		if (idPlayer == 0) {
-			return false;
-		}
-		return true;
+		return idPlayer == 0;
 	}
 	
 	@Override
 	public String toString() {
 		String str = new String();
 		if (isOccuped()) {
-			str = "Player ID : " + idPlayer + " - ";
+			str = "Player ID : " + Integer.toString(idPlayer) + " - ";
 		}
-		return str.concat(getTerrain().toString());
+		return str.concat(getField().toString());
 	}
 }

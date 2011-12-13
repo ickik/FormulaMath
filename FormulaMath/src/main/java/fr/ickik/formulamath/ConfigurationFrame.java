@@ -64,8 +64,7 @@ public class ConfigurationFrame {
 					if (radioButtonPlayerTypeList.get(i).get(0).isSelected()) {
 						type = PlayerType.HUMAN;
 					}
-					pm.addPlayer(new Player(type, nameTextFieldList.get(i)
-							.getText()));
+					pm.addPlayer(new Player(type, nameTextFieldList.get(i).getText()));
 				}
 				new MainFrame(pm, mapManager);
 			}

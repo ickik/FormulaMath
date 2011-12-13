@@ -2,7 +2,7 @@ package fr.ickik.formulamath;
 
 import java.awt.Color;
 
-public enum Terrain {
+public enum Field {
 
 	ROUTE {
 		@Override

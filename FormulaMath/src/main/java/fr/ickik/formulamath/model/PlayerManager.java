@@ -12,7 +12,7 @@ import fr.ickik.formulamath.FormulaMathException;
 import fr.ickik.formulamath.Player;
 import fr.ickik.formulamath.PlayerType;
 import fr.ickik.formulamath.Position;
-import fr.ickik.formulamath.Terrain;
+import fr.ickik.formulamath.Field;
 import fr.ickik.formulamath.Vector;
 import fr.ickik.formulamath.controler.UpdateCaseListener;
 
@@ -53,23 +53,23 @@ public class PlayerManager {
 		log.debug("getVectorsPossibilities entering");
 		List<Vector> list = new ArrayList<Vector>(5);
 		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving()) != null
-				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving()).getTerrain() != Terrain.HERBE) {
+				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving()).getField() != Field.HERBE) {
 			list.add(player.getVector());
 		}
 		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() - 1) != null
-				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() - 1).getTerrain() != Terrain.HERBE) {
+				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() - 1).getField() != Field.HERBE) {
 			list.add(new Vector(player.getVector().getXMoving() - 1, player.getVector().getYMoving()));
 		}
 		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() + 1) != null
-				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() + 1).getTerrain() != Terrain.HERBE) {
+				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() + 1).getField() != Field.HERBE) {
 			list.add(new Vector(player.getVector().getXMoving() + 1, player.getVector().getYMoving()));
 		}
 		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() + 1, player.getPosition().getX() + player.getVector().getXMoving()) != null
-				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() + 1, player.getPosition().getX() + player.getVector().getXMoving()).getTerrain() != Terrain.HERBE) {
+				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() + 1, player.getPosition().getX() + player.getVector().getXMoving()).getField() != Field.HERBE) {
 			list.add(new Vector(player.getVector().getXMoving(), player.getVector().getYMoving() - 1));
 		}
 		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() - 1, player.getPosition().getX() + player.getVector().getXMoving()) != null
-				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() - 1, player.getPosition().getX() + player.getVector().getXMoving()).getTerrain() != Terrain.HERBE) {
+				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() - 1, player.getPosition().getX() + player.getVector().getXMoving()).getField() != Field.HERBE) {
 			list.add(new Vector(player.getVector().getXMoving(), player.getVector().getYMoving() + 1));
 		}
 		log.debug("number of vectors : {}", list.size());
@@ -224,7 +224,7 @@ public class PlayerManager {
 	 * @param index
 	 * @throws FormulaMathException
 	 */
-	public void updatePlayer(Player p, int index) throws FormulaMathException {
+	public void updatePlayer(Player p, int index) {
 		List<Position> list = mapManager.getStartPosition();
 		p.getPosition().setX(list.get(index).getX());
 		p.getPosition().setY(list.get(index).getY());

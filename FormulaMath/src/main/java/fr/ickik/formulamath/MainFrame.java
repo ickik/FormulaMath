@@ -148,7 +148,7 @@ public class MainFrame {
 		final List<Position> positionList = new ArrayList<Position>();
 		positionList.addAll(mapManager.getStartPosition());
 		ButtonGroup group = new ButtonGroup();
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < MapManager.ROAD_SIZE; i++) {
 			JRadioButton box = new JRadioButton("");
 			box.setEnabled(false);
 			box.setSelected(false);
@@ -188,7 +188,7 @@ public class MainFrame {
 								i++;
 							}
 						}
-						for (int i = positionList.size(); i < 4; i++) {
+						for (int i = positionList.size(); i < MapManager.ROAD_SIZE; i++) {
 							solution[i].setText("");
 							solution[i].setEnabled(false);
 						}
@@ -449,17 +449,17 @@ public class MainFrame {
 	}
 	
 	private boolean isGrassIntersection(Shape shape) {
-		return checkIntersection(shape, Terrain.HERBE);
+		return checkIntersection(shape, Field.HERBE);
 	}
 	
 	private boolean isEndLineIntersection(Shape shape) {
-		return checkIntersection(shape, Terrain.END_LINE);
+		return checkIntersection(shape, Field.END_LINE);
 	}
 	
-	private boolean checkIntersection(Shape shape, Terrain terrain) {
+	private boolean checkIntersection(Shape shape, Field terrain) {
 		for (List<JCase> caseList : caseArrayList) {
 			for (JCase c : caseList) {
-				if (c.getModel() != null && c.getModel().getTerrain() == terrain) {
+				if (c.getModel() != null && c.getModel().getField() == terrain) {
 					if (shape.intersects(c.getX(), c.getY(), c.getWidth(), c.getHeight())) {
 						return true;
 					}
@@ -477,7 +477,7 @@ public class MainFrame {
 	}
 	
 	private JMenu getHelp() {
-		JMenu help = new JMenu("");
+		JMenu help = new JMenu("Help");
 		return help;
 	}
 

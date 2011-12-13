@@ -50,6 +50,10 @@ public class Player {
 		return name;
 	}
 
+	/**
+	 * Return the type of the player : Human or Computer {@link PlayerType}.
+	 * @return the type of the player : Human or Computer (enum).
+	 */
 	public PlayerType getType() {
 		return type;
 	}

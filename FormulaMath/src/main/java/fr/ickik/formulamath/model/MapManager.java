@@ -9,11 +9,11 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.ickik.formulamath.Case;
+import fr.ickik.formulamath.CaseModel;
 import fr.ickik.formulamath.Direction;
 import fr.ickik.formulamath.Orientation;
 import fr.ickik.formulamath.Position;
-import fr.ickik.formulamath.Terrain;
+import fr.ickik.formulamath.Field;
 
 /**
  * Contains and handles the map of the application. The map is a everytime a square.
@@ -22,7 +22,7 @@ import fr.ickik.formulamath.Terrain;
  */
 public class MapManager {
 
-	private final List<List<Case>> carte;
+	private final List<List<CaseModel>> carte;
 	private final int mapSize;
 	public final static int ROAD_SIZE = 4;
 	private final List<Position> startPositionList = new ArrayList<Position>(2);
@@ -39,7 +39,7 @@ public class MapManager {
 	public MapManager(int size) {
 		log.debug("Constructor begin");
 		this.mapSize = size;
-		carte = new ArrayList<List<Case>>(size);
+		carte = new ArrayList<List<CaseModel>>(size);
 		init();
 		constructRoad();
 		log.debug("Constructor exiting");
@@ -48,9 +48,9 @@ public class MapManager {
 	private void init() {
 		log.debug("Init begin");
 		for (int i = 0; i < mapSize; i++) {
-			List<Case> list = new ArrayList<Case>(mapSize);
+			List<CaseModel> list = new ArrayList<CaseModel>(mapSize);
 			for (int j = 0; j < mapSize; j++) {
-				list.add(new Case(Terrain.HERBE));
+				list.add(new CaseModel(Field.HERBE));
 			}
 			carte.add(list);
 		}
@@ -398,7 +398,7 @@ public class MapManager {
 			for (int i = 0; i < length; i++) {
 				positionDepart.setY(positionDepart.getY() - 1);
 				positionDepart2.setY(positionDepart2.getY() - 1);
-				if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getTerrain() == Terrain.ROUTE) {
+				if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getField() == Field.ROUTE || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getField() == Field.ROUTE) {
 					solutionAvailable = false;
 					break;
 				}
@@ -414,7 +414,7 @@ public class MapManager {
 			for (int i = 0; i < length; i++) {
 				positionDepart.setX(positionDepart.getX() - 1);
 				positionDepart2.setX(positionDepart2.getX() - 1);
-				if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getTerrain() == Terrain.ROUTE) {
+				if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getField() == Field.ROUTE || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getField() == Field.ROUTE) {
 					solutionAvailable = false;
 					break;
 				}
@@ -430,7 +430,7 @@ public class MapManager {
 			for (int i = 0; i < length; i++) {
 				positionDepart.setY(positionDepart.getY() + 1);
 				positionDepart2.setY(positionDepart2.getY() + 1);
-				if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getTerrain() == Terrain.ROUTE) {
+				if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getField() == Field.ROUTE || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getField() == Field.ROUTE) {
 					solutionAvailable = false;
 					break;
 				}
@@ -446,7 +446,7 @@ public class MapManager {
 			for (int i = 0; i < length; i++) {
 				positionDepart.setX(positionDepart.getX() + 1);
 				positionDepart2.setX(positionDepart2.getX() + 1);
-				if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getTerrain() == Terrain.ROUTE) {
+				if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getField() == Field.ROUTE || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getField() == Field.ROUTE) {
 					solutionAvailable = false;
 					log.debug(positionDepart.toString() + " " + positionDepart2.toString());
 					break;
@@ -472,7 +472,7 @@ public class MapManager {
 					for (int i = 0; i < curveLength; i++) {
 						positionDepart.setX(positionDepart.getX() - 1);
 						positionDepart2.setX(positionDepart2.getX() - 1);
-						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getTerrain() == Terrain.ROUTE) {
+						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getField() == Field.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getField() == Field.ROUTE) {
 							solutionAvailable = false;
 							break;
 						}
@@ -491,7 +491,7 @@ public class MapManager {
 					for (int i = 0; i < curveLength; i++) {
 						positionDepart.setX(positionDepart.getX() - 1);
 						positionDepart2.setX(positionDepart2.getX() - 1);
-						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getTerrain() == Terrain.ROUTE) {
+						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getField() == Field.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getField() == Field.ROUTE) {
 							solutionAvailable = false;
 							break;
 						}
@@ -514,7 +514,7 @@ public class MapManager {
 					for (int i = 0; i < curveLength; i++) {
 						positionDepart.setY(positionDepart.getY() + 1);
 						positionDepart2.setY(positionDepart2.getY() + 1);
-						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getTerrain() == Terrain.ROUTE) {
+						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getField() == Field.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getField() == Field.ROUTE) {
 							solutionAvailable = false;
 							break;
 						}
@@ -533,7 +533,7 @@ public class MapManager {
 					for (int i = 0; i < curveLength; i++) {
 						positionDepart.setY(positionDepart.getY() - 1);
 						positionDepart2.setY(positionDepart2.getY() - 1);
-						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getTerrain() == Terrain.ROUTE) {
+						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getField() == Field.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getField() == Field.ROUTE) {
 							solutionAvailable = false;
 							break;
 						}
@@ -554,7 +554,7 @@ public class MapManager {
 					for (int i = 0; i < curveLength; i++) {
 						positionDepart.setX(positionDepart.getX() + 1);
 						positionDepart2.setX(positionDepart2.getX() + 1);
-						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getTerrain() == Terrain.ROUTE) {
+						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getField() == Field.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getField() == Field.ROUTE) {
 							solutionAvailable = false;
 							break;
 						}
@@ -571,7 +571,7 @@ public class MapManager {
 					for (int i = 0; i < curveLength; i++) {
 						positionDepart.setX(positionDepart.getX() - 1);
 						positionDepart2.setX(positionDepart2.getX() - 1);
-						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getTerrain() == Terrain.ROUTE) {
+						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getField() == Field.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getField() == Field.ROUTE) {
 							solutionAvailable = false;
 							break;
 						}
@@ -592,7 +592,7 @@ public class MapManager {
 					for (int i = 0; i < curveLength; i++) {
 						positionDepart.setY(positionDepart.getY() - 1);
 						positionDepart2.setY(positionDepart2.getY() - 1);
-						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getTerrain() == Terrain.ROUTE) {
+						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getField() == Field.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getField() == Field.ROUTE) {
 							solutionAvailable = false;
 							break;
 						}
@@ -609,7 +609,7 @@ public class MapManager {
 					for (int i = 0; i < curveLength; i++) {
 						positionDepart.setY(positionDepart.getY() + 1);
 						positionDepart2.setY(positionDepart2.getY() + 1);
-						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getTerrain() == Terrain.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getTerrain() == Terrain.ROUTE) {
+						if (carte.get(positionDepart.getY()).get(positionDepart.getX()).getField() == Field.ROUTE || carte.get(positionDepart2.getY()).get(positionDepart2.getX()).getField() == Field.ROUTE) {
 							solutionAvailable = false;
 							break;
 						}
@@ -651,7 +651,7 @@ public class MapManager {
 		}
 		log.debug("PositionDepart x=" + positionDepart.getX() + ", y=" + positionDepart.getY());
 		log.debug("PositionDepart2 x=" + positionDepart2.getX() + ", y=" + positionDepart2.getY());
-		traceLargeur(positionDepart, positionDepart2, Terrain.START_LINE);
+		traceLargeur(positionDepart, positionDepart2, Field.START_LINE);
 		log.debug("traceLigneDepart exiting");
 		return coteDepart;
 	}
@@ -678,14 +678,14 @@ public class MapManager {
 		}
 		endLinePositionList.add(positionDepart);
 		endLinePositionList.add(positionDepart2);
-		traceLargeur(positionDepart, positionDepart2, Terrain.END_LINE);
+		traceLargeur(positionDepart, positionDepart2, Field.END_LINE);
 	}
 
 	private void traceLargeur(Position positionDepart, Position positionDepart2) {
-		traceLargeur(positionDepart, positionDepart2, Terrain.ROUTE);
+		traceLargeur(positionDepart, positionDepart2, Field.ROUTE);
 	}
 
-	private void traceLargeur(Position positionDepart,Position positionDepart2, Terrain terrain) {
+	private void traceLargeur(Position positionDepart,Position positionDepart2, Field terrain) {
 		log.debug("traceLargeur begin");
 		log.debug("Start Position1 [x = {}, y = {}]", positionDepart.getX(), positionDepart.getY());
 		log.debug("Start Position2 [x = {}, y = {}]", positionDepart2.getX(), positionDepart2.getY());
@@ -695,14 +695,14 @@ public class MapManager {
 		int maxY = Math.max(positionDepart.getY(), positionDepart2.getY());
 		if (positionDepart.getX() == positionDepart2.getX()) {
 			for (int i = minY; i <= maxY; i++) {
-				carte.get(i).get(positionDepart.getX()).setTerrain(terrain);
+				carte.get(i).get(positionDepart.getX()).setField(terrain);
 			}
 		}
 
 		if (positionDepart.getY() == positionDepart2.getY()) {
 			for (int i = minX; i <= maxX; i++) {
 				try {
-				carte.get(positionDepart.getY()).get(i).setTerrain(terrain);
+				carte.get(positionDepart.getY()).get(i).setField(terrain);
 				} catch (NullPointerException e) {
 					display();
 					e.printStackTrace();
@@ -716,8 +716,8 @@ public class MapManager {
 		log.debug("display begin");
 		for (int i = 0; i < mapSize; i++) {
 			StringBuilder str = new StringBuilder();
-			for (Case c : carte.get(i)) {
-				if (c.getTerrain() == Terrain.HERBE) {
+			for (CaseModel c : carte.get(i)) {
+				if (c.getField() == Field.HERBE) {
 					str.append(0);
 				} else {
 					str.append(1);
@@ -744,7 +744,7 @@ public class MapManager {
 		return getRandomNumber(0, max);
 	}
 
-	public Case getCase(int h, int w) {
+	public CaseModel getCase(int h, int w) {
 		if (h < 0 || h >= carte.size() || w < 0 || w >= carte.get(h).size()) {
 			return null;
 		}

@@ -22,7 +22,7 @@ import fr.ickik.formulamath.model.PlayerManager;
 public class JCase extends JComponent {
 
 	private Shape shape;
-	private Case model;
+	private CaseModel model;
 	
 	
 	public JCase(int size) {
@@ -39,7 +39,7 @@ public class JCase extends JComponent {
 		if (isOpaque()) {
 			Graphics2D g2 = (Graphics2D) g;
 			if (model != null && model.getIdPlayer() == 0) {
-				if (model.getTerrain() == Terrain.END_LINE) {
+				if (model.getField() == Field.END_LINE) {
 					drawEndLine(g2);
 					g2.setColor(Color.BLACK);
 					g2.draw(shape);
@@ -75,7 +75,7 @@ public class JCase extends JComponent {
 	private void updateBackGroundColor() {
 		if (model != null) {
 			if (model.getIdPlayer() == 0) {
-				setBackground(model.getTerrain().getColor());
+				setBackground(model.getField().getColor());
 			} else {
 				setBackground(PlayerManager.getInstance().getColorById(model.getIdPlayer()));
 			}
@@ -89,11 +89,11 @@ public class JCase extends JComponent {
 		paint(g);
 	}
 
-	public void setModel(Case model) {
+	public void setModel(CaseModel model) {
 		this.model = model;
 	}
 
-	public Case getModel() {
+	public CaseModel getModel() {
 		return model;
 	}
 	

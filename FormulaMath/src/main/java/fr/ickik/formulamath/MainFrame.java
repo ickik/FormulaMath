@@ -169,7 +169,7 @@ public class MainFrame {
 			if (mapManager.getCase(p.getY(), p.getX()).isOccuped()) {
 				positionList.remove(i);
 			} else {
-				solution[i].setText(p.toString());
+				solution[i].setText("( " + Integer.toString(p.getX()) + " , " + Integer.toString((mapManager.getMapSize() - p.getY()) - 1) + " )");
 				solution[i].setEnabled(true);
 				i++;
 			}
@@ -191,7 +191,7 @@ public class MainFrame {
 						if (mapManager.getCase(p.getY(), p.getX()).isOccuped()) {
 							positionList.remove(i);
 						} else {
-							solution[i].setText(p.toString());
+							solution[i].setText("( " + Integer.toString(p.getX()) + " , " + Integer.toString((mapManager.getMapSize() - p.getY()) - 1) + " )");
 							solution[i].setEnabled(true);
 							i++;
 						}

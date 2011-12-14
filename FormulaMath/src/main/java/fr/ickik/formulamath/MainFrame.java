@@ -1,15 +1,20 @@
 package fr.ickik.formulamath;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -23,6 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTextField;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,8 +141,10 @@ public class MainFrame {
 		final JPanel panel = new JPanel(new GridLayout(4, 1));
 		JButton play = new JButton("Play");
 		//panel.add(getChoicePanel(play));
-		panel.add(getStartPanel(play));
-		panel.add(play);
+		if (playerManager.isHumanPlayer()) {
+			panel.add(getStartPanel(play));
+			panel.add(play);
+		}
 		panel.add(getDirectionalPanel());
 		panel.add(getZoomPanel());
 		return panel;
@@ -145,8 +153,8 @@ public class MainFrame {
 	private JPanel getStartPanel(final JButton play) {
 		final JPanel panel = new JPanel(new GridLayout(4, 1));
 		final JRadioButton[] solution = new JRadioButton[4];
-		final List<Position> positionList = new ArrayList<Position>();
-		positionList.addAll(mapManager.getStartPosition());
+		playerManager.initStartPosition();
+		final List<Position> positionList = new ArrayList<Position>(mapManager.getStartPosition());
 		ButtonGroup group = new ButtonGroup();
 		for (int i = 0; i < MapManager.ROAD_SIZE; i++) {
 			JRadioButton box = new JRadioButton("");
@@ -174,39 +182,117 @@ public class MainFrame {
 				if (selected == -1) {
 					return;
 				}
-				try {
-					playerManager.updatePlayer(playerManager.getCurrentPlayer(), selected);
-					if (playerManager.initStartPosition()) {
-						displayMessage(playerManager.getCurrentPlayer().toString());
-						for (int i = 0; i < positionList.size(); ) {
-							Position p = positionList.get(i);
-							if (mapManager.getCase(p.getY(), p.getX()).isOccuped()) {
-								positionList.remove(i);
-							} else {
-								solution[i].setText(p.toString());
-								solution[i].setEnabled(true);
-								i++;
-							}
+				
+				playerManager.updatePlayer(playerManager.getCurrentPlayer(), selected);
+				if (playerManager.initStartPosition()) {
+					displayMessage(playerManager.getCurrentPlayer().toString());
+					for (int i = 0; i < positionList.size(); ) {
+						Position p = positionList.get(i);
+						if (mapManager.getCase(p.getY(), p.getX()).isOccuped()) {
+							positionList.remove(i);
+						} else {
+							solution[i].setText(p.toString());
+							solution[i].setEnabled(true);
+							i++;
 						}
-						for (int i = positionList.size(); i < MapManager.ROAD_SIZE; i++) {
-							solution[i].setText("");
-							solution[i].setEnabled(false);
-						}
-					} else {
-						removeButtonListener(play);
-						panel.removeAll();
-						getChoicePanel(play, panel);
 					}
-				} catch (FormulaMathException ex) {
-					// TODO Auto-generated catch block
-					ex.printStackTrace();
+					for (int i = positionList.size(); i < MapManager.ROAD_SIZE; i++) {
+						solution[i].setText("");
+						solution[i].setEnabled(false);
+					}
+				} else {
+					removeButtonListener(play);
+					panel.removeAll();
+					getFirstStepPanel(play, panel);
 				}
+				
 			}
 		});
 		return panel;
 	}
 	
-	private JPanel getChoicePanel(final JButton play, final JPanel panel) {
+	private void getFirstStepPanel(final JButton play, final JPanel panel) {
+		panel.setLayout(new GridLayout(2, 2));
+		panel.add(new JLabel("x"));
+		final JTextField xField = new JTextField();
+		xField.addKeyListener(getKeyListener(xField));
+		panel.add(xField);
+		panel.add(new JLabel("y"));
+		final JTextField yField = new JTextField();
+		yField.addKeyListener(getKeyListener(yField));
+		panel.add(yField);
+		play.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if (!checkFirstMovingValues(xField, yField)) {
+					displayErrorMessage("Values not correct");
+					return;
+				}
+				int distance = (caseArrayList.size() - mapManager.getMapSize()) / 2;
+				int xMoving = getValue(xField);
+				int yMoving = getValue(yField);
+				int xTrayPanel = playerManager.getCurrentPlayer().getPosition().getX() + distance;
+				int yTrayPanel = playerManager.getCurrentPlayer().getPosition().getY() + distance;
+				JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
+				JCase c2 = caseArrayList.get(yTrayPanel - yMoving).get(xTrayPanel + xMoving);
+				
+				Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
+				if (isGrassIntersection(line)) {
+					displayErrorMessage("Your are in grass!!!!");
+					return;
+				}
+				playerManager.getCurrentPlayer().getVector().setXMoving(xMoving);
+				playerManager.getCurrentPlayer().getVector().setYMoving(yMoving);
+				if (playerManager.initFirstMove(new Vector(xMoving, yMoving))) {
+					displayMessage(playerManager.getCurrentPlayer().toString());
+					xField.setText("");
+					yField.setText("");
+				} else {
+					removeButtonListener(play);
+					panel.removeAll();
+					getChoicePanel(play, panel);
+				}
+			}
+		});
+		panel.validate();
+	}
+	
+	private KeyListener getKeyListener(final JTextField textField) {
+		return new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent arg0) {}
+			
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				Pattern pattern = Pattern.compile("-{0,1}[\\d]+");
+				if (pattern.matcher(textField.getText()).matches()) {
+					textField.setForeground(Color.GREEN);
+				} else {
+					textField.setForeground(Color.RED);
+				}
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent arg0) {}
+		};	
+	}
+	
+	private boolean checkFirstMovingValues(JTextField xTextField, JTextField yTextField) {
+		Pattern pattern = Pattern.compile("-{0,1}[\\d]+");
+		Matcher xMatcher = pattern.matcher(xTextField.getText());
+		Matcher yMatcher = pattern.matcher(yTextField.getText());
+		return xMatcher.matches() && yMatcher.matches();
+	}
+	
+	private int getValue(JTextField xTextField) {
+		if ("".equals(xTextField)) {
+			return 0;
+		}
+		return Integer.parseInt(xTextField.getText());
+	}
+	
+	private void getChoicePanel(final JButton play, final JPanel panel) {
 		panel.setLayout(new GridLayout(5, 1));
 		final JCheckBox[] solution = new JCheckBox[5];
 		final List<Vector> vectorList = new ArrayList<Vector>(5);
@@ -287,7 +373,6 @@ public class MainFrame {
 		});
 		
 		play.addActionListener(getPlayActionListener(vectorList, solution));
-		return panel;
 	}
 	
 	private void removeButtonListener(JButton button) {

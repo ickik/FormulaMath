@@ -39,7 +39,7 @@ public class CaseModel {
 	}
 
 	public boolean isOccuped() {
-		return idPlayer == 0;
+		return idPlayer > 0;
 	}
 	
 	@Override

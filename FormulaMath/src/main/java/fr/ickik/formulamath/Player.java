@@ -17,7 +17,7 @@ public class Player {
 	private final String name;
 	private final PlayerType type;
 	private int playingCounter = 0;
-	private final Color[] colorList = new Color[] { Color.RED, Color.BLACK, Color.BLUE, Color.YELLOW };
+	private static final Color[] colorList = new Color[] { Color.RED, Color.BLACK, Color.BLUE, Color.YELLOW };
 
 	/**
 	 * Constructor of the Player, it needs the type of player and the
@@ -34,18 +34,36 @@ public class Player {
 		movingVector = new Vector();
 	}
 
+	/**
+	 * Return the unique id of the player.
+	 * @return the id of the player.
+	 */
 	public int getId() {
 		return id;
 	}
 
+	/**
+	 * Return the vector of the last move of this player.
+	 * @return the last move of the player.
+	 */
 	public Vector getVector() {
 		return movingVector;
 	}
 
+	/**
+	 * Return the current position in the map of the player. The position
+	 * is define in coordinates which the starting point of the map is
+	 * the area without blank frame.
+	 * @return the current position in the map.
+	 */
 	public Position getPosition() {
 		return position;
 	}
 
+	/**
+	 * Return the name of the player.
+	 * @return the name of the player.
+	 */
 	public String getName() {
 		return name;
 	}
@@ -68,14 +86,22 @@ public class Player {
 
 	@Override
 	public String toString() {
-		return id + " " + name + " (" + type + ") :" + position.toString();
+		return Integer.toString(id) + " " + name + " (" + type + ") :" + position.toString();
 	}
 	
-	public void incrementGoCounter() {
+	/**
+	 * Increment the playing counter. The counter indicates the number
+	 * of turn the player needs to finish the road.
+	 */
+	public void incrementPlayingCounter() {
 		playingCounter++;
 	}
 	
-	public int getGoCounter() {
+	/**
+	 * Return the number of turn the player needs to finish the game.
+	 * @return the number of turn the player needs to finish the game.
+	 */
+	public int getPlayingCounter() {
 		return playingCounter;
 	}
 }

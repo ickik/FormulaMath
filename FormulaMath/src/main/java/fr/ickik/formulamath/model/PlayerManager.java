@@ -57,19 +57,23 @@ public class PlayerManager {
 			list.add(player.getVector());
 		}
 		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() - 1) != null
-				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() - 1).getField() != Field.HERBE) {
+				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() - 1).getField() != Field.HERBE
+				&& !mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() - 1).isOccuped()) {
 			list.add(new Vector(player.getVector().getXMoving() - 1, player.getVector().getYMoving()));
 		}
 		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() + 1) != null
-				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() + 1).getField() != Field.HERBE) {
+				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() + 1).getField() != Field.HERBE
+				&& !mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving(), player.getPosition().getX() + player.getVector().getXMoving() + 1).isOccuped()) {
 			list.add(new Vector(player.getVector().getXMoving() + 1, player.getVector().getYMoving()));
 		}
 		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() + 1, player.getPosition().getX() + player.getVector().getXMoving()) != null
-				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() + 1, player.getPosition().getX() + player.getVector().getXMoving()).getField() != Field.HERBE) {
+				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() + 1, player.getPosition().getX() + player.getVector().getXMoving()).getField() != Field.HERBE
+				&& !mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() + 1, player.getPosition().getX() + player.getVector().getXMoving()).isOccuped()) {
 			list.add(new Vector(player.getVector().getXMoving(), player.getVector().getYMoving() - 1));
 		}
 		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() - 1, player.getPosition().getX() + player.getVector().getXMoving()) != null
-				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() - 1, player.getPosition().getX() + player.getVector().getXMoving()).getField() != Field.HERBE) {
+				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() - 1, player.getPosition().getX() + player.getVector().getXMoving()).getField() != Field.HERBE
+				&& !mapManager.getCase(player.getPosition().getY() + player.getVector().getYMoving() - 1, player.getPosition().getX() + player.getVector().getXMoving()).isOccuped()) {
 			list.add(new Vector(player.getVector().getXMoving(), player.getVector().getYMoving() + 1));
 		}
 		log.debug("number of vectors : {}", list.size());
@@ -78,7 +82,7 @@ public class PlayerManager {
 	}
 
 	public boolean play(Vector vector) {
-		Player p = playerList.get(indexPlayerGame);
+		Player p = getCurrentPlayer();
 		if (isWinner) {
 			return false;
 		}
@@ -146,37 +150,7 @@ public class PlayerManager {
 		fireUpdatePossibilitiesListener(human);
 	}
 
-	public void initStartPosition2() throws FormulaMathException {
-		log.debug("initStartPosition entering");
-		List<Position> list = mapManager.getStartPosition();
-		log.debug("number of start position : {}", list.size());
-		for (int i = 0; i < list.size(); ) {
-			Position p = list.get(i);
-			if (mapManager.getCase(p.getY(), p.getX()).isOccuped()) {
-				list.remove(i);
-			} else {
-				i++;
-			}
-		}
-		List<Player> playerList = getPlayerList();
-		log.debug("" + playerList.size());
-		for (Player p : playerList) {
-			if (p.getType().equals(PlayerType.COMPUTER)) {
-				p.getPosition().setX(list.get(0).getX());
-				p.getPosition().setY(list.get(0).getY());
-				mapManager.getCase(list.get(0).getY(), list.get(0).getX()).setIdPlayer(p.getId());
-				fireUpdateCaseListener(p);
-				log.debug("fire");
-			} else {
-				//log.debug("set cardinality position : {}", set.cardinality());
-				//new StartFrame(this, list, set, p, mapManager);
-				break;
-			}
-		}
-		log.debug("initStartPosition exiting");
-	}
-
-	public boolean initStartPosition() throws FormulaMathException {
+	public boolean initStartPosition() {
 		log.debug("initStartPosition entering");
 		List<Position> list = mapManager.getStartPosition();
 		for (int i = 0; i < list.size(); ) {
@@ -195,8 +169,7 @@ public class PlayerManager {
 		if (!playerList.isEmpty()) {
 			Iterator<Player> it = playerList.iterator();
 			while(it.hasNext()) {
-			//for (Player p : playerList) {
-				log.debug("boucle for");
+				log.debug("boucle while");
 				Player p = it.next();
 				if (p.getType().equals(PlayerType.COMPUTER)) {
 					log.debug("computer");
@@ -205,17 +178,49 @@ public class PlayerManager {
 					updateIndexPlayerGame();
 					log.debug("computer start position : ({}, {})", p.getPosition().getX(), p.getPosition().getY());
 					mapManager.getCase(list.get(0).getY(), list.get(0).getX()).setIdPlayer(p.getId());
+					list.remove(0);
 					fireUpdateCaseListener(p);
 					log.debug("fire");
 				} else {
-					//log.debug("set cardinality position : {}", set.cardinality());
-					//new StartFrame(this, list, null, p, mapManager);
+					log.debug("Human start position");
 					return true;
 				}
 			}
 		}
 		log.debug("initStartPosition exiting");
 		return false;
+	}
+	
+	public boolean initAIFirstMove() {
+		log.debug("initAIFirstMove");
+		List<Player> playerList = getPlayerList().subList(getPlayerList().indexOf(getCurrentPlayer()), getPlayerList().size());
+		if (!playerList.isEmpty()) {
+			Iterator<Player> it = playerList.iterator();
+			while(it.hasNext()) {
+				Player p = it.next();
+				if (p.getType().equals(PlayerType.COMPUTER)) {
+					log.debug("Computer first move");
+					//algo de recherche meilleur position
+					updateIndexPlayerGame();
+					fireUpdateCaseListener(p);
+				} else {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean initFirstMove(Vector vector) {
+		mapManager.getCase(getCurrentPlayer().getPosition().getY(), getCurrentPlayer().getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
+		getCurrentPlayer().getPosition().setX(getCurrentPlayer().getPosition().getX() + vector.getXMoving());
+		getCurrentPlayer().getPosition().setY(getCurrentPlayer().getPosition().getY() - vector.getYMoving());
+		getCurrentPlayer().getVector().setXMoving(vector.getXMoving());
+		getCurrentPlayer().getVector().setYMoving(vector.getYMoving());
+		mapManager.getCase(getCurrentPlayer().getPosition().getY(), getCurrentPlayer().getPosition().getX()).setIdPlayer(getCurrentPlayer().getId());
+		fireUpdateCaseListener(getCurrentPlayer());
+		updateIndexPlayerGame();
+		return indexPlayerGame % getPlayerList().size() != 0;
 	}
 	
 	/**
@@ -282,5 +287,14 @@ public class PlayerManager {
 	
 	public void setMapManager(MapManager mapManager) {
 		this.mapManager = mapManager;
+	}
+	
+	public boolean isHumanPlayer() {
+		for(Player player : playerList) {
+			if (player.getType() == PlayerType.HUMAN) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

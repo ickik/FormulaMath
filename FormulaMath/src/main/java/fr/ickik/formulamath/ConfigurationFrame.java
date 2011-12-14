@@ -2,6 +2,7 @@ package fr.ickik.formulamath;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class ConfigurationFrame {
 	public ConfigurationFrame() {
 		configurationFrame = new JFrame(MainFrame.NAME + " " + MainFrame.VERSION);
 		createMainFrame();
+		centeredFrame(configurationFrame);
 	}
 
 	private void createMainFrame() {
@@ -143,5 +145,13 @@ public class ConfigurationFrame {
 			}
 		}
 		return panel;
+	}
+	
+	private void centeredFrame(JFrame frame) {
+		double w = frame.getWidth();
+		double h = frame.getHeight();
+		double l = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+		double l2 = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+		frame.setLocation((int) (l / 2 - w / 2), (int)(l2 / 2 - h / 2));
 	}
 }

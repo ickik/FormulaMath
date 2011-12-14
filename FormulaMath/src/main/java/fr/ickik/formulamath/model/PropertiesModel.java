@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import javax.swing.JComponent;
-
 import fr.ickik.formulamath.MainFrame;
 
 public class PropertiesModel {
@@ -21,7 +19,6 @@ public class PropertiesModel {
 	private final String directory = "." + MainFrame.NAME;
 	private final String propertiesFile = "properties.properties";
 	private final Properties properties;
-	private final List<JComponent> frameList = new ArrayList<JComponent>();
 	private static final PropertiesModel model = new PropertiesModel();
 	
 	private PropertiesModel() {
@@ -33,11 +30,7 @@ public class PropertiesModel {
 	public static PropertiesModel getInstance() {
 		return model;
 	}
-	
-	public void addComponent(JComponent frame) {
-		frameList.add(frame);
-	}
-	
+		
 	public String getProperty(FormulaMathProperty property) {
 		return properties.getProperty(property.toString());
 	}

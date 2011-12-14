@@ -10,7 +10,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.geom.Line2D;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -23,6 +26,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -36,6 +40,8 @@ import org.slf4j.LoggerFactory;
 import fr.ickik.formulamath.controler.UpdateCaseListener;
 import fr.ickik.formulamath.model.MapManager;
 import fr.ickik.formulamath.model.PlayerManager;
+import fr.ickik.formulamath.model.PropertiesModel;
+import fr.ickik.formulamath.view.AboutFrame;
 
 /**
  * This class create the main frame of the application.
@@ -58,19 +64,12 @@ public class MainFrame {
 	
 	public MainFrame(PlayerManager playerManager, MapManager mapManager) {
 		mainFrame = new JFrame(NAME + " " + VERSION);
+		ChuckNorrisTimer.getInstance(mainFrame);
 		this.playerManager = playerManager;
 		this.mapManager = mapManager;
 		caseArrayList = new ArrayList<List<JCase>>(mapManager.getMapSize() + 20);
 		initMap();
 		createMainFrame();
-//		try {
-//			// mainFrame.setEnabled(false);
-//			this.playerManager.initStartPosition();
-//		} catch (FormulaMathException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		// playerManager.AIPlay();
 	}
 	
 	private void initMap() {
@@ -98,7 +97,38 @@ public class MainFrame {
 	private void createMainFrame() {
 		mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		mainFrame.add(getSplitPane(), BorderLayout.CENTER);
+		//mainFrame.setJMenuBar(getMenuBar());
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		mainFrame.addWindowListener(new WindowListener() {
+			
+			@Override
+			public void windowOpened(WindowEvent arg0) {}
+			
+			@Override
+			public void windowIconified(WindowEvent arg0) {}
+			
+			@Override
+			public void windowDeiconified(WindowEvent arg0) {}
+			
+			@Override
+			public void windowDeactivated(WindowEvent arg0) {}
+			
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				try {
+					log.debug("Closing window and saving properties");
+					PropertiesModel.getInstance().save();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			@Override
+			public void windowClosed(WindowEvent arg0) {}
+			
+			@Override
+			public void windowActivated(WindowEvent arg0) {}
+		});
 		mainFrame.setVisible(true);
 	}
 
@@ -140,7 +170,6 @@ public class MainFrame {
 	private JPanel getMenuPanel() {
 		final JPanel panel = new JPanel(new GridLayout(4, 1));
 		JButton play = new JButton("Play");
-		//panel.add(getChoicePanel(play));
 		if (playerManager.isHumanPlayer()) {
 			panel.add(getStartPanel(play));
 			panel.add(play);
@@ -151,8 +180,8 @@ public class MainFrame {
 	}
 	
 	private JPanel getStartPanel(final JButton play) {
-		final JPanel panel = new JPanel(new GridLayout(4, 1));
-		final JRadioButton[] solution = new JRadioButton[4];
+		final JPanel panel = new JPanel(new GridLayout(mapManager.getStartPosition().size(), 1));
+		final JRadioButton[] solution = new JRadioButton[mapManager.getStartPosition().size()];
 		playerManager.initStartPosition();
 		final List<Position> positionList = new ArrayList<Position>(mapManager.getStartPosition());
 		ButtonGroup group = new ButtonGroup();
@@ -580,12 +609,21 @@ public class MainFrame {
 	private JMenuBar getMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu file = new JMenu();
-		
+		menuBar.add(getHelp());
 		return menuBar;
 	}
 	
 	private JMenu getHelp() {
 		JMenu help = new JMenu("Help");
+		JMenuItem about = new JMenuItem("About");
+		about.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				AboutFrame.getNewInstance(mainFrame);
+			}
+		});
+		help.add(about);
 		return help;
 	}
 

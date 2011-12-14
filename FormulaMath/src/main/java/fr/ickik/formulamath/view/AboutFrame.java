@@ -19,11 +19,10 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 import javax.swing.WindowConstants;
 
+import fr.ickik.formulamath.ChuckNorrisTimer;
 import fr.ickik.formulamath.MainFrame;
-import fr.ickik.formulamath.model.ChuckNorrisSingleton;
 import fr.ickik.formulamath.model.FormulaMathProperty;
 import fr.ickik.formulamath.model.PropertiesModel;
 
@@ -31,17 +30,15 @@ import fr.ickik.formulamath.model.PropertiesModel;
  * This class only get an instance of the AboutServer. The about
  * frame resume the application (title, version, author, contact).
  * @author Ickik.
- * @version 0.1.000, 17 oct. 2011.
+ * @version 0.1.000, 14 dec. 2011.
  */
 public final class AboutFrame {
 
 	private final JFrame mainFrame;
 	private final JFrame frame;
-	private final PropertiesModel propertiesModel;
 	
-	private AboutFrame(JFrame serverCommand, PropertiesModel propertiesModel) {
-		this.mainFrame = serverCommand;
-		this.propertiesModel = propertiesModel;
+	private AboutFrame(JFrame mainFrame) {
+		this.mainFrame = mainFrame;
 		mainFrame.setEnabled(false);
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -56,8 +53,8 @@ public final class AboutFrame {
 	 * Return an instance of the AboutServer.
 	 * @return an instance of ICTouchAboutFrame.
 	 */
-	public static AboutFrame getNewInstance(JFrame mainFrame, PropertiesModel propertiesModel) {
-		return new AboutFrame(mainFrame, propertiesModel);
+	public static AboutFrame getNewInstance(JFrame mainFrame) {
+		return new AboutFrame(mainFrame);
 	}
 	
 	private JPanel createPanel() {
@@ -97,37 +94,24 @@ public final class AboutFrame {
 	}
 	
 	private MouseListener getMouseListener() {
-		final String separator = " - ";
-		if (propertiesModel.getProperty(FormulaMathProperty.CHUCK_NORRIS_TIME).isEmpty()) {
-			propertiesModel.putDefaultProperty(FormulaMathProperty.CHUCK_NORRIS_TIME);
-		}
-		final Timer chuckNorrisTimer = new Timer(Integer.parseInt(propertiesModel.getProperty(FormulaMathProperty.CHUCK_NORRIS_TIME)) * 60000, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mainFrame.setTitle(MainFrame.NAME + " " + MainFrame.VERSION + separator + ChuckNorrisSingleton.getInstance().getRandomFact());
-				mainFrame.validate();
-			}
-		});
-		if (Boolean.getBoolean(propertiesModel.getProperty(FormulaMathProperty.CHUCK_NORRIS_ACTIVATE))) {
-			chuckNorrisTimer.start();
-			mainFrame.setTitle(MainFrame.NAME + " " + MainFrame.VERSION + separator + ChuckNorrisSingleton.getInstance().getRandomFact());
-			mainFrame.validate();
-		}
+//		final String separator = " - ";
+//		if (Boolean.getBoolean(PropertiesModel.getInstance().getProperty(FormulaMathProperty.CHUCK_NORRIS_ACTIVATE))) {
+//			chuckNorrisTimer.start();
+//			mainFrame.setTitle(MainFrame.NAME + " " + MainFrame.VERSION + separator + ChuckNorrisSingleton.getInstance().getRandomFact());
+//			mainFrame.validate();
+//		}
 		return new MouseListener() {
-			private boolean selected = chuckNorrisTimer.isRunning();
+			private boolean selected = ChuckNorrisTimer.getInstance(null).isRunning();
 			
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				selected = !selected;
 				if (selected) {
-					chuckNorrisTimer.start();
-					mainFrame.setTitle(MainFrame.NAME + " " + MainFrame.VERSION + separator + ChuckNorrisSingleton.getInstance().getRandomFact());
+					ChuckNorrisTimer.getInstance(null).start();
 				} else {
-					chuckNorrisTimer.stop();
-					mainFrame.setTitle(MainFrame.NAME + " " + MainFrame.VERSION);
+					ChuckNorrisTimer.getInstance(null).stop();
 				}
 				PropertiesModel.getInstance().put(FormulaMathProperty.CHUCK_NORRIS_ACTIVATE, Boolean.toString(selected));
-				propertiesModel.put(FormulaMathProperty.CHUCK_NORRIS_ACTIVATE, Boolean.toString(selected));
 				mainFrame.repaint();
 			}
 

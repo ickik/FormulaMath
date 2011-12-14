@@ -40,7 +40,7 @@ import fr.ickik.formulamath.model.PlayerManager;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.1.000, 30 sept. 2011.
+ * @version 0.1.001, 30 sept. 2011.
  */
 public class MainFrame {
 
@@ -216,6 +216,7 @@ public class MainFrame {
 		panel.add(new JLabel("x"));
 		final JTextField xField = new JTextField();
 		xField.addKeyListener(getKeyListener(xField));
+		playerManager.initAIFirstMove();
 		panel.add(xField);
 		panel.add(new JLabel("y"));
 		final JTextField yField = new JTextField();
@@ -236,7 +237,10 @@ public class MainFrame {
 				int yTrayPanel = playerManager.getCurrentPlayer().getPosition().getY() + distance;
 				JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
 				JCase c2 = caseArrayList.get(yTrayPanel - yMoving).get(xTrayPanel + xMoving);
-				
+				if (c2.getModel().isOccuped()) {
+					displayErrorMessage("Player on it");
+					return;
+				}
 				Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
 				if (isGrassIntersection(line)) {
 					displayErrorMessage("Your are in grass!!!!");
@@ -293,6 +297,7 @@ public class MainFrame {
 	}
 	
 	private void getChoicePanel(final JButton play, final JPanel panel) {
+		playerManager.AIPlay();
 		panel.setLayout(new GridLayout(5, 1));
 		final JCheckBox[] solution = new JCheckBox[5];
 		final List<Vector> vectorList = new ArrayList<Vector>(5);
@@ -307,9 +312,27 @@ public class MainFrame {
 			panel.add(box);
 		}
 		
+		int distance = (caseArrayList.size() - mapManager.getMapSize()) / 2;
+		int xTrayPanel = playerManager.getCurrentPlayer().getPosition().getX() + distance;
+		int yTrayPanel = playerManager.getCurrentPlayer().getPosition().getY() + distance;
 		for (int i = 0; i < vectorList.size(); i++) {
-			solution[i].setEnabled(true);
-			solution[i].setText("( " + vectorList.get(i).getXMoving() + ", " + vectorList.get(i).getYMoving() + " )");
+			Vector v = vectorList.get(i);
+			JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
+			JCase c2 = caseArrayList.get(yTrayPanel - v.getYMoving()).get(xTrayPanel + v.getXMoving());
+			
+			Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
+			if (isGrassIntersection(line)) {
+				vectorList.remove(i);
+			} else {
+				solution[i].setEnabled(true);
+				solution[i].setText("( " + vectorList.get(i).getXMoving() + ", " + vectorList.get(i).getYMoving() + " )");
+				i++;
+			}
+		}
+		for (int i = vectorList.size(); i < 5; i++) {
+			solution[i].setText("");
+			solution[i].setEnabled(false);
+			solution[i].setSelected(false);
 		}
 		
 		playerManager.addUpdateCaseListener(new UpdateCaseListener() {

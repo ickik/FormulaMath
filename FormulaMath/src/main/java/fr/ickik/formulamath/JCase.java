@@ -24,7 +24,10 @@ public class JCase extends JComponent {
 	private Shape shape;
 	private CaseModel model;
 	
-	
+	/**
+	 * Constructor of the component. The size in pixel must be parameterized.
+	 * @param size the size in pixel.
+	 */
 	public JCase(int size) {
 		setOpaque(true);
 		Dimension dimension = new Dimension(size, size);
@@ -89,10 +92,18 @@ public class JCase extends JComponent {
 		paint(g);
 	}
 
+	/**
+	 * Set the model of the component.
+	 * @param model the model of the component.
+	 */
 	public void setModel(CaseModel model) {
 		this.model = model;
 	}
 
+	/**
+	 * Return the model of the component.
+	 * @return the model of the component.
+	 */
 	public CaseModel getModel() {
 		return model;
 	}

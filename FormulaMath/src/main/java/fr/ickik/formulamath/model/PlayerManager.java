@@ -103,13 +103,18 @@ public class PlayerManager {
 		return true;
 	}
 	
-	private void AIPlay() {
+	public void AIPlay() {
+		AIPlaying();
+	}
+	
+	private void AIPlaying() {
 		while (playerList.get(indexPlayerGame).getType() == PlayerType.COMPUTER) {
-			Player p = playerList.get(indexPlayerGame);
+			Player p = getCurrentPlayer();
+			log.debug("Player {} is under playing", p.toString());
 			fireUpdateCaseListener(p);
 			updateIndexPlayerGame();
 		}
-		play(playerList.get(indexPlayerGame));
+		humanPlaying();
 	}
 	
 	private int getNextPlay(int distance, int vitesse) {
@@ -146,8 +151,8 @@ public class PlayerManager {
 		indexPlayerGame = indexPlayerGame % playerList.size();
 	}
 	
-	private void play(Player human) {
-		fireUpdatePossibilitiesListener(human);
+	private void humanPlaying() {
+		fireUpdatePossibilitiesListener(getCurrentPlayer());
 	}
 
 	public boolean initStartPosition() {

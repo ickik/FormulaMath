@@ -1,4 +1,6 @@
-package fr.ickik.formulamath;
+package fr.ickik.formulamath.model;
+
+import fr.ickik.formulamath.Field;
 
 /**
  * Model of the JCase component. It stores the type of the field and

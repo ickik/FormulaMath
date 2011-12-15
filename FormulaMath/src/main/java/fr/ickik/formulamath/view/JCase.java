@@ -1,4 +1,4 @@
-package fr.ickik.formulamath;
+package fr.ickik.formulamath.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -9,6 +9,8 @@ import java.awt.geom.Rectangle2D;
 
 import javax.swing.JComponent;
 
+import fr.ickik.formulamath.Field;
+import fr.ickik.formulamath.model.CaseModel;
 import fr.ickik.formulamath.model.PlayerManager;
 
 /**

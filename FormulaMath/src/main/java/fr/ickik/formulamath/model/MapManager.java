@@ -9,7 +9,6 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.ickik.formulamath.CaseModel;
 import fr.ickik.formulamath.Direction;
 import fr.ickik.formulamath.Orientation;
 import fr.ickik.formulamath.Position;
@@ -184,7 +183,7 @@ public class MapManager {
 						positionDepart2.setY(positionDepart2.getY() - 1);
 						positionDepart.setY(positionDepart2.getY());
 						positionDepart.setX(positionDepart2.getX() - 1);
-						positionDepart2.setX(positionDepart.getX() - ROAD_SIZE);
+						positionDepart2.setX(positionDepart2.getX() - ROAD_SIZE);
 						for (int i = 0; i < curveLength; i++) {
 							positionDepart.setY(positionDepart.getY() + 1);
 							positionDepart2.setY(positionDepart2.getY() + 1);
@@ -704,7 +703,7 @@ public class MapManager {
 				try {
 				carte.get(positionDepart.getY()).get(i).setField(terrain);
 				} catch (NullPointerException e) {
-					display();
+					log.debug(toString());
 					e.printStackTrace();
 				}
 			}
@@ -712,8 +711,9 @@ public class MapManager {
 		log.debug("traceLargeur exiting");
 	}
 
-	public void display() {
-		log.debug("display begin");
+	@Override
+	public String toString() {
+		StringBuilder display = new StringBuilder();
 		for (int i = 0; i < mapSize; i++) {
 			StringBuilder str = new StringBuilder();
 			for (CaseModel c : carte.get(i)) {
@@ -723,9 +723,10 @@ public class MapManager {
 					str.append(1);
 				}
 			}
-			log.debug(str.toString());
+			display.append(str);
+			display.append("\n");
 		}
-		log.debug("display exiting");
+		return display.toString();
 	}
 
 	public int getMapSize() {

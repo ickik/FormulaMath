@@ -47,7 +47,7 @@ import fr.ickik.formulamath.view.JCase;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.1.002, 30 sept. 2011.
+ * @version 0.1.003, 30 sept. 2011.
  */
 public class MainFrame {
 
@@ -64,6 +64,10 @@ public class MainFrame {
 	private static final int MAX_ZOOM_SIZE = 50;
 	
 	public MainFrame(PlayerManager playerManager, MapManager mapManager) {
+		log.debug(mapManager.toString());
+		for (RoadDirectionInformation r : mapManager.getRoadDirectionInformationList()) {
+			log.debug(r.toString());
+		}
 		mainFrame = new JFrame(NAME + " " + VERSION);
 		ChuckNorrisTimer.getInstance(mainFrame);
 		this.playerManager = playerManager;
@@ -171,7 +175,7 @@ public class MainFrame {
 	private JPanel getMenuPanel() {
 		final JPanel panel = new JPanel(new GridLayout(4, 1));
 		JButton play = new JButton("Play");
-		if (playerManager.isHumanPlayer()) {
+		if (playerManager.existsHumanPlayer()) {
 			panel.add(getStartPanel(play));
 			panel.add(play);
 		}
@@ -330,8 +334,10 @@ public class MainFrame {
 		playerManager.AIPlay();
 		panel.setLayout(new GridLayout(5, 1));
 		final JCheckBox[] solution = new JCheckBox[5];
-		final List<Vector> vectorList = new ArrayList<Vector>(5);
-		vectorList.addAll(playerManager.getVectorsPossibilities(playerManager.getCurrentPlayer()));
+		final List<Vector> vectorList = playerManager.getVectorsPossibilities(playerManager.getCurrentPlayer());
+		for (Vector v : vectorList) {
+			log.debug(v.toString());
+		}
 		ButtonGroup group = new ButtonGroup();
 		for (int i = 0; i < 5; i++) {
 			JCheckBox box = new JCheckBox("");
@@ -345,16 +351,18 @@ public class MainFrame {
 		int distance = (caseArrayList.size() - mapManager.getMapSize()) / 2;
 		int xTrayPanel = playerManager.getCurrentPlayer().getPosition().getX() + distance;
 		int yTrayPanel = playerManager.getCurrentPlayer().getPosition().getY() + distance;
-		for (int i = 0; i < vectorList.size(); i++) {
+		for (int i = 0; i < vectorList.size();) {
 			Vector v = vectorList.get(i);
 			JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
 			JCase c2 = caseArrayList.get(yTrayPanel - v.getY()).get(xTrayPanel + v.getX());
+			log.debug("solution : {}", vectorList.get(i).toString());
 			
 			Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
 			if (isGrassIntersection(line)) {
 				vectorList.remove(i);
 			} else {
 				solution[i].setEnabled(true);
+				log.debug("Solution displayed : {}", vectorList.get(i).toString());
 				solution[i].setText("( " + vectorList.get(i).getX() + ", " + vectorList.get(i).getY() + " )");
 				i++;
 			}
@@ -371,6 +379,9 @@ public class MainFrame {
 			public void updatePlayerPossibilities(Player player) {
 				vectorList.clear();
 				vectorList.addAll(playerManager.getVectorsPossibilities(player));
+				for (Vector v : vectorList) {
+					log.debug(v.toString());
+				}
 				int distance = (caseArrayList.size() - mapManager.getMapSize()) / 2;
 				int xTrayPanel = player.getPosition().getX() + distance;
 				int yTrayPanel = player.getPosition().getY() + distance;
@@ -381,13 +392,15 @@ public class MainFrame {
 					
 					Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
 					if (isGrassIntersection(line)) {
+						log.debug("solution removed : {}", vectorList.get(i).toString());
 						vectorList.remove(i);
 					} else {
+						log.debug("solution displayed : {}", vectorList.get(i).toString());
 						i++;
 					}
 				}
 				if (vectorList.isEmpty()) {
-					displayErrorMessage("No possibility to play!!!");
+					displayErrorMessage("You lose\nNo possibility to play!!!");
 					//System.exit(0);
 				}
 				for (int i = 0; i < vectorList.size(); i++) {
@@ -463,6 +476,7 @@ public class MainFrame {
 				
 				if (isEndLineIntersection(line)) {
 					displayErrorMessage("end");
+					playerManager.lastPlay(vector);
 				}
 				
 				if (playerManager.play(vector)) {
@@ -609,9 +623,20 @@ public class MainFrame {
 	
 	private JMenuBar getMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
-		JMenu file = new JMenu();
+		menuBar.add(getFileMenu());
+		menuBar.add(getConfigurationMenu());
 		menuBar.add(getHelp());
 		return menuBar;
+	}
+	
+	private JMenu getFileMenu() {
+		JMenu file = new JMenu("File");
+		return file;
+	}
+	
+	private JMenu getConfigurationMenu() {
+		JMenu file = new JMenu("Configuration");
+		return file;
 	}
 	
 	private JMenu getHelp() {

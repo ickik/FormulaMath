@@ -19,7 +19,7 @@ import fr.ickik.formulamath.controler.UpdateCaseListener;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.1.001, 17 oct. 2011.
+ * @version 0.1.002, 17 oct. 2011.
  */
 public class PlayerManager {
 
@@ -64,40 +64,48 @@ public class PlayerManager {
 	public List<Vector> getVectorsPossibilities(Player player) {
 		log.debug("getVectorsPossibilities entering");
 		List<Vector> list = new ArrayList<Vector>(5);
-		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getY(), player.getPosition().getX() + player.getVector().getX()) != null
-				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getY(), player.getPosition().getX() + player.getVector().getX()).getField() != Field.HERBE) {
+
+		if (isMovingAvailable(player.getPosition().getX() + player.getVector().getX(), player.getPosition().getY() - player.getVector().getY(), player)) {
 			list.add(player.getVector());
 		}
-		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getY(), player.getPosition().getX() + player.getVector().getX() - 1) != null
-				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getY(), player.getPosition().getX() + player.getVector().getX() - 1).getField() != Field.HERBE
-				&& !mapManager.getCase(player.getPosition().getY() + player.getVector().getY(), player.getPosition().getX() + player.getVector().getX() - 1).isOccuped()) {
+		
+		if (isMovingAvailable(player.getPosition().getX() + player.getVector().getX() - 1, player.getPosition().getY() - player.getVector().getY(), player)) {
 			list.add(new Vector(player.getVector().getX() - 1, player.getVector().getY()));
 		}
-		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getY(), player.getPosition().getX() + player.getVector().getX() + 1) != null
-				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getY(), player.getPosition().getX() + player.getVector().getX() + 1).getField() != Field.HERBE
-				&& !mapManager.getCase(player.getPosition().getY() + player.getVector().getY(), player.getPosition().getX() + player.getVector().getX() + 1).isOccuped()) {
+		
+		if (isMovingAvailable(player.getPosition().getX() + player.getVector().getX() + 1, player.getPosition().getY() - player.getVector().getY(), player)) {
 			list.add(new Vector(player.getVector().getX() + 1, player.getVector().getY()));
 		}
-		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getY() + 1, player.getPosition().getX() + player.getVector().getX()) != null
-				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getY() + 1, player.getPosition().getX() + player.getVector().getX()).getField() != Field.HERBE
-				&& !mapManager.getCase(player.getPosition().getY() + player.getVector().getY() + 1, player.getPosition().getX() + player.getVector().getX()).isOccuped()) {
+		
+		if (isMovingAvailable(player.getPosition().getX() + player.getVector().getX(), player.getPosition().getY() - player.getVector().getY() + 1, player)) {
 			list.add(new Vector(player.getVector().getX(), player.getVector().getY() - 1));
 		}
-		if (mapManager.getCase(player.getPosition().getY() + player.getVector().getY() - 1, player.getPosition().getX() + player.getVector().getX()) != null
-				&& mapManager.getCase(player.getPosition().getY() + player.getVector().getY() - 1, player.getPosition().getX() + player.getVector().getX()).getField() != Field.HERBE
-				&& !mapManager.getCase(player.getPosition().getY() + player.getVector().getY() - 1, player.getPosition().getX() + player.getVector().getX()).isOccuped()) {
+		
+		if (isMovingAvailable(player.getPosition().getX() + player.getVector().getX(), player.getPosition().getY() - player.getVector().getY() - 1, player)) {
 			list.add(new Vector(player.getVector().getX(), player.getVector().getY() + 1));
 		}
 		log.debug("number of vectors : {}", list.size());
 		log.debug("getVectorsPossibilities exiting");
 		return list;
 	}
+	
+	private boolean isMovingAvailable(int xMove, int yMove, Player player) {
+		CaseModel model = mapManager.getCase(yMove, xMove);
+		//log.debug("Position {} + Vector {} {} is null : {}", new Object[]{player.getPosition().toString(), Integer.toString(xMove), Integer.toString(yMove), Boolean.toString(model != null)});
+		//log.debug("Position {} + Vector {} {} is grass : {}", new Object[]{player.getPosition().toString(), Integer.toString(xMove), Integer.toString(yMove), Boolean.toString(model.getField() != Field.HERBE)});
+		//log.debug("Position {} + Vector {} {} is occuped : {}", new Object[]{player.getPosition().toString(), Integer.toString(xMove), Integer.toString(yMove), Boolean.toString(model.isOccuped())});
+		if (model != null && model.getField() != Field.HERBE 
+				&& (!model.isOccuped() || model.getIdPlayer() == player.getId())) {
+			return true;
+		}
+		return false;
+	}
 
 	public boolean play(Vector vector) {
-		Player p = getCurrentPlayer();
 		if (isWinner) {
 			return false;
 		}
+		Player p = getCurrentPlayer();
 		if (mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()) == null
 				|| mapManager.getCase(p.getPosition().getY() - vector.getY(), p.getPosition().getX() + vector.getX()) == null) {
 			return false;
@@ -113,6 +121,21 @@ public class PlayerManager {
 		updateIndexPlayerGame();
 		AIPlay();
 		return true;
+	}
+	
+	public void lastPlay(Vector vector) {
+		List<Position> endLineList = mapManager.getEndLinePosition();
+		Player p = getCurrentPlayer();
+		mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
+//		p.getPosition().setX(p.getPosition().getX() + vector.getX());
+//		p.getPosition().setY(p.getPosition().getY() - vector.getY());
+//		p.getVector().setX(vector.getX());
+//		p.getVector().setY(vector.getY());
+		mapManager.getCase(endLineList.get(0).getY(), endLineList.get(0).getX()).setIdPlayer(p.getId());
+		fireUpdateCaseListener(p);
+		updateIndexPlayerGame();
+		//AIPlay();
+		isWinner = true;
 	}
 	
 	public void AIPlay() {
@@ -131,6 +154,9 @@ public class PlayerManager {
 	
 	private int getNextPlay(int distance, int vitesse) {
 		if (distance == 0) {
+			if (vitesse == 2) {
+				return -1;
+			}
 			return vitesse;
 		}
 		int nbLess = getNbStep(distance, vitesse - 1, 0);
@@ -145,10 +171,10 @@ public class PlayerManager {
 	}
 
 	private int getNbStep(int distance, int vitesse, int step) {
-		if (distance == 0) {
+		if (distance == 0 && vitesse == 1) {
 			return step;
 		}
-		if (distance < 0) {
+		if (distance < 0 || vitesse <= 0) {
 			return Integer.MAX_VALUE;
 		}
 		step++;
@@ -306,7 +332,7 @@ public class PlayerManager {
 		this.mapManager = mapManager;
 	}
 	
-	public boolean isHumanPlayer() {
+	public boolean existsHumanPlayer() {
 		for(Player player : playerList) {
 			if (player.getType() == PlayerType.HUMAN) {
 				return true;

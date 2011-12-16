@@ -1,22 +1,17 @@
 package fr.ickik.formulamath;
 
+/**
+ * Orientation of the road. It is the direction (cardinal point) of the way.
+ * @author Ickik.
+ * @version 0.1.000, 1 oct. 2011.
+ */
 public enum Orientation {
 
-	NORD,
+	NORTH,
 
-	EST,
+	EAST,
 
-	SUD,
+	SOUTH,
 
-	OUEST;
-
-	// private final int value;
-	//
-	// private Direction(int value) {
-	// this.value = value;
-	// }
-	//
-	// public int getValue() {
-	// return value;
-	// }
+	WEST;
 }

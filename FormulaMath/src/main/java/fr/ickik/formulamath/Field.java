@@ -2,38 +2,42 @@ package fr.ickik.formulamath;
 
 import java.awt.Color;
 
+/**
+ * Type of field displayed in the map.
+ * @author Ickik.
+ * @version 0.1.000, 1 oct 2011.
+ */
 public enum Field {
 
-	ROUTE {
+	ROAD {
 		@Override
 		public Color getColor() {
 			return Color.GRAY;
 		}
 	},
 
-	HERBE {
+	GRASS {
 		@Override
 		public Color getColor() {
 			return Color.GREEN;
 		}
 	},
 
-	START_LINE {
+	STARTING_LINE {
 		@Override
 		public Color getColor() {
 			return Color.YELLOW;
 		}
 	},
 
-	END_LINE {
+	FINISHING_LINE {
 		@Override
 		public Color getColor() {
 			return Color.BLACK;
 		}
 	}, 
 	
-	NO_TERRAIN {
-
+	NO_FIELD {
 		@Override
 		public Color getColor() {
 			return Color.WHITE;
@@ -41,5 +45,9 @@ public enum Field {
 		
 	};
 
+	/**
+	 * Return the default {@link Color} of the field.
+	 * @return the default color of the field.
+	 */
 	public abstract Color getColor();
 }

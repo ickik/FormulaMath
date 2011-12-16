@@ -94,7 +94,7 @@ public class PlayerManager {
 		//log.debug("Position {} + Vector {} {} is null : {}", new Object[]{player.getPosition().toString(), Integer.toString(xMove), Integer.toString(yMove), Boolean.toString(model != null)});
 		//log.debug("Position {} + Vector {} {} is grass : {}", new Object[]{player.getPosition().toString(), Integer.toString(xMove), Integer.toString(yMove), Boolean.toString(model.getField() != Field.HERBE)});
 		//log.debug("Position {} + Vector {} {} is occuped : {}", new Object[]{player.getPosition().toString(), Integer.toString(xMove), Integer.toString(yMove), Boolean.toString(model.isOccuped())});
-		if (model != null && model.getField() != Field.HERBE 
+		if (model != null && model.getField() != Field.GRASS 
 				&& (!model.isOccuped() || model.getIdPlayer() == player.getId())) {
 			return true;
 		}
@@ -124,7 +124,7 @@ public class PlayerManager {
 	}
 	
 	public void lastPlay(Vector vector) {
-		List<Position> endLineList = mapManager.getEndLinePosition();
+		List<Position> endLineList = mapManager.getFinishingLinePositionList();
 		Player p = getCurrentPlayer();
 		mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
 //		p.getPosition().setX(p.getPosition().getX() + vector.getX());
@@ -195,7 +195,7 @@ public class PlayerManager {
 
 	public boolean initStartPosition() {
 		log.debug("initStartPosition entering");
-		List<Position> list = mapManager.getStartPosition();
+		List<Position> list = mapManager.getStartingPositionList();
 		for (int i = 0; i < list.size(); ) {
 			Position p = list.get(i);
 			if (mapManager.getCase(p.getY(), p.getX()).isOccuped()) {
@@ -273,7 +273,7 @@ public class PlayerManager {
 	 * @throws FormulaMathException
 	 */
 	public void updatePlayer(Player p, int index) {
-		List<Position> list = mapManager.getStartPosition();
+		List<Position> list = mapManager.getStartingPositionList();
 		p.getPosition().setX(list.get(index).getX());
 		p.getPosition().setY(list.get(index).getY());
 		mapManager.getCase(list.get(index).getY(), list.get(index).getX()).setIdPlayer(p.getId());

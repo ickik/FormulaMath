@@ -185,10 +185,10 @@ public class MainFrame {
 	}
 	
 	private JPanel getStartPanel(final JButton play) {
-		final JPanel panel = new JPanel(new GridLayout(mapManager.getStartPosition().size(), 1));
-		final JRadioButton[] solution = new JRadioButton[mapManager.getStartPosition().size()];
+		final JPanel panel = new JPanel(new GridLayout(mapManager.getStartingPositionList().size(), 1));
+		final JRadioButton[] solution = new JRadioButton[mapManager.getStartingPositionList().size()];
 		playerManager.initStartPosition();
-		final List<Position> positionList = new ArrayList<Position>(mapManager.getStartPosition());
+		final List<Position> positionList = new ArrayList<Position>(mapManager.getStartingPositionList());
 		ButtonGroup group = new ButtonGroup();
 		for (int i = 0; i < MapManager.ROAD_SIZE; i++) {
 			JRadioButton box = new JRadioButton("");
@@ -601,11 +601,11 @@ public class MainFrame {
 	}
 	
 	private boolean isGrassIntersection(Shape shape) {
-		return checkIntersection(shape, Field.HERBE);
+		return checkIntersection(shape, Field.GRASS);
 	}
 	
 	private boolean isEndLineIntersection(Shape shape) {
-		return checkIntersection(shape, Field.END_LINE);
+		return checkIntersection(shape, Field.FINISHING_LINE);
 	}
 	
 	private boolean checkIntersection(Shape shape, Field terrain) {

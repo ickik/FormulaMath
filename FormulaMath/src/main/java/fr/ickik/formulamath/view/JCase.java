@@ -44,7 +44,7 @@ public class JCase extends JComponent {
 		if (isOpaque()) {
 			Graphics2D g2 = (Graphics2D) g;
 			if (model != null && model.getIdPlayer() == 0) {
-				if (model.getField() == Field.END_LINE) {
+				if (model.getField() == Field.FINISHING_LINE) {
 					drawEndLine(g2);
 					g2.setColor(Color.BLACK);
 					g2.draw(shape);

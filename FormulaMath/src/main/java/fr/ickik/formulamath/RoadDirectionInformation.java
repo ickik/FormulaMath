@@ -4,7 +4,7 @@ package fr.ickik.formulamath;
  * Object that stores information about the road. The combination of
  * many of these objects represents the modelisation of the road.
  * @author Ickik.
- * @version 0.1.000, 14 dec. 2011.
+ * @version 0.1.001, 14 dec. 2011.
  */
 public final class RoadDirectionInformation {
 
@@ -63,5 +63,22 @@ public final class RoadDirectionInformation {
 	@Override
 	public String toString() {
 		return orientation.toString() + " " + begin.toString() + " " + end.toString();
+	}
+	
+	/**
+	 * Return the distance from the position to the end.
+	 * @param position the current position.
+	 * @return the distance between position and the end.
+	 */
+	public int getLengthToEnd(Position position) {
+		switch (orientation) {
+		case NORTH:
+		case SOUTH:
+			return Math.abs(position.getY() - end.getY());
+		case EAST:
+		case WEST:
+			return Math.abs(position.getX() - end.getX());
+		}
+		return 0;
 	}
 }

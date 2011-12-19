@@ -12,11 +12,16 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import fr.ickik.formulamath.MainFrame;
-
+/**
+ * The game includes properties which are stored in a property file.
+ * This model load and save {@link FormulaMathProperty} in the file
+ * in user's directory.
+ * @author Ickik.
+ * @version 0.1.000, 16 dec. 2011.
+ */
 public class PropertiesModel {
 	private final String userPath;
-	private final String directory = "." + MainFrame.NAME;
+	private final String directory = ".FormulaMath";
 	private final String propertiesFile = "properties.properties";
 	private final Properties properties;
 	private static final PropertiesModel model = new PropertiesModel();

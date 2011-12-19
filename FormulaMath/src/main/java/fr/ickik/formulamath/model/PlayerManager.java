@@ -2,17 +2,22 @@ package fr.ickik.formulamath.model;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.ickik.formulamath.Field;
 import fr.ickik.formulamath.FormulaMathException;
+import fr.ickik.formulamath.Orientation;
 import fr.ickik.formulamath.Player;
 import fr.ickik.formulamath.PlayerType;
 import fr.ickik.formulamath.Position;
-import fr.ickik.formulamath.Field;
+import fr.ickik.formulamath.RoadDirectionInformation;
 import fr.ickik.formulamath.Vector;
 import fr.ickik.formulamath.controler.UpdateCaseListener;
 
@@ -29,6 +34,7 @@ public class PlayerManager {
 	private boolean fireUpdateCaseListener;
 	private boolean isWinner = false;
 	private final List<UpdateCaseListener> updateCaseListenerList = new ArrayList<UpdateCaseListener>();
+	private final Map<Integer, Integer> playerRoadPosition = new HashMap<Integer, Integer>();
 	public static final int NUMBER_OF_PLAYER_MAX = 4;
 	private static final PlayerManager singleton = new PlayerManager();
 	private static final Logger log = LoggerFactory.getLogger(PlayerManager.class);
@@ -91,9 +97,6 @@ public class PlayerManager {
 	
 	private boolean isMovingAvailable(int xMove, int yMove, Player player) {
 		CaseModel model = mapManager.getCase(yMove, xMove);
-		//log.debug("Position {} + Vector {} {} is null : {}", new Object[]{player.getPosition().toString(), Integer.toString(xMove), Integer.toString(yMove), Boolean.toString(model != null)});
-		//log.debug("Position {} + Vector {} {} is grass : {}", new Object[]{player.getPosition().toString(), Integer.toString(xMove), Integer.toString(yMove), Boolean.toString(model.getField() != Field.HERBE)});
-		//log.debug("Position {} + Vector {} {} is occuped : {}", new Object[]{player.getPosition().toString(), Integer.toString(xMove), Integer.toString(yMove), Boolean.toString(model.isOccuped())});
 		if (model != null && model.getField() != Field.GRASS 
 				&& (!model.isOccuped() || model.getIdPlayer() == player.getId())) {
 			return true;
@@ -139,13 +142,67 @@ public class PlayerManager {
 	}
 	
 	public void AIPlay() {
-		AIPlaying();
-	}
-	
-	private void AIPlaying() {
 		while (playerList.get(indexPlayerGame).getType() == PlayerType.COMPUTER) {
 			Player p = getCurrentPlayer();
 			log.debug("Player {} is under playing", p.toString());
+			playerRoadPosition.put(p.getId(), 0);
+			int roadPosition = playerRoadPosition.get(p.getId());
+			RoadDirectionInformation r = mapManager.getRoadDirectionInformationList().get(roadPosition);
+			int len = r.getLengthToEnd(p.getPosition());
+			Vector vector = null;
+			if (len == 1) {
+				RoadDirectionInformation nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition + 1);
+				switch (r.getOrientation()) {
+				case NORTH:
+					if (nextRoadDirection.getOrientation() == Orientation.EAST) {
+						vector = new Vector(1, 1);
+					} else {
+						vector = new Vector(-1, 1);
+					}
+					break;
+				case SOUTH:
+					if (nextRoadDirection.getOrientation() == Orientation.EAST) {
+						vector = new Vector(-1, -1);
+					} else {
+						vector = new Vector(1, -1);
+					}
+					break;
+				case WEST:
+					if (nextRoadDirection.getOrientation() == Orientation.NORTH) {
+						vector = new Vector(-1, 1);
+					} else {
+						vector = new Vector(-1, -1);
+					}
+					break;
+				case EAST:
+					if (nextRoadDirection.getOrientation() == Orientation.NORTH) {
+						vector = new Vector(1, 1);
+					} else {
+						vector = new Vector(1, -1);
+					}
+					break;
+				}
+			} else {
+				switch (r.getOrientation()) {
+				case NORTH:
+				case SOUTH:
+					int d = getNextPlay(len, p.getVector().getY());
+					vector = new Vector(0, p.getVector().getY() + d);
+					break;
+				case WEST:
+				case EAST:
+					d = getNextPlay(len, p.getVector().getX());
+					vector = new Vector(p.getVector().getX() + d, 0);
+					break;
+				}
+			}
+			mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
+			p.getPosition().setX(p.getPosition().getX() + vector.getX());
+			p.getPosition().setY(p.getPosition().getY() - vector.getY());
+			p.getVector().setX(vector.getX());
+			p.getVector().setY(vector.getY());
+			mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(p.getId());
+			
 			fireUpdateCaseListener(p);
 			updateIndexPlayerGame();
 		}
@@ -243,7 +300,25 @@ public class PlayerManager {
 				Player p = it.next();
 				if (p.getType().equals(PlayerType.COMPUTER)) {
 					log.debug("Computer first move");
-					//algo de recherche meilleur position
+					int len = mapManager.getRoadDirectionInformationList().get(0).getLength();
+					int val = getFirstMove(len);
+					Vector vector = null;
+					switch (mapManager.getRoadDirectionInformationList().get(0).getOrientation()) {
+					case NORTH:
+						vector = new Vector(0, val);
+						break;
+					case WEST:
+						vector = new Vector(-val, 0);
+						break;
+					case SOUTH:
+						vector = new Vector(0, -val);
+						break;
+					case EAST:
+						vector = new Vector(val, 0);
+						break;
+					}
+					playerRoadPosition.put(p.getId(), 0);
+					play(vector);
 					updateIndexPlayerGame();
 					fireUpdateCaseListener(p);
 				} else {
@@ -252,6 +327,30 @@ public class PlayerManager {
 			}
 		}
 		return false;
+	}
+	
+	private int getFirstMove(int distance) {
+		Map<Integer,Integer> distanceList = new HashMap<Integer,Integer>();
+		int halfDistance = distance / 2;
+		for (int i = 1; i < halfDistance; i++) {
+			distanceList.put(getNbStepFirstMove(distance, i, 0), i);
+		}
+		List<Integer> list = new ArrayList<Integer>(distanceList.keySet());
+		Collections.sort(list);
+		return distanceList.get(list.get(0));
+	}
+	
+	private int getNbStepFirstMove(int distance, int vitesse, int step) {
+		if (distance == 0 && vitesse == 1) {
+			return step;
+		}
+		if (distance < 0 || vitesse <= 0) {
+			return Integer.MAX_VALUE;
+		}
+		step++;
+		int nbLess = getNbStep(distance - vitesse, vitesse - 1, step);
+		int nbEqual = getNbStep(distance - vitesse, vitesse, step);
+		return Math.min(nbLess, nbEqual);
 	}
 	
 	public boolean initFirstMove(Vector vector) {

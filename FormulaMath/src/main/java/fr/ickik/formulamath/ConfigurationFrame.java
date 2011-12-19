@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,13 @@ import javax.swing.JTextField;
 import fr.ickik.formulamath.model.MapManager;
 import fr.ickik.formulamath.model.PlayerManager;
 
+/**
+ * This frame helps the user to configure the game.
+ * The user can choose between Human and Computer players;
+ * give a name to every player.
+ * @author Ickik.
+ * @version 0.1.000, 1 sept. 2011
+ */
 public class ConfigurationFrame {
 
 	private final JFrame configurationFrame;
@@ -27,6 +35,9 @@ public class ConfigurationFrame {
 	private final List<JTextField> nameTextFieldList = new ArrayList<JTextField>(PlayerManager.NUMBER_OF_PLAYER_MAX);
 	private final List<JLabel> labelList = new ArrayList<JLabel>(PlayerManager.NUMBER_OF_PLAYER_MAX);
 	
+	/**
+	 * Default constructor. Creates the frame to configure the game.
+	 */
 	public ConfigurationFrame() {
 		configurationFrame = new JFrame(MainFrame.NAME + " " + MainFrame.VERSION);
 		createMainFrame();
@@ -47,6 +58,8 @@ public class ConfigurationFrame {
 	private JPanel getButton() {
 		JPanel panel = new JPanel(new GridLayout(1, 2));
 		JButton okButton = new JButton("Ok");
+		okButton.setMnemonic(KeyEvent.VK_O);
+		configurationFrame.getRootPane().setDefaultButton(okButton);
 		okButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {

@@ -30,7 +30,7 @@ import fr.ickik.formulamath.model.PropertiesModel;
  * This class only get an instance of the AboutServer. The about
  * frame resume the application (title, version, author, contact).
  * @author Ickik.
- * @version 0.1.000, 14 dec. 2011.
+ * @version 0.1.001, 14 dec. 2011.
  */
 public final class AboutFrame {
 
@@ -50,8 +50,8 @@ public final class AboutFrame {
 	}
 	
 	/**
-	 * Return an instance of the AboutServer.
-	 * @return an instance of ICTouchAboutFrame.
+	 * Return an instance of the About frame.
+	 * @return an instance of AboutFrame.
 	 */
 	public static AboutFrame getNewInstance(JFrame mainFrame) {
 		return new AboutFrame(mainFrame);
@@ -60,7 +60,7 @@ public final class AboutFrame {
 	private JPanel createPanel() {
 		JPanel panel = new JPanel(new GridLayout(4,2));
 		panel.add(new JLabel(MainFrame.NAME + " " + MainFrame.VERSION));
-		JLabel label = new JLabel("Developed by Patrick Allgeyer");
+		JLabel label = new JLabel("Developed by Ickik");
 		label.addMouseListener(getMouseListener());
 		panel.add(label);
 		label.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -87,19 +87,13 @@ public final class AboutFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				try {
-					Desktop.getDesktop().mail(URI.create("mailto:patrick.allgeyer@alcatel-lucent.com?subject=CTI_Server_" + MainFrame.VERSION + ""));
+					Desktop.getDesktop().mail(URI.create("mailto:patrick.allgeyer@gmail.com?subject=Formula Math " + MainFrame.VERSION + ""));
 				} catch (IOException e1) {}
 			}
 		};
 	}
 	
 	private MouseListener getMouseListener() {
-//		final String separator = " - ";
-//		if (Boolean.getBoolean(PropertiesModel.getInstance().getProperty(FormulaMathProperty.CHUCK_NORRIS_ACTIVATE))) {
-//			chuckNorrisTimer.start();
-//			mainFrame.setTitle(MainFrame.NAME + " " + MainFrame.VERSION + separator + ChuckNorrisSingleton.getInstance().getRandomFact());
-//			mainFrame.validate();
-//		}
 		return new MouseListener() {
 			private boolean selected = ChuckNorrisTimer.getInstance(null).isRunning();
 			

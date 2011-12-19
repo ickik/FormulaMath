@@ -68,9 +68,7 @@ public class MapManager {
 				log.debug("{}", (new Position(p.getX(), i).toString()));
 				startingPositionList.add(new Position(p.getX(), i));
 			}
-		}
-
-		if (p.getY() == p2.getY()) {
+		} else if (p.getY() == p2.getY()) {
 			for (int i = minX; i <= maxX; i++) {
 				log.debug("{}", (new Position(i, p.getY()).toString()));
 				startingPositionList.add(new Position(i, p.getY()));
@@ -293,7 +291,7 @@ public class MapManager {
 					int len = getRandomNumber(mapSize - positionDepart.getY());
 					log.debug("length of the way = {}", len);
 					if (mapSize - positionDepart.getY() - len <= ROAD_SIZE) {
-						len = mapSize - positionDepart.getY() - 1;
+						len = mapSize - positionDepart.getY() - 2;
 						isFinished = true;
 					}
 					log.debug("length of the way = {}", len);

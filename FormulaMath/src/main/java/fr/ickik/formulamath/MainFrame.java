@@ -85,12 +85,12 @@ public class MainFrame {
 			x = 0;
 			List<JCase> caseList = new ArrayList<JCase>(sideSize);
 			for (int j = 0; j < sideSize; j++) {
-				JCase cas = new JCase(caseSize);
 				if (i >= 10 && i <= (sideSize - 10) && j >= 10 && j <= (sideSize - 10)) {
-					cas.setModel(mapManager.getCase(y, x));
+					caseList.add(new JCase(caseSize, mapManager.getCase(y, x)));
 					x++;
+				} else {
+					caseList.add(new JCase(caseSize, null));
 				}
-				caseList.add(cas);
 			}
 			caseArrayList.add(caseList);
 			if (i >= 10 && i <= (sideSize - 10)) {
@@ -283,9 +283,14 @@ public class MainFrame {
 				playerManager.getCurrentPlayer().getVector().setX(xMoving);
 				playerManager.getCurrentPlayer().getVector().setY(yMoving);
 				if (playerManager.initFirstMove(new Vector(xMoving, yMoving))) {
-					displayMessage(playerManager.getCurrentPlayer().toString());
-					xField.setText("");
-					yField.setText("");
+					if (playerManager.initAIFirstMove()) {
+						displayMessage(playerManager.getCurrentPlayer().toString());
+						xField.setText("");
+						yField.setText("");
+					}
+					removeButtonListener(play);
+					panel.removeAll();
+					getChoicePanel(play, panel);
 				} else {
 					removeButtonListener(play);
 					panel.removeAll();

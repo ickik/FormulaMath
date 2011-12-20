@@ -7,22 +7,18 @@ import fr.ickik.formulamath.Player;
  * Model of the JCase component. It stores the type of the field and
  * the id of the player if one is this case.
  * @author Ickik.
- * @version 0.1.001, 3 dec 2011.
+ * @version 0.1.002, 3 dec 2011.
  */
 public class CaseModel {
 
-	private Field field;
-	private int idPlayer;
+	private Field field = Field.GRASS;
+	private int idPlayer = MapManager.EMPTY_PLAYER;
 
 	/**
 	 * Constructor of the model. It initializes the model with the field
 	 * and the id of the empty player (0).
-	 * @param field the type of field of the model (this case).
 	 */
-	public CaseModel(Field field) {
-		this.field = field;
-		idPlayer = MapManager.EMPTY_PLAYER;
-	}
+	public CaseModel() {}
 
 	/**
 	 * Set a new type of {@link Field} to the variable. A field

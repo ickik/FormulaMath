@@ -11,7 +11,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.ickik.formulamath.Field;
 import fr.ickik.formulamath.FormulaMathException;
 import fr.ickik.formulamath.Orientation;
 import fr.ickik.formulamath.Player;
@@ -96,12 +95,13 @@ public class PlayerManager {
 	}
 	
 	private boolean isMovingAvailable(int xMove, int yMove, Player player) {
-		CaseModel model = mapManager.getCase(yMove, xMove);
-		if (model != null && model.getField() != Field.GRASS 
-				&& (!model.isOccuped() || model.getIdPlayer() == player.getId())) {
-			return true;
-		}
-		return false;
+//		CaseModel model = mapManager.getCase(yMove, xMove);
+//		if (model != null && model.getField() != Field.GRASS 
+//				&& (!model.isOccuped() || model.getIdPlayer() == player.getId())) {
+//			return true;
+//		}
+//		return false;
+		return true;
 	}
 
 	public boolean play(Vector vector) {
@@ -145,13 +145,15 @@ public class PlayerManager {
 		while (playerList.get(indexPlayerGame).getType() == PlayerType.COMPUTER) {
 			Player p = getCurrentPlayer();
 			log.debug("Player {} is under playing", p.toString());
-			playerRoadPosition.put(p.getId(), 0);
+			
 			int roadPosition = playerRoadPosition.get(p.getId());
 			RoadDirectionInformation r = mapManager.getRoadDirectionInformationList().get(roadPosition);
 			int len = r.getLengthToEnd(p.getPosition());
 			Vector vector = null;
-			if (len == 1) {
+			log.debug("");
+			if (len == 1 || p.getVector().getX() == 1 || p.getVector().getY() == 1) {
 				RoadDirectionInformation nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition + 1);
+				playerRoadPosition.put(p.getId(), roadPosition + 1);
 				switch (r.getOrientation()) {
 				case NORTH:
 					if (nextRoadDirection.getOrientation() == Orientation.EAST) {
@@ -431,12 +433,21 @@ public class PlayerManager {
 		this.mapManager = mapManager;
 	}
 	
-	public boolean existsHumanPlayer() {
-		for(Player player : playerList) {
-			if (player.getType() == PlayerType.HUMAN) {
-				return true;
+	public int getNumberOfHumanPlayer() {
+		int humanNb = 0;
+		for (Player p : getPlayerList()) {
+			if (p.getType() == PlayerType.HUMAN) {
+				humanNb++;
 			}
 		}
-		return false;
+		return humanNb;
+	}
+	
+	/**
+	 * Check if a human player exists and return true.
+	 * @return true if a human player exists, false otherwise.
+	 */
+	public boolean existsHumanPlayer() {
+		return getNumberOfHumanPlayer() >= 1;
 	}
 }

@@ -303,12 +303,14 @@ public class MainFrame {
 	
 	private KeyListener getKeyListener(final JTextField textField) {
 		return new KeyListener() {
+			
+			private final Pattern pattern = Pattern.compile("-{0,1}[\\d]+");
+
 			@Override
 			public void keyTyped(KeyEvent arg0) {}
 			
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				Pattern pattern = Pattern.compile("-{0,1}[\\d]+");
 				if (pattern.matcher(textField.getText()).matches()) {
 					textField.setForeground(Color.GREEN);
 				} else {
@@ -424,7 +426,7 @@ public class MainFrame {
 					solution[i].setSelected(false);
 				}
 				panel.revalidate();
-				if (playerManager.getPlayerList().size() > 1) {
+				if (playerManager.getNumberOfHumanPlayer() > 1) {
 					displayMessage(playerManager.getCurrentPlayer().getName());
 				}
 			}
@@ -485,6 +487,9 @@ public class MainFrame {
 				}
 				
 				if (playerManager.play(vector)) {
+					for (JCheckBox cb : solution) {
+						cb.setSelected(false);
+					}
 				}
 			}
 		};

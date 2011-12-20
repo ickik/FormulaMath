@@ -51,7 +51,7 @@ public class MapManager {
 		for (int i = 0; i < mapSize; i++) {
 			List<CaseModel> list = new ArrayList<CaseModel>(mapSize);
 			for (int j = 0; j < mapSize; j++) {
-				list.add(new CaseModel(Field.GRASS));
+				list.add(new CaseModel());
 			}
 			carte.add(list);
 		}
@@ -228,7 +228,7 @@ public class MapManager {
 						traceLargeur(positionDepart, positionDepart2);
 					}
 					Position centerEnd = new Position((positionDepart.getX() + positionDepart2.getX()) / 2, (positionDepart.getY() + positionDepart2.getY()) / 2);
-					roadList.add(new RoadDirectionInformation(Orientation.SOUTH, centerDepart, centerEnd));
+					roadList.add(new RoadDirectionInformation(Orientation.WEST, centerDepart, centerEnd));
 					log.debug(coteDepart.name() + " => " + direction.name() + " ended");
 					break;
 

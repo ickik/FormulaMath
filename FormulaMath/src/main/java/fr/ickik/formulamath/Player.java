@@ -12,8 +12,8 @@ public class Player {
 	private static int GENERAL_ID = 1;
 
 	private final int id;
-	private final Position position;
-	private final Vector movingVector;
+	private final Position position = new Position();
+	private final Vector movingVector = new Vector();
 	private final String name;
 	private final PlayerType type;
 	private int playingCounter = 0;
@@ -30,8 +30,6 @@ public class Player {
 		id = GENERAL_ID++;
 		this.type = type;
 		this.name = name;
-		position = new Position();
-		movingVector = new Vector();
 	}
 
 	/**

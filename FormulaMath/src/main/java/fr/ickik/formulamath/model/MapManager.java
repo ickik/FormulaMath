@@ -2,7 +2,6 @@ package fr.ickik.formulamath.model;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Random;
@@ -11,15 +10,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.ickik.formulamath.Direction;
+import fr.ickik.formulamath.Field;
 import fr.ickik.formulamath.Orientation;
 import fr.ickik.formulamath.Position;
-import fr.ickik.formulamath.Field;
 import fr.ickik.formulamath.RoadDirectionInformation;
+import fr.ickik.formulamath.RoadDirectionList;
 
 /**
  * Contains and handles the map of the application. The map is a everytime a square.
  * @author Ickik.
- * @version 0.1.002, 3 nov. 2011.
+ * @version 0.1.003, 3 nov. 2011.
  */
 public class MapManager {
 
@@ -30,7 +30,7 @@ public class MapManager {
 	private final int mapSize;
 	private final List<Position> startingPositionList = new ArrayList<Position>(2);
 	private final List<Position> finishingLinePositionList = new ArrayList<Position>(2);
-	private final List<RoadDirectionInformation> roadList = new LinkedList<RoadDirectionInformation>();
+	private final List<RoadDirectionInformation> roadList = new RoadDirectionList();
 
 	/**
 	 * Constructor of the map manager. It needs the size of the map.
@@ -55,7 +55,7 @@ public class MapManager {
 			}
 			carte.add(list);
 		}
-		log.debug("Init exiting");
+		log.debug("Map initialized");
 	}
 
 	private void initStartPosition(Position p, Position p2) {
@@ -423,50 +423,48 @@ public class MapManager {
 		boolean solutionAvailable = true;
 		switch (orientation) {
 		case NORTH:
-			for (int i = 0; i < length; i++) {
-				positionDepart.setY(positionDepart.getY() - 1);
-				positionDepart2.setY(positionDepart2.getY() - 1);
-				if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getField() == Field.ROAD || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getField() == Field.ROAD) {
-					solutionAvailable = false;
-					break;
-				}
-			}
+			solutionAvailable = checkSolutionNorthSouth(-1, length, positionDepart, positionDepart2);
 			break;
 
 		case WEST:
-			for (int i = 0; i < length; i++) {
-				positionDepart.setX(positionDepart.getX() - 1);
-				positionDepart2.setX(positionDepart2.getX() - 1);
-				if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getField() == Field.ROAD || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getField() == Field.ROAD) {
-					solutionAvailable = false;
-					break;
-				}
-			}
+			solutionAvailable = checkSolution(-1, length, positionDepart, positionDepart2);
 			break;
 
 		case SOUTH:
-			for (int i = 0; i < length; i++) {
-				positionDepart.setY(positionDepart.getY() + 1);
-				positionDepart2.setY(positionDepart2.getY() + 1);
-				if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getField() == Field.ROAD || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getField() == Field.ROAD) {
-					log.debug(Orientation.SOUTH.toString() + " not available " + positionDepart.toString() + " / " + positionDepart2.toString());
-					solutionAvailable = false;
-					break;
-				}
-			}
+			solutionAvailable = checkSolutionNorthSouth(1, length, positionDepart, positionDepart2);
 			break;
 
 		case EAST:
-			for (int i = 0; i < length; i++) {
-				positionDepart.setX(positionDepart.getX() + 1);
-				positionDepart2.setX(positionDepart2.getX() + 1);
-				if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getField() == Field.ROAD || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getField() == Field.ROAD) {
-					solutionAvailable = false;
-					log.debug(positionDepart.toString() + " " + positionDepart2.toString());
-					break;
-				}
-			}
+			solutionAvailable = checkSolution(1, length, positionDepart, positionDepart2);
 			break;
+		}
+		return solutionAvailable;
+	}
+	
+	private boolean checkSolutionNorthSouth(int value, int length, Position positionDepart, Position positionDepart2) {
+		boolean solutionAvailable = true;
+		for (int i = 0; i < length; i++) {
+			positionDepart.setY(positionDepart.getY() + value);
+			positionDepart2.setY(positionDepart2.getY() + value);
+			if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getField() == Field.ROAD || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getField() == Field.ROAD) {
+				solutionAvailable = false;
+				log.debug("Solution not available at {} / {}", positionDepart.toString(), positionDepart2.toString());
+				break;
+			}
+		}
+		return solutionAvailable;
+	}
+	
+	private boolean checkSolution(int value, int length, Position positionDepart, Position positionDepart2) {
+		boolean solutionAvailable = true;
+		for (int i = 0; i < length; i++) {
+			positionDepart.setX(positionDepart.getX() + value);
+			positionDepart2.setX(positionDepart2.getX() + value);
+			if (carte.get(positionDepart.getX()).get(positionDepart.getY()).getField() == Field.ROAD || carte.get(positionDepart2.getX()).get(positionDepart2.getY()).getField() == Field.ROAD) {
+				solutionAvailable = false;
+				log.debug("Solution not available at {} / {}", positionDepart.toString(), positionDepart2.toString());
+				break;
+			}
 		}
 		return solutionAvailable;
 	}
@@ -498,8 +496,8 @@ public class MapManager {
 
 			case DROITE:
 				if (positionDepart2.getX() > ROAD_SIZE + 1 && mapSize - positionDepart2.getY() > ROAD_SIZE) {
-					positionDepart2.setX(positionDepart.getX() + 1);
 					positionDepart.setX(positionDepart.getX() + 1);
+					positionDepart2.setX(positionDepart.getX());
 					positionDepart2.setY(positionDepart.getY() + 1);
 					positionDepart.setY(positionDepart.getY() + ROAD_SIZE);
 					for (int i = 0; i < curveLength; i++) {

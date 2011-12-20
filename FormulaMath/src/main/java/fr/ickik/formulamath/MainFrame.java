@@ -33,6 +33,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,7 @@ import fr.ickik.formulamath.view.JCase;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.1.003, 30 sept. 2011.
+ * @version 0.1.004, 30 sept. 2011.
  */
 public class MainFrame {
 
@@ -81,11 +82,12 @@ public class MainFrame {
 		int sideSize = mapManager.getMapSize() + 20;
 		int x = 0;
 		int y = 0;
+		int endOfMapIndex = sideSize - 10;
 		for (int i = 0; i < sideSize; i++) {
 			x = 0;
 			List<JCase> caseList = new ArrayList<JCase>(sideSize);
 			for (int j = 0; j < sideSize; j++) {
-				if (i >= 10 && i <= (sideSize - 10) && j >= 10 && j <= (sideSize - 10)) {
+				if (i >= 10 && i <= endOfMapIndex && j >= 10 && j <= endOfMapIndex) {
 					caseList.add(new JCase(caseSize, mapManager.getCase(y, x)));
 					x++;
 				} else {
@@ -124,7 +126,8 @@ public class MainFrame {
 					log.debug("Closing window and saving properties");
 					PropertiesModel.getInstance().save();
 				} catch (IOException e) {
-					e.printStackTrace();
+					log.error("Error saving properties for quiting : {} ", e.getMessage());
+					displayErrorMessage("Error during saving properties");
 				}
 			}
 			
@@ -212,11 +215,14 @@ public class MainFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int selected = getSelectedCheckBox(solution);
+				int selected = getSelectedButton(solution);
 				if (selected == -1) {
 					return;
 				}
-				
+				for (int i = 0; i < MapManager.ROAD_SIZE; i++) {
+					solution[i].setText("");
+					solution[i].setEnabled(false);
+				}
 				playerManager.updatePlayer(playerManager.getCurrentPlayer(), selected);
 				if (playerManager.initStartPosition()) {
 					displayMessage(playerManager.getCurrentPlayer().toString());
@@ -468,7 +474,7 @@ public class MainFrame {
 	private ActionListener getPlayActionListener(final List<Vector> vectorList, final JCheckBox[] solution) {
 		return new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				int selectedPossibility = getSelectedCheckBox(solution);
+				int selectedPossibility = getSelectedButton(solution);
 				if (selectedPossibility == -1) {
 					displayErrorMessage("No possibility selected");
 					return;
@@ -591,19 +597,11 @@ public class MainFrame {
 		}
 		mainFrame.validate();
 	}
-
-	private int getSelectedCheckBox(JCheckBox[] checkboxArray) {
-		for (int i = 0; i < 5; i++) {
-			if (checkboxArray[i].isSelected()) {
-				return i;
-			}
-		}
-		return -1;
-	}
 	
-	private int getSelectedCheckBox(JRadioButton[] radioButtonArray) {
-		for (int i = 0; i < 4; i++) {
-			if (radioButtonArray[i].isSelected()) {
+	private int getSelectedButton(JToggleButton[] buttonArray) {
+		int len = buttonArray.length;
+		for (int i = 0; i < len; i++) {
+			if (buttonArray[i].isSelected()) {
 				return i;
 			}
 		}
@@ -641,6 +639,21 @@ public class MainFrame {
 	
 	private JMenu getFileMenu() {
 		JMenu file = new JMenu("File");
+		JMenuItem quit = new JMenuItem("Quit");
+		quit.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					PropertiesModel.getInstance().save();
+				} catch (IOException e) {
+					log.error("Error saving properties in quit menu : {} ", e.getMessage());
+					displayErrorMessage("Error during saving properties");
+				}
+				System.exit(0);
+			}
+		});
+		file.add(quit);
 		return file;
 	}
 	

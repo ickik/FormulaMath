@@ -17,12 +17,12 @@ import java.util.Properties;
  * This model load and save {@link FormulaMathProperty} in the file
  * in user's directory.
  * @author Ickik.
- * @version 0.1.000, 16 dec. 2011.
+ * @version 0.1.001, 16 dec. 2011.
  */
 public class PropertiesModel {
 	private final String userPath;
 	private final String directory = ".FormulaMath";
-	private final String propertiesFile = "properties.properties";
+	private final String propertiesFile = "FormulaMath.properties";
 	private final Properties properties;
 	private static final PropertiesModel model = new PropertiesModel();
 	
@@ -52,7 +52,7 @@ public class PropertiesModel {
 		File propertiesFile = new File(userPath + "/" + directory + "/" + this.propertiesFile);
 		FileOutputStream out = new FileOutputStream(propertiesFile);
 		try {
-			properties.store(out, "Virtual ICTouch Computing file properties");
+			properties.store(out, "FormulaMath file properties");
 		} finally {
 			out.close();
 		}

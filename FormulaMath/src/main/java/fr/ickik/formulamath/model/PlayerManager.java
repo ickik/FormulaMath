@@ -11,6 +11,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.ickik.formulamath.Field;
 import fr.ickik.formulamath.FormulaMathException;
 import fr.ickik.formulamath.Orientation;
 import fr.ickik.formulamath.Player;
@@ -23,7 +24,7 @@ import fr.ickik.formulamath.controler.UpdateCaseListener;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.1.002, 17 oct. 2011.
+ * @version 0.1.003, 17 oct. 2011.
  */
 public class PlayerManager {
 
@@ -95,13 +96,12 @@ public class PlayerManager {
 	}
 	
 	private boolean isMovingAvailable(int xMove, int yMove, Player player) {
-//		CaseModel model = mapManager.getCase(yMove, xMove);
-//		if (model != null && model.getField() != Field.GRASS 
-//				&& (!model.isOccuped() || model.getIdPlayer() == player.getId())) {
-//			return true;
-//		}
-//		return false;
-		return true;
+		CaseModel model = mapManager.getCase(yMove, xMove);
+		if (model != null && model.getField() != Field.GRASS 
+				&& (!model.isOccuped() || model.getIdPlayer() == player.getId())) {
+			return true;
+		}
+		return model == null;
 	}
 
 	public boolean play(Vector vector) {
@@ -130,10 +130,6 @@ public class PlayerManager {
 		List<Position> endLineList = mapManager.getFinishingLinePositionList();
 		Player p = getCurrentPlayer();
 		mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
-//		p.getPosition().setX(p.getPosition().getX() + vector.getX());
-//		p.getPosition().setY(p.getPosition().getY() - vector.getY());
-//		p.getVector().setX(vector.getX());
-//		p.getVector().setY(vector.getY());
 		mapManager.getCase(endLineList.get(0).getY(), endLineList.get(0).getX()).setIdPlayer(p.getId());
 		fireUpdateCaseListener(p);
 		updateIndexPlayerGame();
@@ -151,9 +147,9 @@ public class PlayerManager {
 			int len = r.getLengthToEnd(p.getPosition());
 			Vector vector = null;
 			log.debug("");
-			if (len == 1 || p.getVector().getX() == 1 || p.getVector().getY() == 1) {
+			if (len == 1 && (p.getVector().getX() == 1 ||  p.getVector().getX() == -1 || p.getVector().getY() == 1 || p.getVector().getY() == -1)) {
 				RoadDirectionInformation nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition + 1);
-				playerRoadPosition.put(p.getId(), roadPosition + 1);
+				//playerRoadPosition.put(p.getId(), roadPosition + 1);
 				switch (r.getOrientation()) {
 				case NORTH:
 					if (nextRoadDirection.getOrientation() == Orientation.EAST) {
@@ -181,6 +177,39 @@ public class PlayerManager {
 						vector = new Vector(1, 1);
 					} else {
 						vector = new Vector(1, -1);
+					}
+					break;
+				}
+			} else if ((p.getVector().getX() == 1 ||  p.getVector().getX() == -1) && (p.getVector().getY() == 1 || p.getVector().getY() == -1)) {
+				RoadDirectionInformation nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition + 1);
+				playerRoadPosition.put(p.getId(), roadPosition + 1);
+				switch (r.getOrientation()) {
+				case NORTH:
+					if (nextRoadDirection.getOrientation() == Orientation.EAST) {
+						vector = new Vector(1, 0);
+					} else {
+						vector = new Vector(-1, 0);
+					}
+					break;
+				case SOUTH:
+					if (nextRoadDirection.getOrientation() == Orientation.EAST) {
+						vector = new Vector(-1, 0);
+					} else {
+						vector = new Vector(1, 0);
+					}
+					break;
+				case WEST:
+					if (nextRoadDirection.getOrientation() == Orientation.NORTH) {
+						vector = new Vector(0, 1);
+					} else {
+						vector = new Vector(0, -1);
+					}
+					break;
+				case EAST:
+					if (nextRoadDirection.getOrientation() == Orientation.NORTH) {
+						vector = new Vector(0, 1);
+					} else {
+						vector = new Vector(0, -1);
 					}
 					break;
 				}
@@ -324,6 +353,7 @@ public class PlayerManager {
 					updateIndexPlayerGame();
 					fireUpdateCaseListener(p);
 				} else {
+					log.debug("Human turn first move");
 					return true;
 				}
 			}
@@ -332,12 +362,14 @@ public class PlayerManager {
 	}
 	
 	private int getFirstMove(int distance) {
+		log.debug("getFirstMove : distance = {}", Integer.toString(distance));
 		Map<Integer,Integer> distanceList = new HashMap<Integer,Integer>();
 		int halfDistance = distance / 2;
 		for (int i = 1; i < halfDistance; i++) {
 			distanceList.put(getNbStepFirstMove(distance, i, 0), i);
 		}
 		List<Integer> list = new ArrayList<Integer>(distanceList.keySet());
+		log.debug("Size of the list of the distance found : {}", Integer.toString(list.size()));
 		Collections.sort(list);
 		return distanceList.get(list.get(0));
 	}
@@ -362,6 +394,7 @@ public class PlayerManager {
 		getCurrentPlayer().getVector().setX(vector.getX());
 		getCurrentPlayer().getVector().setY(vector.getY());
 		mapManager.getCase(getCurrentPlayer().getPosition().getY(), getCurrentPlayer().getPosition().getX()).setIdPlayer(getCurrentPlayer().getId());
+		playerRoadPosition.put(getCurrentPlayer().getId(), 0);
 		fireUpdateCaseListener(getCurrentPlayer());
 		updateIndexPlayerGame();
 		return indexPlayerGame % getPlayerList().size() != 0;

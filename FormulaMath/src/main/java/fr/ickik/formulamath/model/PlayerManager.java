@@ -411,19 +411,19 @@ public class PlayerManager {
 		}
 	}
 	
-	protected void fireUpdateCaseListener(Player p) {
+	private void fireUpdateCaseListener(Player p) {
 		for (UpdateCaseListener u : updateCaseListenerList) {
 			u.updatePlayerCase(p);
 		}
 	}
 	
-	protected void fireUpdatePossibilitiesListener(Player p) {
+	private void fireUpdatePossibilitiesListener(Player p) {
 		for (UpdateCaseListener u : updateCaseListenerList) {
 			u.updatePlayerPossibilities(p);
 		}
 	}
 
-	protected void fireEndGameListener(Player player) {
+	private void fireEndGameListener(Player player) {
 		for (UpdateCaseListener u : updateCaseListenerList) {
 			u.updateEndGamePanel(player);
 		}
@@ -433,6 +433,10 @@ public class PlayerManager {
 		this.mapManager = mapManager;
 	}
 	
+	/**
+	 * Return the number of human player in the game.
+	 * @return the number of human player in the game.
+	 */
 	public int getNumberOfHumanPlayer() {
 		int humanNb = 0;
 		for (Player p : getPlayerList()) {

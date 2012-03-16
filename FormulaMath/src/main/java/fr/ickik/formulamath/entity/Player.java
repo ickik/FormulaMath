@@ -1,6 +1,8 @@
-package fr.ickik.formulamath;
+package fr.ickik.formulamath.entity;
 
 import java.awt.Color;
+
+import fr.ickik.formulamath.PlayerType;
 
 /**
  * Player object defines configuration for a player (Human or AI).

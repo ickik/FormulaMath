@@ -1,6 +1,6 @@
 package fr.ickik.formulamath.controler;
 
-import fr.ickik.formulamath.Player;
+import fr.ickik.formulamath.entity.Player;
 
 /**
  * Listener of player's moving. It update the screen depending position

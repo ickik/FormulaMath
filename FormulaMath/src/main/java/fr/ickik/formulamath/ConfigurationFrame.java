@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.model.MapManager;
 import fr.ickik.formulamath.model.PlayerManager;
 

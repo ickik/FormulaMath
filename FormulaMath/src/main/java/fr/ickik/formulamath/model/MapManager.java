@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 import fr.ickik.formulamath.Direction;
 import fr.ickik.formulamath.Field;
 import fr.ickik.formulamath.Orientation;
-import fr.ickik.formulamath.Position;
 import fr.ickik.formulamath.RoadDirectionInformation;
 import fr.ickik.formulamath.RoadDirectionList;
+import fr.ickik.formulamath.entity.Position;
 
 /**
  * Contains and handles the map of the application. The map is a everytime a square.

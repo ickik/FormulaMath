@@ -1,4 +1,4 @@
-package fr.ickik.formulamath;
+package fr.ickik.formulamath.entity;
 
 /**
  * A vector is a movement with coordinates x and y.

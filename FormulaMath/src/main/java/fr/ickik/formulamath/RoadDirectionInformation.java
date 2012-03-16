@@ -1,5 +1,7 @@
 package fr.ickik.formulamath;
 
+import fr.ickik.formulamath.entity.Position;
+
 /**
  * Object that stores information about the road. The combination of
  * many of these objects represents the modelisation of the road.

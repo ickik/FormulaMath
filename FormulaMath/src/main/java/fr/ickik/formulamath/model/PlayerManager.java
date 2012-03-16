@@ -14,12 +14,12 @@ import org.slf4j.LoggerFactory;
 import fr.ickik.formulamath.Field;
 import fr.ickik.formulamath.FormulaMathException;
 import fr.ickik.formulamath.Orientation;
-import fr.ickik.formulamath.Player;
 import fr.ickik.formulamath.PlayerType;
-import fr.ickik.formulamath.Position;
 import fr.ickik.formulamath.RoadDirectionInformation;
-import fr.ickik.formulamath.Vector;
 import fr.ickik.formulamath.controler.UpdateCaseListener;
+import fr.ickik.formulamath.entity.Player;
+import fr.ickik.formulamath.entity.Position;
+import fr.ickik.formulamath.entity.Vector;
 
 /**
  * The class which manages all players.

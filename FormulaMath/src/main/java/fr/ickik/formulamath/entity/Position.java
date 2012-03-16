@@ -1,4 +1,4 @@
-package fr.ickik.formulamath;
+package fr.ickik.formulamath.entity;
 
 /**
  * The position is a couple of coordinates, an horizontal and a vertical. The

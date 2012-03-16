@@ -39,6 +39,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.ickik.formulamath.controler.UpdateCaseListener;
+import fr.ickik.formulamath.entity.Player;
+import fr.ickik.formulamath.entity.Position;
+import fr.ickik.formulamath.entity.Vector;
 import fr.ickik.formulamath.model.MapManager;
 import fr.ickik.formulamath.model.PlayerManager;
 import fr.ickik.formulamath.model.PropertiesModel;

@@ -1,7 +1,7 @@
 package fr.ickik.formulamath.model;
 
 import fr.ickik.formulamath.Field;
-import fr.ickik.formulamath.Player;
+import fr.ickik.formulamath.entity.Player;
 
 /**
  * Model of the JCase component. It stores the type of the field and

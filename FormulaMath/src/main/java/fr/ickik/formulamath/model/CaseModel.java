@@ -2,9 +2,10 @@ package fr.ickik.formulamath.model;
 
 import fr.ickik.formulamath.Field;
 import fr.ickik.formulamath.entity.Player;
+import fr.ickik.formulamath.view.JCase;
 
 /**
- * Model of the JCase component. It stores the type of the field and
+ * Model of the {@link JCase} component. It stores the type of the field and
  * the id of the player if one is this case.
  * @author Ickik.
  * @version 0.1.002, 3 dec 2011.
@@ -15,8 +16,8 @@ public class CaseModel {
 	private int idPlayer = MapManager.EMPTY_PLAYER;
 
 	/**
-	 * Constructor of the model. It initializes the model with the field
-	 * and the id of the empty player (0).
+	 * Constructor of the model. It initializes the model with the default
+	 * field {@link Field#GRASS} and the id of the empty player (0).
 	 */
 	public CaseModel() {}
 

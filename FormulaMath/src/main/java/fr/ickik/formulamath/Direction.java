@@ -1,10 +1,26 @@
 package fr.ickik.formulamath;
 
+import fr.ickik.formulamath.model.MapManager;
+
+/**
+ * Direction the {@link MapManager} can choose to create the map.
+ * @author Patrick Allgeyer
+ * @version 0.1.000, 20 mar 2012
+ */
 public enum Direction {
 
-	GAUCHE,
+	/**
+	 * The left direction.
+	 */
+	LEFT,
 
-	MILIEU,
+	/**
+	 * No changing direction.
+	 */
+	MIDDLE,
 
-	DROITE;
+	/**
+	 * The right direction.
+	 */
+	RIGHT;
 }

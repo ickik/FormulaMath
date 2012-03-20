@@ -365,7 +365,7 @@ public class PlayerManager {
 		log.debug("getFirstMove : distance = {}", Integer.toString(distance));
 		Map<Integer,Integer> distanceList = new HashMap<Integer,Integer>();
 		int halfDistance = distance / 2;
-		for (int i = 1; i < halfDistance; i++) {
+		for (int i = 1; i <= halfDistance; i++) {
 			distanceList.put(getNbStepFirstMove(distance, i, 0), i);
 		}
 		List<Integer> list = new ArrayList<Integer>(distanceList.keySet());

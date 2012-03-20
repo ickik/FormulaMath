@@ -6,6 +6,9 @@ import fr.ickik.formulamath.PlayerType;
 
 /**
  * Player object defines configuration for a player (Human or AI).
+ * A player is identified by an unique id. Other characteristics are
+ * the name, the type of the player ({@link PlayerType}), a {@link Color},
+ * a position and the last move.
  * @author Patrick Allgeyer.
  * @version 0.1.000, 30 sept. 2011.
  */

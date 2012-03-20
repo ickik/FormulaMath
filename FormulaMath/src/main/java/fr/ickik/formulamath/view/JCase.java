@@ -18,7 +18,7 @@ import fr.ickik.formulamath.model.PlayerManager;
  * has the same size. A case is a shape (Rectangle) draw on the screen. The model
  * of the case defines the color of the case background.
  * @author Ickik.
- * @version 0.1.001, 3 dec 2011.
+ * @version 0.1.002, 19 mar 2012.
  */
 @SuppressWarnings("serial")
 public class JCase extends JComponent {
@@ -35,10 +35,8 @@ public class JCase extends JComponent {
 	public JCase(int size, CaseModel model) {
 		this.model = model;
 		setOpaque(true);
-		Dimension dimension = new Dimension(size, size);
-		setSize(dimension);
-		double sizeDoubleValue = (new Integer(size+1)).doubleValue();
-		shape = new Rectangle2D.Double(0.0, 0.0, sizeDoubleValue, sizeDoubleValue);
+		setSize(new Dimension(size, size));
+		shape = new Rectangle2D.Double(0.0, 0.0, size, size);
 	}
 
 	@Override

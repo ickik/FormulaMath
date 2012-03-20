@@ -4,7 +4,7 @@ package fr.ickik.formulamath.entity;
  * A vector is a movement with coordinates x and y.
  * x is the horizontal move and y the vertical move.
  * @author Ickik.
- * @version 0.1.000, 12 dec 2011.
+ * @version 0.1.001, 19 mar 2012.
  */
 public class Vector {
 
@@ -64,5 +64,19 @@ public class Vector {
 	@Override
 	public String toString() {
 		return "Vector moving x=" + Integer.toString(getX()) + ", y=" + Integer.toString(getY());
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Vector) {
+			Vector v = (Vector) obj;
+			return x == v.getX() && y == v.getY();
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return x ^ y * y;
 	}
 }

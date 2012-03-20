@@ -32,7 +32,7 @@ public final class RoadDirectionInformation {
 	 * @return the length between the start and the end positions.
 	 */
 	public int getLength() {
-		if (begin.getX() == end.getX()) {
+		if (orientation == Orientation.SOUTH || orientation == Orientation.NORTH) {
 			return Math.abs(begin.getY() - end.getY());
 		}
 		return Math.abs(begin.getX() - end.getX());

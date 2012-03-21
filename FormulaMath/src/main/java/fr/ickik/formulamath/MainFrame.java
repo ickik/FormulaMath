@@ -51,9 +51,9 @@ import fr.ickik.formulamath.view.JCase;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.1.004, 30 sept. 2011.
+ * @version 0.1.005, 21 mar. 2012.
  */
-public class MainFrame {
+public final class MainFrame {
 
 	private final JFrame mainFrame;
 	public static final String NAME = "Formula Math";
@@ -269,38 +269,52 @@ public class MainFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				log.trace("First step action");
 				if (!checkFirstMovingValues(xField, yField)) {
 					displayErrorMessage("Values not correct");
 					return;
 				}
+				log.trace("values entered in the both textfield are correct");
 				int distance = (caseArrayList.size() - mapManager.getMapSize()) / 2;
 				int xMoving = getValue(xField);
 				int yMoving = getValue(yField);
+				log.debug("Vector ({}, {})", xMoving, yMoving);
 				int xTrayPanel = playerManager.getCurrentPlayer().getPosition().getX() + distance;
 				int yTrayPanel = playerManager.getCurrentPlayer().getPosition().getY() + distance;
+				log.debug("Player position ({}, {})", xTrayPanel, yTrayPanel);
 				JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
+				log.debug("Test futur position ({}, {})", (xTrayPanel + xMoving), (yTrayPanel - yMoving));
 				JCase c2 = caseArrayList.get(yTrayPanel - yMoving).get(xTrayPanel + xMoving);
+				log.debug("Futur position is occuped : {}", c2.getModel().isOccuped());
 				if (c2.getModel().isOccuped()) {
+					log.warn("Player {} on this case", c2.getModel().getIdPlayer());
 					displayErrorMessage("Player on it");
 					return;
 				}
 				Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
 				if (isGrassIntersection(line)) {
+					log.warn("The move intersect grass field");
 					displayErrorMessage("Your are in grass!!!!");
 					return;
 				}
-				playerManager.getCurrentPlayer().getVector().setX(xMoving);
-				playerManager.getCurrentPlayer().getVector().setY(yMoving);
+				log.trace("The player can move");
+				//playerManager.getCurrentPlayer().getVector().setX(xMoving);
+				//playerManager.getCurrentPlayer().getVector().setY(yMoving);
 				if (playerManager.initFirstMove(new Vector(xMoving, yMoving))) {
+					log.debug("next player is AI if it exists one");
 					if (playerManager.initAIFirstMove()) {
+						log.debug("AI has play, next player is human");
+						log.info("Next player is {}", playerManager.getCurrentPlayer().toString());
 						displayMessage(playerManager.getCurrentPlayer().toString());
 						xField.setText("");
 						yField.setText("");
 					}
+					log.debug("Display choice panel");
 					removeButtonListener(play);
 					panel.removeAll();
 					getChoicePanel(play, panel);
 				} else {
+					log.debug("no AI player; Display choice panel");
 					removeButtonListener(play);
 					panel.removeAll();
 					getChoicePanel(play, panel);
@@ -312,7 +326,7 @@ public class MainFrame {
 	
 	private KeyListener getKeyListener(final JTextField textField) {
 		return new KeyListener() {
-			
+
 			private final Pattern pattern = Pattern.compile("-{0,1}[\\d]+");
 
 			@Override

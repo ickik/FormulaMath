@@ -20,8 +20,12 @@ import fr.ickik.formulamath.model.PlayerManager;
  * @author Ickik.
  * @version 0.1.002, 19 mar 2012.
  */
-@SuppressWarnings("serial")
 public class JCase extends JComponent {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8669794576446631541L;
 
 	private Rectangle2D shape;
 	private final CaseModel model;

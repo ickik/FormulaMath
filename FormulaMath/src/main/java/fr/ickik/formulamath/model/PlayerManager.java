@@ -34,6 +34,10 @@ public class PlayerManager {
 	private boolean fireUpdateCaseListener;
 	private boolean isWinner = false;
 	private final List<UpdateCaseListener> updateCaseListenerList = new ArrayList<UpdateCaseListener>();
+	
+	/**
+	 * Map representing the index of the user (represented by the id) in the road model.
+	 */
 	private final Map<Integer, Integer> playerRoadPosition = new HashMap<Integer, Integer>();
 	public static final int NUMBER_OF_PLAYER_MAX = 4;
 	private static final PlayerManager singleton = new PlayerManager();

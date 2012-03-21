@@ -1,6 +1,8 @@
 package fr.ickik.formulamath.entity;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.ickik.formulamath.PlayerType;
 
@@ -10,7 +12,7 @@ import fr.ickik.formulamath.PlayerType;
  * the name, the type of the player ({@link PlayerType}), a {@link Color},
  * a position and the last move.
  * @author Patrick Allgeyer.
- * @version 0.1.000, 30 sept. 2011.
+ * @version 0.1.001, 20 mar. 2012.
  */
 public class Player {
 
@@ -22,6 +24,7 @@ public class Player {
 	private final String name;
 	private final PlayerType type;
 	private int playingCounter = 0;
+	private final List<Vector> movingList = new ArrayList<Vector>();
 	private static final Color[] colorList = new Color[] { Color.RED, Color.BLACK, Color.BLUE, Color.YELLOW };
 
 	/**
@@ -93,10 +96,11 @@ public class Player {
 	}
 	
 	/**
-	 * Increment the playing counter. The counter indicates the number
-	 * of turn the player needs to finish the road.
+	 * Increment the playing counter and stores the last move in a list.
+	 * The counter indicates the number of turn the player needs to finish the road.
 	 */
 	public void incrementPlayingCounter() {
+		movingList.add(movingVector);
 		playingCounter++;
 	}
 	
@@ -106,5 +110,13 @@ public class Player {
 	 */
 	public int getPlayingCounter() {
 		return playingCounter;
+	}
+
+	/**
+	 * Return the list which contains all moves.
+	 * @return the list which contains all moves since the start of the game.
+	 */
+	public List<Vector> getMovingList() {
+		return movingList;
 	}
 }

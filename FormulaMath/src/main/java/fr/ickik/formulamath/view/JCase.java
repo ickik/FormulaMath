@@ -23,7 +23,7 @@ import fr.ickik.formulamath.model.PlayerManager;
 @SuppressWarnings("serial")
 public class JCase extends JComponent {
 
-	private Shape shape;
+	private Rectangle2D shape;
 	private final CaseModel model;
 	
 	/**
@@ -111,5 +111,9 @@ public class JCase extends JComponent {
 		setPreferredSize(d);
 		shape = new Rectangle2D.Double(0.0, 0.0, d.getWidth(), d.getHeight());
 		repaint();
+	}
+	
+	public Rectangle2D getRectangleShape() {
+		return shape;
 	}
 }

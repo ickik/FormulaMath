@@ -623,7 +623,8 @@ public class MainFrame {
 		for (List<JCase> caseList : caseArrayList) {
 			for (JCase c : caseList) {
 				if (c.getModel() != null && c.getModel().getField() == terrain) {
-					if (shape.intersects(c.getX(), c.getY(), c.getWidth(), c.getHeight())) {
+					if (shape.intersects(c.getRectangleShape())) {
+					//if (shape.intersects(c.getX(), c.getY(), c.getWidth(), c.getHeight())) {
 						return true;
 					}
 				}

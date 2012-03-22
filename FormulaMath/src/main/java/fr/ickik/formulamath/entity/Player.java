@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.ickik.formulamath.PlayerType;
+import fr.ickik.formulamath.model.player.PlayerType;
 
 /**
  * Player object defines configuration for a player (Human or AI).

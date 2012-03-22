@@ -1,9 +1,9 @@
-package fr.ickik.formulamath;
+package fr.ickik.formulamath.entity;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import fr.ickik.formulamath.model.MapManager;
+import fr.ickik.formulamath.model.map.MapManager;
 
 /**
  * The RoadDirectionList extends LinkedList to redefined the add method. This

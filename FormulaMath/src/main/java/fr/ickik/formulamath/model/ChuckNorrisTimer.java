@@ -1,4 +1,4 @@
-package fr.ickik.formulamath;
+package fr.ickik.formulamath.model;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -6,9 +6,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
-import fr.ickik.formulamath.model.ChuckNorrisSingleton;
-import fr.ickik.formulamath.model.FormulaMathProperty;
-import fr.ickik.formulamath.model.PropertiesModel;
+import fr.ickik.formulamath.view.MainFrame;
 
 public final class ChuckNorrisTimer {
 

@@ -9,9 +9,9 @@ import java.awt.geom.Rectangle2D;
 
 import javax.swing.JComponent;
 
-import fr.ickik.formulamath.Field;
 import fr.ickik.formulamath.model.CaseModel;
-import fr.ickik.formulamath.model.PlayerManager;
+import fr.ickik.formulamath.model.map.Field;
+import fr.ickik.formulamath.model.player.PlayerManager;
 
 /**
  * Graphic component which represents a case in the map. Every side of the case

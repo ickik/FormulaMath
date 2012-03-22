@@ -1,4 +1,4 @@
-package fr.ickik.formulamath;
+package fr.ickik.formulamath.view;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -19,8 +19,9 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import fr.ickik.formulamath.entity.Player;
-import fr.ickik.formulamath.model.MapManager;
-import fr.ickik.formulamath.model.PlayerManager;
+import fr.ickik.formulamath.model.map.MapManager;
+import fr.ickik.formulamath.model.player.PlayerManager;
+import fr.ickik.formulamath.model.player.PlayerType;
 
 /**
  * This frame helps the user to configure the game.

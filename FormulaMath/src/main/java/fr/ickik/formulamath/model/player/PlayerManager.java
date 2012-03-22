@@ -1,4 +1,4 @@
-package fr.ickik.formulamath.model;
+package fr.ickik.formulamath.model.player;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -11,14 +11,16 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.ickik.formulamath.Field;
 import fr.ickik.formulamath.FormulaMathException;
-import fr.ickik.formulamath.Orientation;
-import fr.ickik.formulamath.PlayerType;
-import fr.ickik.formulamath.RoadDirectionInformation;
+import fr.ickik.formulamath.model.CaseModel;
+import fr.ickik.formulamath.model.map.Field;
+import fr.ickik.formulamath.model.map.MapManager;
+import fr.ickik.formulamath.model.map.Orientation;
+import fr.ickik.formulamath.model.player.PlayerType;
 import fr.ickik.formulamath.controler.UpdateCaseListener;
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Position;
+import fr.ickik.formulamath.entity.RoadDirectionInformation;
 import fr.ickik.formulamath.entity.Vector;
 
 /**
@@ -95,16 +97,22 @@ public class PlayerManager {
 			list.add(new Vector(player.getVector().getX(), player.getVector().getY() + 1));
 		}
 		log.debug("number of vectors : {}", list.size());
+		for(Vector v : list) {
+			log.trace(v.toString());
+		}
 		log.debug("getVectorsPossibilities exiting");
 		return list;
 	}
 	
 	private boolean isMovingAvailable(int xMove, int yMove, Player player) {
+		log.trace("isMovingAvailable: player id = {}, x={}, y={}", new Object[] {player.getId(), xMove, yMove});
 		CaseModel model = mapManager.getCase(yMove, xMove);
 		if (model != null && model.getField() != Field.GRASS 
 				&& (!model.isOccuped() || model.getIdPlayer() == player.getId())) {
+			log.trace("Moving is available");
 			return true;
 		}
+		log.trace("model==null => {}", model==null);
 		return model == null;
 	}
 

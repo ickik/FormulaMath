@@ -1,4 +1,4 @@
-package fr.ickik.formulamath;
+package fr.ickik.formulamath.model.map;
 
 import java.awt.Color;
 

@@ -1,6 +1,6 @@
-package fr.ickik.formulamath;
+package fr.ickik.formulamath.entity;
 
-import fr.ickik.formulamath.entity.Position;
+import fr.ickik.formulamath.model.map.Orientation;
 
 /**
  * Object that stores information about the road. The combination of

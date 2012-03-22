@@ -1,7 +1,8 @@
 package fr.ickik.formulamath.model;
 
-import fr.ickik.formulamath.Field;
 import fr.ickik.formulamath.entity.Player;
+import fr.ickik.formulamath.model.map.Field;
+import fr.ickik.formulamath.model.map.MapManager;
 import fr.ickik.formulamath.view.JCase;
 
 /**

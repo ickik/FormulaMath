@@ -1,6 +1,5 @@
-package fr.ickik.formulamath;
+package fr.ickik.formulamath.model.map;
 
-import fr.ickik.formulamath.model.MapManager;
 
 /**
  * Direction the {@link MapManager} can choose to create the map.

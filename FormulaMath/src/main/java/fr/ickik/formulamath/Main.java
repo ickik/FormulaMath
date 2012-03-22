@@ -1,5 +1,7 @@
 package fr.ickik.formulamath;
 
+import fr.ickik.formulamath.view.ConfigurationFrame;
+
 public class Main {
 
 	/**

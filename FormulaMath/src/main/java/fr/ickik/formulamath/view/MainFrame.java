@@ -1,4 +1,4 @@
-package fr.ickik.formulamath;
+package fr.ickik.formulamath.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -41,12 +41,13 @@ import org.slf4j.LoggerFactory;
 import fr.ickik.formulamath.controler.UpdateCaseListener;
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Position;
+import fr.ickik.formulamath.entity.RoadDirectionInformation;
 import fr.ickik.formulamath.entity.Vector;
-import fr.ickik.formulamath.model.MapManager;
-import fr.ickik.formulamath.model.PlayerManager;
+import fr.ickik.formulamath.model.ChuckNorrisTimer;
+import fr.ickik.formulamath.model.map.Field;
+import fr.ickik.formulamath.model.map.MapManager;
+import fr.ickik.formulamath.model.player.PlayerManager;
 import fr.ickik.formulamath.model.PropertiesModel;
-import fr.ickik.formulamath.view.AboutFrame;
-import fr.ickik.formulamath.view.JCase;
 
 /**
  * This class create the main frame of the application.
@@ -298,8 +299,8 @@ public final class MainFrame {
 					return;
 				}
 				log.trace("The player can move");
-				//playerManager.getCurrentPlayer().getVector().setX(xMoving);
-				//playerManager.getCurrentPlayer().getVector().setY(yMoving);
+				playerManager.getCurrentPlayer().getVector().setX(xMoving);
+				playerManager.getCurrentPlayer().getVector().setY(yMoving);
 				if (playerManager.initFirstMove(new Vector(xMoving, yMoving))) {
 					log.debug("next player is AI if it exists one");
 					if (playerManager.initAIFirstMove()) {

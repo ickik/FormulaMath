@@ -21,8 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import fr.ickik.formulamath.ChuckNorrisTimer;
-import fr.ickik.formulamath.MainFrame;
+import fr.ickik.formulamath.model.ChuckNorrisTimer;
 import fr.ickik.formulamath.model.FormulaMathProperty;
 import fr.ickik.formulamath.model.PropertiesModel;
 

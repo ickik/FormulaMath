@@ -1,4 +1,4 @@
-package fr.ickik.formulamath.model;
+package fr.ickik.formulamath.model.map;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -9,12 +9,10 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.ickik.formulamath.Direction;
-import fr.ickik.formulamath.Field;
-import fr.ickik.formulamath.Orientation;
-import fr.ickik.formulamath.RoadDirectionInformation;
-import fr.ickik.formulamath.RoadDirectionList;
 import fr.ickik.formulamath.entity.Position;
+import fr.ickik.formulamath.entity.RoadDirectionInformation;
+import fr.ickik.formulamath.entity.RoadDirectionList;
+import fr.ickik.formulamath.model.CaseModel;
 
 /**
  * Contains and handles the map of the application. The map is a everytime a square.

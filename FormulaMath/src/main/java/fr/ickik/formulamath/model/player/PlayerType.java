@@ -1,4 +1,4 @@
-package fr.ickik.formulamath;
+package fr.ickik.formulamath.model.player;
 
 /**
  * Type of player available.

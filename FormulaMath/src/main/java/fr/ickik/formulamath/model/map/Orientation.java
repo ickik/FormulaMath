@@ -1,4 +1,4 @@
-package fr.ickik.formulamath;
+package fr.ickik.formulamath.model.map;
 
 /**
  * Orientation of the road. It is the direction (cardinal point) of the way.

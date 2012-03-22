@@ -9,6 +9,9 @@ import java.awt.Color;
  */
 public enum Field {
 
+	/**
+	 * Road representation.
+	 */
 	ROAD {
 		@Override
 		public Color getColor() {
@@ -16,6 +19,9 @@ public enum Field {
 		}
 	},
 
+	/**
+	 * Grass field.
+	 */
 	GRASS {
 		@Override
 		public Color getColor() {
@@ -23,6 +29,9 @@ public enum Field {
 		}
 	},
 
+	/**
+	 * Start lane representation.
+	 */
 	STARTING_LINE {
 		@Override
 		public Color getColor() {
@@ -30,6 +39,9 @@ public enum Field {
 		}
 	},
 
+	/**
+	 * Finishing lane type representation.
+	 */
 	FINISHING_LINE {
 		@Override
 		public Color getColor() {

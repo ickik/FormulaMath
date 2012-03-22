@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -34,6 +35,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.UIManager.LookAndFeelInfo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +57,7 @@ import fr.ickik.formulamath.model.PropertiesModel;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.1.005, 21 mar. 2012.
+ * @version 0.1.006, 22 mar. 2012.
  */
 public final class MainFrame {
 
@@ -73,7 +78,7 @@ public final class MainFrame {
 		for (RoadDirectionInformation r : mapManager.getRoadDirectionInformationList()) {
 			log.debug(r.toString());
 		}
-		mainFrame = new JFrame(NAME + " " + VERSION);
+		mainFrame = new JFrame(getTitle());
 		ChuckNorrisTimer.getInstance(mainFrame);
 		this.playerManager = playerManager;
 		this.mapManager = mapManager;
@@ -701,5 +706,44 @@ public final class MainFrame {
 	
 	private void displayMessage(String msg) {
 		JOptionPane.showMessageDialog(mainFrame, msg, NAME + " " + VERSION, JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	private JMenuItem displayThemeMenu() {
+		JMenuItem item = new JMenuItem("Theme");
+
+		for (final LookAndFeelInfo lnfInfo : UIManager.getInstalledLookAndFeels()) {
+			JCheckBoxMenuItem checkBox = new JCheckBoxMenuItem(lnfInfo.getName());
+			checkBox.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					changeUIManager(lnfInfo.getClassName());
+				}
+			});
+		}
+		return item;
+	}
+	
+	private void changeUIManager(String className) {
+		try {
+			UIManager.setLookAndFeel(className);
+			SwingUtilities.updateComponentTreeUI(mainFrame);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static String getTitle() {
+		return NAME + " " + VERSION;
 	}
 }

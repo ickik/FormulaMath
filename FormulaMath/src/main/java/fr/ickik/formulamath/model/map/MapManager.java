@@ -17,7 +17,7 @@ import fr.ickik.formulamath.model.CaseModel;
 /**
  * Contains and handles the map of the application. The map is a everytime a square.
  * @author Ickik.
- * @version 0.1.003, 3 nov. 2011.
+ * @version 0.1.004, 22 mar. 2012.
  */
 public class MapManager {
 
@@ -84,6 +84,8 @@ public class MapManager {
 		Position positionDepart2 = new Position();
 		Orientation coteDepart = traceStartingLine(positionDepart, positionDepart2);
 		initStartPosition(positionDepart, positionDepart2);
+		Position position = new Position((positionDepart.getX() + positionDepart2.getX()) / 2, (positionDepart.getY() + positionDepart2.getY()) / 2);
+		roadList.add(new RoadDirectionInformation(coteDepart, position, position));
 
 		Queue<Direction> previousDirection = new ArrayDeque<Direction>(2);
 		while (!isFinished) {
@@ -100,6 +102,7 @@ public class MapManager {
 				}
 				previousDirection.poll();
 			}
+			
 			previousDirection.add(direction);
 			switch (coteDepart) {
 			case NORTH:
@@ -726,7 +729,7 @@ public class MapManager {
 
 	@Override
 	public String toString() {
-		StringBuilder display = new StringBuilder();
+		StringBuilder display = new StringBuilder("\n");
 		for (int i = 0; i < mapSize; i++) {
 			StringBuilder str = new StringBuilder();
 			for (CaseModel c : carte.get(i)) {

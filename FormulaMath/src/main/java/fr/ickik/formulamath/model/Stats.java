@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Vector;
 
 public class Stats {
@@ -13,8 +14,12 @@ public class Stats {
 	private double squareType;
 	private final Map<Vector, Integer> vectorCountMap = new HashMap<Vector, Integer>();
 	
-	private void treatment() {
-		List<Vector> vectorList = null;
+	public Stats(Player player) {
+		treatment(player);
+	}
+
+	private void treatment(Player player) {
+		List<Vector> vectorList = player.getMovingList();
 		HashMap<Double, Integer> distanceCountMap = new HashMap<Double, Integer>();
 		double distance = 0;
 		for (Vector v : vectorList) {

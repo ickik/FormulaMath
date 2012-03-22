@@ -117,6 +117,10 @@ public class JCase extends JComponent {
 		repaint();
 	}
 	
+	/**
+	 * Return the rectangle shape displayed on every JCase component.
+	 * @return the shape representing this component.
+	 */
 	public Rectangle2D getRectangleShape() {
 		return shape;
 	}

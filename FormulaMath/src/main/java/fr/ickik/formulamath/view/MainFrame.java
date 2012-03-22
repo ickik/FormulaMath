@@ -701,11 +701,11 @@ public final class MainFrame {
 	}
 
 	private void displayErrorMessage(String msg) {
-		JOptionPane.showMessageDialog(mainFrame, msg, NAME + " " + VERSION + " - ERROR!", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(mainFrame, msg, getTitle() + " - ERROR!", JOptionPane.ERROR_MESSAGE);
 	}
 	
 	private void displayMessage(String msg) {
-		JOptionPane.showMessageDialog(mainFrame, msg, NAME + " " + VERSION, JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(mainFrame, msg, getTitle(), JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	private JMenuItem displayThemeMenu() {

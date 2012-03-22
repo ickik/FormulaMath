@@ -8,7 +8,6 @@ import javax.swing.JPanel;
 
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.model.Stats;
-import fr.ickik.formulamath.model.map.MapManager;
 import fr.ickik.formulamath.model.player.PlayerManager;
 
 public class StatFrame extends JFrame {

@@ -29,7 +29,7 @@ import fr.ickik.formulamath.model.PropertiesModel;
  * This class only get an instance of the AboutServer. The about
  * frame resume the application (title, version, author, contact).
  * @author Ickik.
- * @version 0.1.001, 14 dec. 2011.
+ * @version 0.1.002, 22 mar. 2012.
  */
 public final class AboutFrame {
 
@@ -58,7 +58,7 @@ public final class AboutFrame {
 	
 	private JPanel createPanel() {
 		JPanel panel = new JPanel(new GridLayout(4,2));
-		panel.add(new JLabel(MainFrame.NAME + " " + MainFrame.VERSION));
+		panel.add(new JLabel(MainFrame.getTitle()));
 		JLabel label = new JLabel("Developed by Ickik");
 		label.addMouseListener(getMouseListener());
 		panel.add(label);

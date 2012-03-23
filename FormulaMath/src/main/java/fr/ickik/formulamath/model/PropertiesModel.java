@@ -17,22 +17,29 @@ import java.util.Properties;
  * This model load and save {@link FormulaMathProperty} in the file
  * in user's directory.
  * @author Ickik.
- * @version 0.1.001, 16 dec. 2011.
+ * @version 0.1.002, 23 mar. 2012.
  */
-public class PropertiesModel {
+public final class PropertiesModel {
 	private final String userPath;
 	private final String directory = ".FormulaMath";
 	private final String propertiesFile = "FormulaMath.properties";
 	private final Properties properties;
 	private static final PropertiesModel model = new PropertiesModel();
 	
+	/**
+	 * Hidden constructor, it load all properties defined for the user.
+	 */
 	private PropertiesModel() {
 		userPath = System.getProperty("user.home");
 		existingDirectory();
 		this.properties = loadProperties();
 	}
 	
-	public static PropertiesModel getInstance() {
+	/**
+	 * Return an unique instance of PropertiesModel.
+	 * @return an unique instance of PropertiesModel.
+	 */
+	public static PropertiesModel getSingleton() {
 		return model;
 	}
 		
@@ -165,7 +172,7 @@ public class PropertiesModel {
 		for (Entry<Object, Object> entry : properties.entrySet()) {
 			String value = entry.getValue().toString();
 			if (value.isEmpty()) {
-				entry.setValue(FormulaMathProperty.valueOf(entry.getKey().toString()).getDefaultValue());
+				entry.setValue(FormulaMathProperty.getProperty(entry.getKey().toString()).getDefaultValue());
 			}
 		}
 	}

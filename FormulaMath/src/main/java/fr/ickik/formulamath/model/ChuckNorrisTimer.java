@@ -16,17 +16,17 @@ public final class ChuckNorrisTimer {
 	
 	private ChuckNorrisTimer(final JFrame mainFrame) {
 		frame = mainFrame;
-		if (PropertiesModel.getInstance().getProperty(FormulaMathProperty.CHUCK_NORRIS_TIME).isEmpty()) {
-			PropertiesModel.getInstance().putDefaultProperty(FormulaMathProperty.CHUCK_NORRIS_TIME);
+		if (PropertiesModel.getSingleton().getProperty(FormulaMathProperty.CHUCK_NORRIS_TIME).isEmpty()) {
+			PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.CHUCK_NORRIS_TIME);
 		}
-		timer = new Timer(Integer.parseInt(PropertiesModel.getInstance().getProperty(FormulaMathProperty.CHUCK_NORRIS_TIME)) * 60000, new ActionListener() {
+		timer = new Timer(Integer.parseInt(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.CHUCK_NORRIS_TIME)) * 60000, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				frame.setTitle(MainFrame.NAME + " " + MainFrame.VERSION + " - " + ChuckNorrisSingleton.getInstance().getRandomFact());
 				frame.validate();
 			}
 		});
-		if (Boolean.getBoolean(PropertiesModel.getInstance().getProperty(FormulaMathProperty.CHUCK_NORRIS_ACTIVATE))) {
+		if (Boolean.getBoolean(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.CHUCK_NORRIS_ACTIVATE))) {
 			start();
 		} else {
 			stop();

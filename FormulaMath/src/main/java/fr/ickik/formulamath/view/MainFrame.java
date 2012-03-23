@@ -133,7 +133,7 @@ public final class MainFrame {
 			public void windowClosing(WindowEvent arg0) {
 				try {
 					log.debug("Closing window and saving properties");
-					PropertiesModel.getInstance().save();
+					PropertiesModel.getSingleton().save();
 				} catch (IOException e) {
 					log.error("Error saving properties for quiting : {} ", e.getMessage());
 					displayErrorMessage("Error during saving properties");
@@ -669,7 +669,7 @@ public final class MainFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					PropertiesModel.getInstance().save();
+					PropertiesModel.getSingleton().save();
 				} catch (IOException e) {
 					log.error("Error saving properties in quit menu : {} ", e.getMessage());
 					displayErrorMessage("Error during saving properties");

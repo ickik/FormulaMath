@@ -7,6 +7,13 @@ import java.util.Map;
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Vector;
 
+/**
+ * This class mades statistics about the player given in contructor's argument.
+ * It gives averageDistance on every turn, the variance and the square type about
+ * the run. It gives the number of every vector played.
+ * @author Patrick Allgeyer
+ * @version 0.1.000, 22 mar. 2012
+ */
 public class Stats {
 
 	private double averageDistance;
@@ -14,6 +21,10 @@ public class Stats {
 	private double squareType;
 	private final Map<Vector, Integer> vectorCountMap = new HashMap<Vector, Integer>();
 	
+	/**
+	 * Constructor of this class. It calculates stats about the player given in argument.
+	 * @param player the player for which calculates the stats.
+	 */
 	public Stats(Player player) {
 		treatment(player);
 	}
@@ -53,18 +64,36 @@ public class Stats {
 		return Math.sqrt(Math.pow(vector.getX(), 2) + Math.pow(vector.getY(), 2));
 	}
 	
+	/**
+	 * Get the average distance moved on every turn.
+	 * @return the average distance moved.
+	 */
 	public double getAverageDistance() {
 		return averageDistance;
 	}
 	
+	/**
+	 * The variance of distance is the square of the square type representing the dispertion
+	 * of distance played.
+	 * @return the variance.
+	 */
 	public double getVariance() {
 		return variance;
 	}
 	
+	/**
+	 * Return the square type of the moves for the run. The square type is the dispertion
+	 * of player near the average distance.
+	 * @return the sqaure type.
+	 */
 	public double squareType() {
 		return squareType;
 	}
 	
+	/**
+	 * Return the count of every {@link Vector} played on the run.
+	 * @return the vount of every vector played.
+	 */
 	public Map<Vector, Integer> getVectorCountMap() {
 		return vectorCountMap;
 	}

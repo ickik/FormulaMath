@@ -104,7 +104,7 @@ public final class AboutFrame {
 				} else {
 					ChuckNorrisTimer.getInstance(null).stop();
 				}
-				PropertiesModel.getInstance().put(FormulaMathProperty.CHUCK_NORRIS_ACTIVATE, Boolean.toString(selected));
+				PropertiesModel.getSingleton().put(FormulaMathProperty.CHUCK_NORRIS_ACTIVATE, Boolean.toString(selected));
 				mainFrame.repaint();
 			}
 

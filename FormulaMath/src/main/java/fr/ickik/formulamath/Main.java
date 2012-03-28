@@ -1,6 +1,5 @@
 package fr.ickik.formulamath;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -27,12 +26,12 @@ public class Main {
 					SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
 					String savedDate = dateFormat.format(Calendar.getInstance().getTime());
 					PropertiesModel.getSingleton().put(FormulaMathProperty.LAST_UPDATE, savedDate);
-					try {
-						PropertiesModel.getSingleton().save();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+//					try {
+//						PropertiesModel.getSingleton().save();
+//					} catch (IOException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
 					UpdateModel model = new UpdateModel();
 					if (model.isConnectionAvailable()) {
 						UpdateFrame main = new UpdateFrame(model);

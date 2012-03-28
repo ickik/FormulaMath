@@ -1,7 +1,6 @@
 package fr.ickik.formulamath.update;
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +25,13 @@ import fr.ickik.formulamath.model.FormulaMathProperty;
 import fr.ickik.formulamath.model.PropertiesModel;
 import fr.ickik.formulamath.view.MainFrame;
 
-
+/**
+ * The model which managed the update from a web server. It initializes the connection
+ * and search the last release to update. It download and placed it in the right directory.
+ * After downloading, it rename the jar file into the current jar file to start the application.
+ * @author Ickik
+ * @version 0.1.000, 27 mar. 2012
+ */
 public final class UpdateModel {
 
 	private final List<Version> versionList = new ArrayList<Version>();
@@ -39,12 +44,16 @@ public final class UpdateModel {
 	private static final int BEGIN_DOWNLOAD_PERCENTAGE = 20;
 	private static final int DOWNLOAD_PERCENTAGE = 80;
 	private static final int MAX_PERCENTAGE = 100;
+	private static final String xmlConfigurationFile = "versions.xml";
 	
 	/**
 	 * Default constructor.
 	 */
 	public UpdateModel() {}
 
+	/**
+	 * Search the last version and update the application.
+	 */
 	public void update() {
 		searchAvailableVersion();
 		if (isUpdateAvailable()) {
@@ -66,7 +75,7 @@ public final class UpdateModel {
 		//try {
 		//	Desktop.getDesktop().open(application);
 			try {
-				new ProcessBuilder("java -jar target/Server-0.0.1-SNAPSHOT.jar").start();
+				new ProcessBuilder("java -jar target/FormulaMath.jar").start();
 			       /*InputStream is = process.getInputStream();
 			       InputStreamReader isr = new InputStreamReader(is);
 			       BufferedReader br = new BufferedReader(isr);
@@ -92,7 +101,7 @@ public final class UpdateModel {
 	
 	private void renameFile(String fileName) {
 		File newVersion = new File(USER_DIRECTORY + "/" + fileName);
-		File currentVersion = new File(USER_DIRECTORY + "/d.jar");
+		File currentVersion = new File(USER_DIRECTORY + "/FormulaMath.jar");
 		File oldVersion = new File(USER_DIRECTORY + "/old.jar");
 		if (newVersion.exists()) {
 			if (currentVersion.renameTo(oldVersion)) {
@@ -141,7 +150,7 @@ public final class UpdateModel {
 		final int bufferSize = 4096;
 		try { 
 			URL url = new URL(filePath);
-			connection = url.openConnection( );
+			connection = url.openConnection();
 			int length = connection.getContentLength();
 			if(length == -1){
 				throw new IOException("Fichier vide");
@@ -149,7 +158,7 @@ public final class UpdateModel {
 
 			is = new BufferedInputStream(connection.getInputStream());
 
-			destinationFile = new FileOutputStream(destination);
+			destinationFile = new FileOutputStream(destination + filePath.substring(filePath.lastIndexOf("/"), filePath.length()));
 			
 			byte[] data = new byte[bufferSize];
 
@@ -197,6 +206,10 @@ public final class UpdateModel {
 		return versionList.get(versionList.size() - 1);
 	}
 
+	/**
+	 * Check if the connection to the web server is available or not.
+	 * @return true if the connection is available, false otherwise.
+	 */
 	public boolean isConnectionAvailable() {
 		try {
 			URL xmlUrl = new URL(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.UPDATE_SERVER));
@@ -210,19 +223,12 @@ public final class UpdateModel {
 
 	private List<Version> getAvailableVersions() {
 		try {
-			/*URL xmlUrl = new URL(xmlPath);
-
-			//On ouvre une connections sur la page
+			URL xmlUrl = new URL(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.UPDATE_SERVER) + "/" + xmlConfigurationFile);
 			URLConnection urlConnection = xmlUrl.openConnection();
 			urlConnection.setUseCaches(false);
-
-			//On se connecte sur cette page
 			urlConnection.connect();
 
-			//On r�cup�re le fichier XML sous forme de flux
-			InputStream stream = urlConnection.getInputStream();*/
-			File x = new File(USER_DIRECTORY + "/test.xml");
-			InputStream stream = new FileInputStream(x);
+			InputStream stream = urlConnection.getInputStream();
 			SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
 			VersionHandler versionHandler =  new VersionHandler();
 			parser.parse(stream, versionHandler);
@@ -230,7 +236,7 @@ public final class UpdateModel {
 			Collections.sort(vl);
 			for (Version v : vl) {
 				if (v != null) {
-					logger.trace(v.getVersion() + v.getFileList());
+					logger.trace(v.getVersion() + v.getFileList().get(0).toString());
 				}
 			}
 			return vl;
@@ -244,6 +250,11 @@ public final class UpdateModel {
 		return null;
 	}
 
+	/**
+	 * Add a listener to this model. The listener will be called to
+	 * fire the download state.
+	 * @param listener
+	 */
 	public void addUpdateListener(UpdaterListener listener) {
 		listenerList.add(listener);
 	}

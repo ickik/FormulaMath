@@ -4,7 +4,7 @@ package fr.ickik.formulamath.model;
  * This enum lists all properties of the property file. It is used to store
  * player's data.
  * @author Ickik.
- * @version 0.1.001, 23 mar. 2012.
+ * @version 0.1.002, 26 mar. 2012.
  */
 public enum FormulaMathProperty {
 
@@ -54,6 +54,9 @@ public enum FormulaMathProperty {
 		}
 	},
 	
+	/**
+	 * Last update date.
+	 */
 	LAST_UPDATE {
 		@Override
 		public String toString() {
@@ -67,6 +70,9 @@ public enum FormulaMathProperty {
 		
 	},
 	
+	/**
+	 * Server address to update.
+	 */
 	UPDATE_SERVER {
 		@Override
 		public String toString() {
@@ -75,7 +81,7 @@ public enum FormulaMathProperty {
 		
 		@Override
 		public String getDefaultValue() {
-			return "";
+			return "http://patrick.allgeyer.perso.sfr.fr";
 		}
 	};
 	

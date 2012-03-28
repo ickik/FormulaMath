@@ -26,11 +26,12 @@ import fr.ickik.formulamath.entity.Vector;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.1.003, 17 oct. 2011.
+ * @version 0.1.004, 27 mar. 2012.
  */
-public class PlayerManager {
+public final class PlayerManager {
 
 	private final List<Player> playerList;
+	private final List<Player> finishPositionList;
 	private int indexPlayerGame = 0;
 	private MapManager mapManager;
 	private boolean fireUpdateCaseListener;
@@ -47,6 +48,7 @@ public class PlayerManager {
 
 	private PlayerManager() {
 		playerList = new ArrayList<Player>(NUMBER_OF_PLAYER_MAX);
+		finishPositionList = new ArrayList<Player>(NUMBER_OF_PLAYER_MAX);
 	}
 
 	/**
@@ -152,16 +154,18 @@ public class PlayerManager {
 	public void AIPlay() {
 		while (playerList.get(indexPlayerGame).getType() == PlayerType.COMPUTER) {
 			Player p = getCurrentPlayer();
-			log.debug("Player {} is under playing", p.toString());
+			log.debug("AI Player {} is under playing", p.toString());
 			
 			int roadPosition = playerRoadPosition.get(p.getId());
 			RoadDirectionInformation r = mapManager.getRoadDirectionInformationList().get(roadPosition);
 			int len = r.getLengthToEnd(p.getPosition());
 			Vector vector = null;
-			log.debug("");
+			log.debug("rest length of the vector:{}", len);
+			log.trace("Orientation: {}", r.getOrientation());
 			if (len == 1 && (p.getVector().getX() == 1 ||  p.getVector().getX() == -1 || p.getVector().getY() == 1 || p.getVector().getY() == -1)) {
 				RoadDirectionInformation nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition + 1);
 				//playerRoadPosition.put(p.getId(), roadPosition + 1);
+				log.trace("Next orientation: {}", nextRoadDirection.getOrientation());
 				switch (r.getOrientation()) {
 				case NORTH:
 					if (nextRoadDirection.getOrientation() == Orientation.EAST) {
@@ -195,6 +199,7 @@ public class PlayerManager {
 			} else if ((p.getVector().getX() == 1 ||  p.getVector().getX() == -1) && (p.getVector().getY() == 1 || p.getVector().getY() == -1)) {
 				RoadDirectionInformation nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition + 1);
 				playerRoadPosition.put(p.getId(), roadPosition + 1);
+				log.trace("Next orientation: {}", nextRoadDirection.getOrientation());
 				switch (r.getOrientation()) {
 				case NORTH:
 					if (nextRoadDirection.getOrientation() == Orientation.EAST) {
@@ -240,10 +245,13 @@ public class PlayerManager {
 				}
 			}
 			mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
+			log.debug("Player initial position: {}", p.getPosition());
+			log.debug("Vector {}", vector);
 			p.getPosition().setX(p.getPosition().getX() + vector.getX());
 			p.getPosition().setY(p.getPosition().getY() - vector.getY());
 			p.getVector().setX(vector.getX());
 			p.getVector().setY(vector.getY());
+			log.debug("Player new position: {}", p.getPosition());
 			mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(p.getId());
 			
 			fireUpdateCaseListener(p);
@@ -344,7 +352,9 @@ public class PlayerManager {
 				if (p.getType().equals(PlayerType.COMPUTER)) {
 					log.debug("Computer first move");
 					int len = mapManager.getRoadDirectionInformationList().get(0).getLength();
+					log.trace("length of the road : {}, orientation:{}", len, mapManager.getRoadDirectionInformationList().get(0).getOrientation());
 					int val = getFirstMove(len);
+					log.trace("length of the first move found : {}", val);
 					Vector vector = null;
 					switch (mapManager.getRoadDirectionInformationList().get(0).getOrientation()) {
 					case NORTH:
@@ -498,5 +508,14 @@ public class PlayerManager {
 	 */
 	public boolean existsHumanPlayer() {
 		return getNumberOfHumanPlayer() >= 1;
+	}
+
+	/**
+	 * Return the list of player's position at the end. This
+	 * list is sorted by position.
+	 * @return the player's position list.
+	 */
+	public List<Player> getFinishPositionList() {
+		return finishPositionList;
 	}
 }

@@ -14,7 +14,7 @@ import fr.ickik.formulamath.entity.Vector;
  * @author Patrick Allgeyer
  * @version 0.1.000, 22 mar. 2012
  */
-public class Stats {
+public final class Stats {
 
 	private double averageDistance;
 	private double variance;
@@ -86,7 +86,7 @@ public class Stats {
 	 * of player near the average distance.
 	 * @return the sqaure type.
 	 */
-	public double squareType() {
+	public double getSquareType() {
 		return squareType;
 	}
 	

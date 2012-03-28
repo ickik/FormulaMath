@@ -37,8 +37,8 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,15 +49,15 @@ import fr.ickik.formulamath.entity.Position;
 import fr.ickik.formulamath.entity.RoadDirectionInformation;
 import fr.ickik.formulamath.entity.Vector;
 import fr.ickik.formulamath.model.ChuckNorrisTimer;
+import fr.ickik.formulamath.model.PropertiesModel;
 import fr.ickik.formulamath.model.map.Field;
 import fr.ickik.formulamath.model.map.MapManager;
 import fr.ickik.formulamath.model.player.PlayerManager;
-import fr.ickik.formulamath.model.PropertiesModel;
 
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.1.006, 22 mar. 2012.
+ * @version 0.1.007, 27 mar. 2012.
  */
 public final class MainFrame {
 
@@ -710,9 +710,10 @@ public final class MainFrame {
 	
 	private JMenuItem displayThemeMenu() {
 		JMenuItem item = new JMenuItem("Theme");
-
+		ButtonGroup group = new ButtonGroup();
 		for (final LookAndFeelInfo lnfInfo : UIManager.getInstalledLookAndFeels()) {
 			JCheckBoxMenuItem checkBox = new JCheckBoxMenuItem(lnfInfo.getName());
+			group.add(checkBox);
 			checkBox.addActionListener(new ActionListener() {
 
 				@Override
@@ -720,6 +721,9 @@ public final class MainFrame {
 					changeUIManager(lnfInfo.getClassName());
 				}
 			});
+//			if (PropertiesModel.getSingleton().getProperty(FormulaMathProperty.).equals(lnfInfo.getClassName())) {
+//				checkBox.setSelected(true);
+//			}
 		}
 		return item;
 	}

@@ -1,4 +1,4 @@
-package fr.ickik.formulamath.update;
+package fr.ickik.updater;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;

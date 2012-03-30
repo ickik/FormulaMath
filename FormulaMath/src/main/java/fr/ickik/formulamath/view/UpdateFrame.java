@@ -1,6 +1,7 @@
 package fr.ickik.formulamath.view;
 
 import java.awt.Dimension;
+import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
@@ -12,7 +13,7 @@ import fr.ickik.formulamath.update.UpdaterListener;
  * Frame displayed when an update is available. This frame is composed by a progress bar
  * that evolves with the download.
  * @author Patrick Allgeyer
- * @version 0.1.000, 23 mar. 2012
+ * @version 0.1.002, 29 mar. 2012
  */
 public final class UpdateFrame extends JFrame {
 
@@ -25,7 +26,7 @@ public final class UpdateFrame extends JFrame {
 	
 	/**
 	 * Constructor of this frame, it needs the {@link UpdateModel} to be
-	 * construted.
+	 * constructed.
 	 * @param model the update model.
 	 */
 	public UpdateFrame(UpdateModel model) {
@@ -36,6 +37,7 @@ public final class UpdateFrame extends JFrame {
 		bar.setStringPainted(true);
 		setSize(new Dimension(xDimension,yDimension));
 		setUndecorated(true);
+		centeredFrame(this);
 		model.addUpdateListener(getUpdaterListener());
 	}
 	
@@ -67,5 +69,12 @@ public final class UpdateFrame extends JFrame {
 		} finally {
 			dispose();
 		}
+	}
+	
+	private void centeredFrame(JFrame frame) {
+		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+		int xCorner = (int) ((dimension.getWidth() - frame.getSize().getWidth()) / 2);
+		int yCorner = (int) ((dimension.getHeight() - frame.getSize().getHeight()) / 2);
+		frame.setLocation(xCorner, yCorner);
 	}
 }

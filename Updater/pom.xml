@@ -4,7 +4,7 @@
 	<groupId>FormulaMath</groupId>
 	<artifactId>FormulaMath</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>FormulaMathGame</name>
+	<name>FormulaMath</name>
 
 	<build>
 		<plugins>
@@ -18,11 +18,11 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>fr.ickik.formulamath.Main</mainClass>
+							<mainClass>fr.ickik.updater.Main</mainClass>
 						</manifest>
 					</archive>
 					<appendAssemblyId>false</appendAssemblyId>
-					<finalName>FormulaMath-${project.version}</finalName>
+					<finalName>Updater-${project.version}</finalName>
 				</configuration>
 			</plugin>
 

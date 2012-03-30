@@ -1,11 +1,16 @@
 package fr.ickik.formulamath.view;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +33,7 @@ import fr.ickik.formulamath.model.player.PlayerType;
  * The user can choose between Human and Computer players;
  * give a name to every player.
  * @author Ickik.
- * @version 0.1.000, 1 sept. 2011
+ * @version 0.1.001, 28 mar. 2012
  */
 public class ConfigurationFrame {
 
@@ -50,7 +55,7 @@ public class ConfigurationFrame {
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.add(getConfigurationPanel(), BorderLayout.CENTER);
 		panel.add(getNumberPlayerPanel(), BorderLayout.NORTH);
-		panel.add(getButton(), BorderLayout.SOUTH);
+		panel.add(getButton2(), BorderLayout.SOUTH);
 		configurationFrame.add(panel);
 		configurationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		configurationFrame.pack();
@@ -58,7 +63,7 @@ public class ConfigurationFrame {
 	}
 
 	private JPanel getButton() {
-		JPanel panel = new JPanel(new GridLayout(1, 2));
+		JPanel panel = new JPanel(new GridLayout(1, 3));
 		JButton okButton = new JButton("Ok");
 		okButton.setMnemonic(KeyEvent.VK_O);
 		configurationFrame.getRootPane().setDefaultButton(okButton);
@@ -96,9 +101,84 @@ public class ConfigurationFrame {
 		});
 		panel.add(okButton);
 		panel.add(cancelAndQuit);
+		panel.add(new JButton("help"));
 		return panel;
 	}
 
+	private JPanel getButton2() {
+		JPanel panel = new JPanel(new GridBagLayout());
+		JButton okButton = new JButton("Ok");
+		okButton.setMnemonic(KeyEvent.VK_O);
+		configurationFrame.getRootPane().setDefaultButton(okButton);
+		okButton.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				configurationFrame.dispose();
+				int length = nameTextFieldList.size();
+				int max = 0;
+				for (int i = 0; i < length; i++) {
+					if (nameTextFieldList.get(i).isEnabled()) {
+						max = i + 1;
+					}
+				}
+				MapManager mapManager = new MapManager(100);
+				PlayerManager pm = PlayerManager.getInstance();
+				pm.setMapManager(mapManager);
+				for (int i = 0; i < max; i++) {
+					PlayerType type = PlayerType.COMPUTER;
+					if (radioButtonPlayerTypeList.get(i).get(0).isSelected()) {
+						type = PlayerType.HUMAN;
+					}
+					pm.addPlayer(new Player(type, nameTextFieldList.get(i).getText()));
+				}
+				new MainFrame(pm, mapManager);
+			}
+		});
+		JButton cancelAndQuit = new JButton("Cancel & Quit");
+		cancelAndQuit.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				configurationFrame.dispose();
+				System.exit(0);
+			}
+		});
+		JButton helpButton = new JButton("help");
+		helpButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				openHelpFile();
+			}
+		});
+		GridBagConstraints grid = new GridBagConstraints();
+		grid.fill = GridBagConstraints.HORIZONTAL;
+		grid.gridx = 0;
+		grid.gridwidth = 2;
+		grid.weightx=1;
+		panel.add(okButton, grid);
+		grid.fill = GridBagConstraints.HORIZONTAL;
+		grid.gridx = 2;
+		grid.gridwidth = 2;
+		grid.weightx=1;
+		panel.add(cancelAndQuit, grid);
+		grid.fill = GridBagConstraints.HORIZONTAL;
+		grid.weightx=0.5;
+		grid.gridx = 4;
+		panel.add(helpButton, grid);
+		return panel;
+	}
+	
+	private void openHelpFile() {
+		if (Desktop.isDesktopSupported()) {
+			try {
+				Desktop.getDesktop().open(new File(System.getenv("user.home") + "/.FormulaMath/help.pdf"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	private JPanel getNumberPlayerPanel() {
 		GridLayout gridLayout = new GridLayout(1, 2);
 		JPanel panel = new JPanel(gridLayout);

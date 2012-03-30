@@ -5,8 +5,6 @@ import java.awt.Frame;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import fr.ickik.formulamath.view.MainFrame;
-
 public class ExecutionThreadGroup extends ThreadGroup {
 
 	public ExecutionThreadGroup() {
@@ -14,7 +12,7 @@ public class ExecutionThreadGroup extends ThreadGroup {
 	}
 
 	public void uncaughtException(Thread t, Throwable e) {
-		JOptionPane.showMessageDialog(findActiveFrame(), e.toString(), MainFrame.getTitle() + " - Exception Occurred", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(findActiveFrame(), e.toString(), " - Exception Occurred", JOptionPane.ERROR_MESSAGE);
 		e.printStackTrace();
 	}
 

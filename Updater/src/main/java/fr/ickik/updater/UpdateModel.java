@@ -1,4 +1,5 @@
 package fr.ickik.updater;
+import java.awt.Desktop;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,10 +22,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import fr.ickik.formulamath.model.FormulaMathProperty;
-import fr.ickik.formulamath.model.PropertiesModel;
-import fr.ickik.formulamath.view.MainFrame;
-
 /**
  * The model which managed the update from a web server. It initializes the connection
  * and search the last release to update. It download and placed it in the right directory.
@@ -36,7 +33,6 @@ public final class UpdateModel {
 
 	private final List<Version> versionList = new ArrayList<Version>();
 	private List<UpdaterListener> listenerList = new ArrayList<UpdaterListener>();
-	private static final String USER_DIRECTORY = System.getProperty("user.dir");
 	private final Logger logger = LoggerFactory.getLogger(UpdateModel.class);
 	
 	private static final int VERSION_CHECKED_PERCENTAGE = 10;
@@ -60,6 +56,10 @@ public final class UpdateModel {
 			fireUpdateListener(UPDATE_AVAILABLE_PERCENTAGE, "Search new version");
 			Version v = getLastVersion();
 			downloadFiles(v);
+			PropertiesModel.getSingleton().put(FormulaMathProperty.VERSION, v.getVersion());
+			try {
+				PropertiesModel.getSingleton().save();
+			} catch (IOException e) {}
 			fireUpdateListener(MAX_PERCENTAGE, "Your application is up to date");
 			renameFiles(v);
 			fireRestartListener();
@@ -71,27 +71,11 @@ public final class UpdateModel {
 	}
 	
 	private void restartApplication() {
-		//File application = new File(USER_DIRECTORY + "/d.jar");
-		//try {
-		//	Desktop.getDesktop().open(application);
-			try {
-				File currentVersion = new File("./FormulaMath.jar");
-				new ProcessBuilder("java -jar " + currentVersion.getAbsolutePath()).start();
-			       /*InputStream is = process.getInputStream();
-			       InputStreamReader isr = new InputStreamReader(is);
-			       BufferedReader br = new BufferedReader(isr);
-			       String line;
-
-			        while ((line = br.readLine()) != null) {
-			         System.out.println(line);
-			       }*/
-			} catch (IOException e) {
-				logger.error(e.getMessage());
-			}
-			System.exit(0);
-		//} catch (IOException e) {
-		//	logger.error(e.getMessage());
-		//}
+		try {
+			Desktop.getDesktop().open(new File("FormulaMath.jar"));
+		} catch(Exception exception) {
+			exception.printStackTrace();
+		}
 	}
 	
 	private void renameFiles(Version v) {
@@ -148,7 +132,7 @@ public final class UpdateModel {
 		URLConnection connection = null;
 		InputStream is = null;
 		FileOutputStream destinationFile = null;
-		final int bufferSize = 4096;
+		final int bufferSize = 8192;
 		try { 
 			URL url = new URL(filePath);
 			connection = url.openConnection();
@@ -166,7 +150,7 @@ public final class UpdateModel {
 			int len;
 			int fileLength = 0;
 			while((len = is.read(data)) > 0){
-				destinationFile.write(data);
+				destinationFile.write(data,0, len);
 				fileLength += len;
 				fireUpdateListener((DOWNLOAD_PERCENTAGE * fileLength) / totalFilesLength, "Updating...");
 			}
@@ -199,7 +183,7 @@ public final class UpdateModel {
 
 	private boolean isUpdateAvailable() {
 		Version v = getLastVersion();
-		return v.getVersion().compareTo(MainFrame.VERSION) > 0;
+		return v.getVersion().compareTo(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.VERSION)) > 0;
 	}
 
 	private Version getLastVersion() {

@@ -1,16 +1,13 @@
 package fr.ickik.updater;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-
-import fr.ickik.formulamath.model.FormulaMathProperty;
-import fr.ickik.formulamath.model.PropertiesModel;
-import fr.ickik.formulamath.update.UpdateModel;
-import fr.ickik.formulamath.view.ConfigurationFrame;
-import fr.ickik.formulamath.view.UpdateFrame;
 
 public class Main {
 
@@ -26,22 +23,30 @@ public class Main {
 					SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
 					String savedDate = dateFormat.format(Calendar.getInstance().getTime());
 					PropertiesModel.getSingleton().put(FormulaMathProperty.LAST_UPDATE, savedDate);
-//					try {
-//						PropertiesModel.getSingleton().save();
-//					} catch (IOException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
+					try {
+						PropertiesModel.getSingleton().save();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					UpdateModel model = new UpdateModel();
 					if (model.isConnectionAvailable()) {
 						UpdateFrame main = new UpdateFrame(model);
 						main.setVisible(true);
 						model.update();
 					} else {
-						new ConfigurationFrame();
+						try {
+							Desktop.getDesktop().open(new File("FormulaMath.jar"));
+						} catch(Exception exception) {
+							exception.printStackTrace();
+						}
 					}
 				} else {
-					new ConfigurationFrame();
+					try {
+						Desktop.getDesktop().open(new File("FormulaMath.jar"));
+					} catch(Exception exception) {
+						exception.printStackTrace();
+					}
 				}
 			}
 		}.start();

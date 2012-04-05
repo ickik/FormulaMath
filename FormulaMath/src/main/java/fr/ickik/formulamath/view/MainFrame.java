@@ -228,11 +228,13 @@ public final class MainFrame {
 				if (selected == -1) {
 					return;
 				}
+				log.trace("Play button pushed, checkbox selected : {}", selected);
 				for (int i = 0; i < MapManager.ROAD_SIZE; i++) {
 					solution[i].setText("");
 					solution[i].setEnabled(false);
 				}
-				playerManager.updatePlayer(playerManager.getCurrentPlayer(), selected);
+				log.trace("checkbox disabled!");
+				playerManager.updateStartPositionPlayer(playerManager.getCurrentPlayer(), selected);
 				if (playerManager.initStartPosition()) {
 					displayMessage(playerManager.getCurrentPlayer().toString());
 					for (int i = 0; i < positionList.size(); ) {
@@ -503,7 +505,9 @@ public final class MainFrame {
 					return;
 				}
 				Vector vector = vectorList.get(selectedPossibility);
+				log.trace("Play button pushed, checkbox selected : {} => {}", selectedPossibility, vector);
 				Player player = playerManager.getCurrentPlayer();
+				log.trace("Current Player : {}", player);
 				int distance = (caseArrayList.size() - mapManager.getMapSize()) / 2;
 				JCase c = caseArrayList.get(player.getPosition().getY() + distance).get(player.getPosition().getX() + distance);
 				JCase c2 = caseArrayList.get(player.getPosition().getY() - vector.getY() + distance).get(player.getPosition().getX() + vector.getX() + distance);
@@ -511,6 +515,7 @@ public final class MainFrame {
 				Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
 				
 				if (isEndLineIntersection(line)) {
+					log.trace("{} win", player);
 					displayErrorMessage("end");
 					playerManager.lastPlay(vector);
 				}
@@ -537,6 +542,7 @@ public final class MainFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				if (caseSize > MIN_ZOOM_SIZE) {
 					caseSize++;
+					log.trace("Zoom : {}", caseSize);
 					repaintTrayPanel();
 				}
 			}
@@ -547,6 +553,7 @@ public final class MainFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (caseSize < MAX_ZOOM_SIZE) {
 					caseSize--;
+					log.trace("Dezoom : {}", caseSize);
 					repaintTrayPanel();
 				}
 			}
@@ -562,6 +569,7 @@ public final class MainFrame {
 		up.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				log.trace("Up move");
 				scrollPane.getVerticalScrollBar().getModel().setValue(scrollPane.getVerticalScrollBar().getModel().getValue() - 40);
 			}
 		});
@@ -569,6 +577,7 @@ public final class MainFrame {
 		down.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				log.trace("Down move");
 				scrollPane.getVerticalScrollBar().getModel().setValue(scrollPane.getVerticalScrollBar().getModel().getValue() + 40);
 			}
 		});
@@ -576,6 +585,7 @@ public final class MainFrame {
 		left.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				log.trace("Left move");
 				scrollPane.getHorizontalScrollBar().getModel().setValue(scrollPane.getHorizontalScrollBar().getModel().getValue() - 40);
 			}
 		});
@@ -583,6 +593,7 @@ public final class MainFrame {
 		right.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				log.trace("Right move");
 				scrollPane.getHorizontalScrollBar().getModel().setValue(scrollPane.getHorizontalScrollBar().getModel().getValue() + 40);
 			}
 		});
@@ -632,10 +643,12 @@ public final class MainFrame {
 	}
 	
 	private boolean isGrassIntersection(Shape shape) {
+		log.debug("isGrassIntersection");
 		return checkIntersection(shape, Field.GRASS);
 	}
 	
 	private boolean isEndLineIntersection(Shape shape) {
+		log.debug("isEndLineIntersection {} {}", shape.getBounds().getLocation(), shape.getBounds().getSize());
 		return checkIntersection(shape, Field.FINISHING_LINE);
 	}
 	
@@ -643,13 +656,15 @@ public final class MainFrame {
 		for (List<JCase> caseList : caseArrayList) {
 			for (JCase c : caseList) {
 				if (c.getModel() != null && c.getModel().getField() == terrain) {
-					if (shape.intersects(c.getRectangleShape())) {
-					//if (shape.intersects(c.getX(), c.getY(), c.getWidth(), c.getHeight())) {
+					//if (shape.intersects(c.getRectangleShape())) {
+					if (shape.intersects(c.getX(), c.getY(), c.getWidth(), c.getHeight())) {
+						log.debug("intersection for shape and {} is {}", terrain, true);
 						return true;
 					}
 				}
 			}
 		}
+		log.debug("intersection for shape and {} is {}", terrain, false);
 		return false;
 	}
 	
@@ -663,6 +678,15 @@ public final class MainFrame {
 	
 	private JMenu getFileMenu() {
 		JMenu file = new JMenu("File");
+		JMenuItem save = new JMenuItem("Save Map");
+		save.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		JMenuItem quit = new JMenuItem("Quit");
 		quit.addActionListener(new ActionListener() {
 			
@@ -677,6 +701,8 @@ public final class MainFrame {
 				System.exit(0);
 			}
 		});
+		//file.add(save);
+		file.addSeparator();
 		file.add(quit);
 		return file;
 	}

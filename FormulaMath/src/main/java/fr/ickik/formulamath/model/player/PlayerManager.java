@@ -26,7 +26,7 @@ import fr.ickik.formulamath.entity.Vector;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.1.004, 27 mar. 2012.
+ * @version 0.1.005, 5 apr. 2012.
  */
 public final class PlayerManager {
 
@@ -140,14 +140,20 @@ public final class PlayerManager {
 		return true;
 	}
 	
+	/**
+	 * 
+	 * @param vector
+	 */
 	public void lastPlay(Vector vector) {
+		log.debug("LastPlay {}", vector);
 		List<Position> endLineList = mapManager.getFinishingLinePositionList();
 		Player p = getCurrentPlayer();
 		mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
 		mapManager.getCase(endLineList.get(0).getY(), endLineList.get(0).getX()).setIdPlayer(p.getId());
 		fireUpdateCaseListener(p);
 		updateIndexPlayerGame();
-		//AIPlay();
+		//AIPlay();.
+		finishPositionList.add(p);
 		isWinner = true;
 	}
 	
@@ -423,12 +429,12 @@ public final class PlayerManager {
 	}
 	
 	/**
-	 * Update the position of the player, depending the index of the available positions.
+	 * Update the starting position of the player, depending the index of the available positions.
 	 * @param p the player to update.
-	 * @param index
-	 * @throws FormulaMathException
+	 * @param index the index in the list of available position.
 	 */
-	public void updatePlayer(Player p, int index) {
+	public void updateStartPositionPlayer(Player p, int index) {
+		log.trace("updateStartPositionPlayer({}, {})", p, index);
 		List<Position> list = mapManager.getStartingPositionList();
 		p.getPosition().setX(list.get(index).getX());
 		p.getPosition().setY(list.get(index).getY());

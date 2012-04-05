@@ -38,6 +38,7 @@ import fr.ickik.formulamath.model.player.PlayerType;
 public class ConfigurationFrame {
 
 	private final JFrame configurationFrame;
+	//Can be changed in Toggle button to use less memory
 	private final List<List<JRadioButton>> radioButtonPlayerTypeList = new ArrayList<List<JRadioButton>>(PlayerManager.NUMBER_OF_PLAYER_MAX);
 	private final List<JTextField> nameTextFieldList = new ArrayList<JTextField>(PlayerManager.NUMBER_OF_PLAYER_MAX);
 	private final List<JLabel> labelList = new ArrayList<JLabel>(PlayerManager.NUMBER_OF_PLAYER_MAX);

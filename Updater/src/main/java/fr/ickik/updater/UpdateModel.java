@@ -27,7 +27,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * and search the last release to update. It download and placed it in the right directory.
  * After downloading, it rename the jar file into the current jar file to start the application.
  * @author Ickik
- * @version 0.1.001, 28 mar. 2012
+ * @version 0.1.002, 5 apr. 2012
  */
 public final class UpdateModel {
 
@@ -38,7 +38,7 @@ public final class UpdateModel {
 	private static final int VERSION_CHECKED_PERCENTAGE = 10;
 	private static final int UPDATE_AVAILABLE_PERCENTAGE = 15;
 	private static final int BEGIN_DOWNLOAD_PERCENTAGE = 20;
-	private static final int DOWNLOAD_PERCENTAGE = 80;
+	private static final int DOWNLOAD_PERCENTAGE = 75;
 	private static final int MAX_PERCENTAGE = 100;
 	private static final String xmlConfigurationFile = "versions.xml";
 	
@@ -54,7 +54,7 @@ public final class UpdateModel {
 		searchAvailableVersion();
 		if (isUpdateAvailable()) {
 			fireUpdateListener(UPDATE_AVAILABLE_PERCENTAGE, "Search new version");
-			Version v = getLastVersion();
+			Version v = getNextVersion();
 			downloadFiles(v);
 			PropertiesModel.getSingleton().put(FormulaMathProperty.VERSION, v.getVersion());
 			try {
@@ -152,7 +152,7 @@ public final class UpdateModel {
 			while((len = is.read(data)) > 0){
 				destinationFile.write(data,0, len);
 				fileLength += len;
-				fireUpdateListener((DOWNLOAD_PERCENTAGE * fileLength) / totalFilesLength, "Updating...");
+				fireUpdateListener( BEGIN_DOWNLOAD_PERCENTAGE + ((DOWNLOAD_PERCENTAGE * fileLength) / totalFilesLength), "Updating...");
 			}
 
 			if(fileLength != length){
@@ -182,8 +182,20 @@ public final class UpdateModel {
 	}
 
 	private boolean isUpdateAvailable() {
-		Version v = getLastVersion();
+		Version v = getNextVersion();
 		return v.getVersion().compareTo(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.VERSION)) > 0;
+	}
+	
+	private Version getNextVersion() {
+		String currentVersion = PropertiesModel.getSingleton().getProperty(FormulaMathProperty.VERSION);
+		for(Version v : versionList) {
+			logger.debug("{} compareto {} = {}", new Object[]{v.getVersion(), currentVersion, v.getVersion().compareTo(currentVersion)});
+			if (v.getVersion().compareTo(currentVersion) >0) {
+				logger.debug("{} compareto {} = {}", new Object[]{v.getVersion(), currentVersion, v.getVersion().compareTo(currentVersion)});
+				return v;
+			}
+		}
+		return getLastVersion();
 	}
 
 	private Version getLastVersion() {

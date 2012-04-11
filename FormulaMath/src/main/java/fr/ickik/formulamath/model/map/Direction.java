@@ -3,7 +3,7 @@ package fr.ickik.formulamath.model.map;
 
 /**
  * Direction the {@link MapManager} can choose to create the map.
- * @author Patrick Allgeyer
+ * @author Ickik
  * @version 0.1.000, 20 mar 2012
  */
 public enum Direction {

@@ -19,9 +19,13 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.model.map.MapManager;
@@ -33,7 +37,7 @@ import fr.ickik.formulamath.model.player.PlayerType;
  * The user can choose between Human and Computer players;
  * give a name to every player.
  * @author Ickik.
- * @version 0.1.001, 28 mar. 2012
+ * @version 0.1.002, 11 apr. 2012
  */
 public class ConfigurationFrame {
 
@@ -42,7 +46,7 @@ public class ConfigurationFrame {
 	private final List<List<JRadioButton>> radioButtonPlayerTypeList = new ArrayList<List<JRadioButton>>(PlayerManager.NUMBER_OF_PLAYER_MAX);
 	private final List<JTextField> nameTextFieldList = new ArrayList<JTextField>(PlayerManager.NUMBER_OF_PLAYER_MAX);
 	private final List<JLabel> labelList = new ArrayList<JLabel>(PlayerManager.NUMBER_OF_PLAYER_MAX);
-	
+	private final Logger log = LoggerFactory.getLogger(ConfigurationFrame.class);
 	/**
 	 * Default constructor. Creates the frame to configure the game.
 	 */
@@ -56,7 +60,14 @@ public class ConfigurationFrame {
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.add(getConfigurationPanel(), BorderLayout.CENTER);
 		panel.add(getNumberPlayerPanel(), BorderLayout.NORTH);
-		panel.add(getButton2(), BorderLayout.SOUTH);
+		File help = new File("./help.pdf");
+		if (help.exists()) {
+			log.debug("Help file exist");
+			panel.add(getButtonHelp(), BorderLayout.SOUTH);
+		} else {
+			log.debug("Help file not found");
+			panel.add(getButton(), BorderLayout.SOUTH);
+		}
 		configurationFrame.add(panel);
 		configurationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		configurationFrame.pack();
@@ -82,10 +93,12 @@ public class ConfigurationFrame {
 				MapManager mapManager = new MapManager(100);
 				PlayerManager pm = PlayerManager.getInstance();
 				pm.setMapManager(mapManager);
-				for (int i = 0; i < max; i++) {
-					PlayerType type = PlayerType.COMPUTER;
+				for (int i = 0; i < max; i++) {//Si aucun joueur n'est selectionné, par defaut il est CPU
+					PlayerType type;
 					if (radioButtonPlayerTypeList.get(i).get(0).isSelected()) {
 						type = PlayerType.HUMAN;
+					} else {
+						type = PlayerType.COMPUTER;
 					}
 					pm.addPlayer(new Player(type, nameTextFieldList.get(i).getText()));
 				}
@@ -102,11 +115,10 @@ public class ConfigurationFrame {
 		});
 		panel.add(okButton);
 		panel.add(cancelAndQuit);
-		panel.add(new JButton("help"));
 		return panel;
 	}
 
-	private JPanel getButton2() {
+	private JPanel getButtonHelp() {
 		JPanel panel = new JPanel(new GridBagLayout());
 		JButton okButton = new JButton("Ok");
 		okButton.setMnemonic(KeyEvent.VK_O);
@@ -172,12 +184,16 @@ public class ConfigurationFrame {
 	private void openHelpFile() {
 		if (Desktop.isDesktopSupported()) {
 			try {
-				Desktop.getDesktop().open(new File(System.getenv("user.home") + "/.FormulaMath/help.pdf"));
+				Desktop.getDesktop().open(new File("./help.pdf"));
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error("Help file not found or corrupted! {}", e.getMessage());
+				displayErrorMessage(e.getMessage());
 			}
 		}
+	}
+	
+	private void displayErrorMessage(String msg) {
+		JOptionPane.showMessageDialog(configurationFrame, msg, MainFrame.getTitle() + " - ERROR!", JOptionPane.ERROR_MESSAGE);
 	}
 	
 	private JPanel getNumberPlayerPanel() {

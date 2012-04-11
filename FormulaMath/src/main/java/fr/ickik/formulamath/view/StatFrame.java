@@ -27,9 +27,9 @@ import fr.ickik.formulamath.model.player.PlayerManager;
  * per turn, the variance, the square type and a graphic which resume the number of
  * vector played during the game.
  * @author Ickik
- * @version 0.1.000, 27 mar. 2012
+ * @version 0.1.001, 11 apr. 2012
  */
-public final class StatFrame extends JFrame {
+public final class StatFrame extends AbstractFormulaMathFrame {
 
 	private static final long serialVersionUID = 176710123412877650L;
 	private final JFrame callingFrame;
@@ -41,7 +41,6 @@ public final class StatFrame extends JFrame {
 	 * @param callingFrame the calling frame to disable.
 	 */
 	public StatFrame(JFrame callingFrame) {
-		super(MainFrame.getTitle());
 		this.callingFrame = callingFrame;
 		addWindowListener(createWindowListener());
 		callingFrame.setEnabled(false);
@@ -50,6 +49,7 @@ public final class StatFrame extends JFrame {
 		panel.add(createButton(), BorderLayout.SOUTH);
 		add(panel);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		centeredFrame();
 		setVisible(true);
 	}
 	

@@ -63,7 +63,7 @@ public final class MainFrame {
 
 	private final JFrame mainFrame;
 	public static final String NAME = "Formula Math";
-	public static final String VERSION = "1.0.0";
+	public static final String VERSION = "0.1";
 	private int caseSize = 15;
 	private final MapManager mapManager;
 	private final PlayerManager playerManager;
@@ -725,7 +725,7 @@ public final class MainFrame {
 		help.add(about);
 		return help;
 	}
-
+	
 	private void displayErrorMessage(String msg) {
 		JOptionPane.showMessageDialog(mainFrame, msg, getTitle() + " - ERROR!", JOptionPane.ERROR_MESSAGE);
 	}

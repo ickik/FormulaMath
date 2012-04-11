@@ -12,21 +12,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.ickik.formulamath.FormulaMathException;
-import fr.ickik.formulamath.model.CaseModel;
-import fr.ickik.formulamath.model.map.Field;
-import fr.ickik.formulamath.model.map.MapManager;
-import fr.ickik.formulamath.model.map.Orientation;
-import fr.ickik.formulamath.model.player.PlayerType;
 import fr.ickik.formulamath.controler.UpdateCaseListener;
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Position;
 import fr.ickik.formulamath.entity.RoadDirectionInformation;
 import fr.ickik.formulamath.entity.Vector;
+import fr.ickik.formulamath.model.CaseModel;
+import fr.ickik.formulamath.model.map.Field;
+import fr.ickik.formulamath.model.map.MapManager;
+import fr.ickik.formulamath.model.map.Orientation;
 
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.1.005, 5 apr. 2012.
+ * @version 0.1.006, 10 apr. 2012.
  */
 public final class PlayerManager {
 
@@ -49,6 +48,9 @@ public final class PlayerManager {
 	private PlayerManager() {
 		playerList = new ArrayList<Player>(NUMBER_OF_PLAYER_MAX);
 		finishPositionList = new ArrayList<Player>(NUMBER_OF_PLAYER_MAX);
+		for (int i = 0; i < NUMBER_OF_PLAYER_MAX; i++) {
+			finishPositionList.add(null);
+		}
 	}
 
 	/**
@@ -153,8 +155,24 @@ public final class PlayerManager {
 		fireUpdateCaseListener(p);
 		updateIndexPlayerGame();
 		//AIPlay();.
-		finishPositionList.add(p);
+		addFinishPlayer(p, true);
 		isWinner = true;
+	}
+	
+	private void addFinishPlayer(Player p, boolean isWinning) {
+		int begin, end;
+		if (isWinning) {
+			begin = 0;
+			end = NUMBER_OF_PLAYER_MAX;
+		} else {
+			begin = NUMBER_OF_PLAYER_MAX;
+			end = 0;
+		}
+		for (int i = begin; i < end; i = (isWinning) ? i+1 : i-1) {
+			if (finishPositionList.get(i) == null) {
+				finishPositionList.set(i, p);
+			}
+		}
 	}
 	
 	public void AIPlay() {
@@ -237,6 +255,7 @@ public final class PlayerManager {
 					break;
 				}
 			} else {
+				log.debug("Go in the same direction {}", r.getOrientation());
 				switch (r.getOrientation()) {
 				case NORTH:
 				case SOUTH:
@@ -299,8 +318,23 @@ public final class PlayerManager {
 	}
 	
 	private void updateIndexPlayerGame() {
-		indexPlayerGame++;
-		indexPlayerGame = indexPlayerGame % playerList.size();
+		if (playerList.size() == getNumberOfFinishPlayer()) {
+			fireEndGameListener();
+		}
+		do {
+			indexPlayerGame++;
+			indexPlayerGame = indexPlayerGame % playerList.size();
+		} while(finishPositionList.contains(playerList.get(indexPlayerGame)));
+	}
+	
+	private int getNumberOfFinishPlayer() {
+		int nb = 0;
+		for (int i = 0; i < finishPositionList.size(); i++) {
+			if (finishPositionList.get(i) != null) {
+				nb++;
+			}
+		}
+		return nb;
 	}
 	
 	private void humanPlaying() {
@@ -326,7 +360,7 @@ public final class PlayerManager {
 		if (!playerList.isEmpty()) {
 			Iterator<Player> it = playerList.iterator();
 			while(it.hasNext()) {
-				log.debug("boucle while");
+				log.trace("boucle while");
 				Player p = it.next();
 				if (p.getType().equals(PlayerType.COMPUTER)) {
 					log.debug("computer");
@@ -376,6 +410,7 @@ public final class PlayerManager {
 						vector = new Vector(val, 0);
 						break;
 					}
+					log.debug("Vector determined : {}", vector.toString());
 					playerRoadPosition.put(p.getId(), 0);
 					play(vector);
 					updateIndexPlayerGame();
@@ -484,9 +519,15 @@ public final class PlayerManager {
 		}
 	}
 
-	private void fireEndGameListener(Player player) {
+	/*private void fireEndGameListener(Player player) {
 		for (UpdateCaseListener u : updateCaseListenerList) {
 			u.updateEndGamePanel(player);
+		}
+	}*/
+
+	private void fireEndGameListener() {
+		for (UpdateCaseListener u : updateCaseListenerList) {
+			//u.updateEndGamePanel();
 		}
 	}
 	

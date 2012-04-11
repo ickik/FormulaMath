@@ -183,7 +183,10 @@ public final class UpdateModel {
 
 	private boolean isUpdateAvailable() {
 		Version v = getNextVersion();
-		return v.getVersion().compareTo(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.VERSION)) > 0;
+		logger.debug("next version is {}", v.getVersion());
+		boolean isUpdateAvailable = v.getVersion().compareTo(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.VERSION)) > 0;
+		logger.debug("{} is available ? {}", isUpdateAvailable);
+		return isUpdateAvailable;
 	}
 	
 	private Version getNextVersion() {

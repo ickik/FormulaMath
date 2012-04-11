@@ -7,8 +7,17 @@ import javax.swing.JOptionPane;
 
 import fr.ickik.formulamath.view.MainFrame;
 
+/**
+ * This class extends the thread group class to redefine the behavior when an
+ * exception is thrown.
+ * @author Ickik
+ * @version 0.1.000, 11 apr. 2012
+ */
 public class ExecutionThreadGroup extends ThreadGroup {
 
+	/**
+	 * Constructor of the thread group.
+	 */
 	public ExecutionThreadGroup() {
 		super("ExecutionGroup");
 	}
@@ -20,8 +29,12 @@ public class ExecutionThreadGroup extends ThreadGroup {
 
 	private Frame findActiveFrame() {
 		Frame[] frames = JFrame.getFrames();
-		for (int i = 0; i < frames.length; i++) {
-			Frame frame = frames[i];
+		for (Frame frame : frames) {
+			if (frame.isActive()) {
+				return frame;
+			}
+		}
+		for (Frame frame : frames) {
 			if (frame.isVisible()) {
 				return frame;
 			}

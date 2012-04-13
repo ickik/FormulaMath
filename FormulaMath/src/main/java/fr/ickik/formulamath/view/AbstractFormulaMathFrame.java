@@ -1,14 +1,16 @@
 package fr.ickik.formulamath.view;
 
 import java.awt.Toolkit;
+import java.util.Arrays;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
  * Abstract which define the default behavior of frames.
  * @author Ickik
- * @version 0.1.000, 11 apr. 2012
+ * @version 0.1.001, 13 apr. 2012
  */
 public abstract class AbstractFormulaMathFrame extends JFrame {
 
@@ -22,6 +24,12 @@ public abstract class AbstractFormulaMathFrame extends JFrame {
 	 */
 	public AbstractFormulaMathFrame() {
 		super(NAME + " " + VERSION);
+		addIcon();
+	}
+	
+	private void addIcon() {
+		ImageIcon icon = new ImageIcon(ConfigurationFrame.class.getResource("img/FormulaMath_icon.png"));
+		setIconImages(Arrays.asList(icon.getImage()));
 	}
 	
 	/**

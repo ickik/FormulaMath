@@ -9,6 +9,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.JOptionPane;
+
+/**
+ * Main class which contains the main static method.
+ * @author Ickik
+ * @version 0.1.001, 13 apr. 2012
+ */
 public class Main {
 
 	/**
@@ -18,6 +25,10 @@ public class Main {
 		ThreadGroup executionThreadGroup = new ExecutionThreadGroup();
 		new Thread(executionThreadGroup, "") {
 			public void run() {
+				if (!checkVersion()) {
+					JOptionPane.showMessageDialog(null, "Java version not compatible please update", "ERROR!", JOptionPane.ERROR_MESSAGE);
+					return ;
+				}
 				long jour = elapsedDays();
 				if (jour >= 7) {
 					SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
@@ -26,7 +37,6 @@ public class Main {
 					try {
 						PropertiesModel.getSingleton().save();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					UpdateModel model = new UpdateModel();
@@ -35,21 +45,29 @@ public class Main {
 						main.setVisible(true);
 						model.update();
 					} else {
-						try {
-							Desktop.getDesktop().open(new File("FormulaMath.jar"));
-						} catch(Exception exception) {
-							exception.printStackTrace();
-						}
+						openApplication();
 					}
 				} else {
-					try {
-						Desktop.getDesktop().open(new File("FormulaMath.jar"));
-					} catch(Exception exception) {
-						exception.printStackTrace();
-					}
+					openApplication();
 				}
 			}
 		}.start();
+	}
+	
+	private static boolean checkVersion() {
+		String version = System.getProperty("java.version");
+		if (version.matches("1\\.[6-7].*")) {
+			return true;
+		}
+		return false;
+	}
+	
+	private static void openApplication() {
+		try {
+			Desktop.getDesktop().open(new File("FormulaMath.jar"));
+		} catch(Exception exception) {
+			exception.printStackTrace();
+		}
 	}
 	
 	private static long elapsedDays() {

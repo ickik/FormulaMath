@@ -78,7 +78,7 @@ public final class PlayerManager {
 	}
 
 	public List<Vector> getVectorsPossibilities(Player player) {
-		log.debug("getVectorsPossibilities entering");
+		log.trace("getVectorsPossibilities entering");
 		List<Vector> list = new ArrayList<Vector>(5);
 
 		if (isMovingAvailable(player.getPosition().getX() + player.getVector().getX(), player.getPosition().getY() - player.getVector().getY(), player)) {
@@ -100,11 +100,11 @@ public final class PlayerManager {
 		if (isMovingAvailable(player.getPosition().getX() + player.getVector().getX(), player.getPosition().getY() - player.getVector().getY() - 1, player)) {
 			list.add(new Vector(player.getVector().getX(), player.getVector().getY() + 1));
 		}
-		log.debug("number of vectors : {}", list.size());
+		log.debug("number of vectors possible : {}", list.size());
 		for(Vector v : list) {
 			log.trace(v.toString());
 		}
-		log.debug("getVectorsPossibilities exiting");
+		log.trace("getVectorsPossibilities exiting");
 		return list;
 	}
 	
@@ -260,11 +260,13 @@ public final class PlayerManager {
 				case NORTH:
 				case SOUTH:
 					int d = getNextPlay(len, p.getVector().getY());
+					log.debug("Next play : {}", d);
 					vector = new Vector(0, p.getVector().getY() + d);
 					break;
 				case WEST:
 				case EAST:
 					d = getNextPlay(len, p.getVector().getX());
+					log.debug("Next play : {}", d);
 					vector = new Vector(p.getVector().getX() + d, 0);
 					break;
 				}
@@ -392,7 +394,7 @@ public final class PlayerManager {
 				if (p.getType().equals(PlayerType.COMPUTER)) {
 					log.debug("Computer first move");
 					int len = mapManager.getRoadDirectionInformationList().get(0).getLength();
-					log.trace("length of the road : {}, orientation:{}", len, mapManager.getRoadDirectionInformationList().get(0).getOrientation());
+					log.trace("length of the road : {}, orientation:{}", len, mapManager.getRoadDirectionInformationList().get(0).toString());
 					int val = getFirstMove(len);
 					log.trace("length of the first move found : {}", val);
 					Vector vector = null;
@@ -426,15 +428,15 @@ public final class PlayerManager {
 	
 	private int getFirstMove(int distance) {
 		log.debug("getFirstMove : distance = {}", Integer.toString(distance));
-		Map<Integer,Integer> distanceList = new HashMap<Integer,Integer>();
+		Map<Integer,Integer> distanceMap = new HashMap<Integer,Integer>();
 		int halfDistance = distance / 2;
 		for (int i = 1; i <= halfDistance; i++) {
-			distanceList.put(getNbStepFirstMove(distance, i, 0), i);
+			distanceMap.put(getNbStepFirstMove(distance, i, 0), i);
 		}
-		List<Integer> list = new ArrayList<Integer>(distanceList.keySet());
+		List<Integer> list = new ArrayList<Integer>(distanceMap.keySet());
 		log.debug("Size of the list of the distance found : {}", Integer.toString(list.size()));
 		Collections.sort(list);
-		return distanceList.get(list.get(0));
+		return distanceMap.get(list.get(0));
 	}
 	
 	private int getNbStepFirstMove(int distance, int vitesse, int step) {
@@ -528,6 +530,7 @@ public final class PlayerManager {
 	private void fireEndGameListener() {
 		for (UpdateCaseListener u : updateCaseListenerList) {
 			//u.updateEndGamePanel();
+			System.exit(0);
 		}
 	}
 	

@@ -5,6 +5,7 @@ import java.awt.Desktop;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -37,16 +39,19 @@ import fr.ickik.formulamath.model.player.PlayerType;
  * The user can choose between Human and Computer players;
  * give a name to every player.
  * @author Ickik.
- * @version 0.1.002, 11 apr. 2012
+ * @version 0.1.003, 13 apr. 2012
  */
 public class ConfigurationFrame {
 
 	private final JFrame configurationFrame;
 	//Can be changed in Toggle button to use less memory
 	private final List<List<JRadioButton>> radioButtonPlayerTypeList = new ArrayList<List<JRadioButton>>(PlayerManager.NUMBER_OF_PLAYER_MAX);
+	//private final List<JToggleButton> togglePlayerTypeList = new ArrayList<JToggleButton>(PlayerManager.NUMBER_OF_PLAYER_MAX);
 	private final List<JTextField> nameTextFieldList = new ArrayList<JTextField>(PlayerManager.NUMBER_OF_PLAYER_MAX);
 	private final List<JLabel> labelList = new ArrayList<JLabel>(PlayerManager.NUMBER_OF_PLAYER_MAX);
 	private final Logger log = LoggerFactory.getLogger(ConfigurationFrame.class);
+	private int numberOfPlayerSelected = 1;
+	
 	/**
 	 * Default constructor. Creates the frame to configure the game.
 	 */
@@ -71,21 +76,22 @@ public class ConfigurationFrame {
 		configurationFrame.add(panel);
 		configurationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		configurationFrame.pack();
+		//Image icon = Toolkit.getDefaultToolkit().createImage(ConfigurationFrame.class.getResource("FormulaMath_icon2.png"));
+		//configurationFrame.setIconImage(icon);
 		configurationFrame.setVisible(true);
 	}
 
 	private JPanel getButton() {
 		JPanel panel = new JPanel(new GridLayout(1, 3));
-		JButton okButton = new JButton("Ok");
+		JButton okButton = new JButton("OK");
 		okButton.setMnemonic(KeyEvent.VK_O);
 		configurationFrame.getRootPane().setDefaultButton(okButton);
 		okButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
 				configurationFrame.dispose();
-				int length = nameTextFieldList.size();
 				int max = 0;
-				for (int i = 0; i < length; i++) {
+				for (int i = 0; i < numberOfPlayerSelected; i++) {
 					if (nameTextFieldList.get(i).isEnabled()) {
 						max = i + 1;
 					}
@@ -207,13 +213,14 @@ public class ConfigurationFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				for (int i = 0; i < comboBox.getSelectedIndex() + 1; i++) {
+				numberOfPlayerSelected = comboBox.getSelectedIndex() + 1;
+				for (int i = 0; i < numberOfPlayerSelected; i++) {
 					radioButtonPlayerTypeList.get(i).get(0).setEnabled(true);
 					radioButtonPlayerTypeList.get(i).get(1).setEnabled(true);
 					labelList.get(i).setEnabled(true);
 					nameTextFieldList.get(i).setEnabled(true);
 				}
-				for (int i = comboBox.getSelectedIndex() + 1; i < PlayerManager.NUMBER_OF_PLAYER_MAX; i++) {
+				for (int i = numberOfPlayerSelected; i < PlayerManager.NUMBER_OF_PLAYER_MAX; i++) {
 					radioButtonPlayerTypeList.get(i).get(0).setEnabled(false);
 					radioButtonPlayerTypeList.get(i).get(1).setEnabled(false);
 					labelList.get(i).setEnabled(false);
@@ -221,7 +228,7 @@ public class ConfigurationFrame {
 				}
 			}
 		});
-		comboBox.setSelectedIndex(0);
+		//comboBox.setSelectedIndex(0);
 		panel.add(label);
 		panel.add(comboBox);
 		return panel;
@@ -229,6 +236,35 @@ public class ConfigurationFrame {
 
 	private JPanel getConfigurationPanel() {
 		JPanel panel = new JPanel();
+		/*GridLayout gridLayout = new GridLayout(PlayerManager.NUMBER_OF_PLAYER_MAX, 3);
+		panel.setLayout(gridLayout);
+		for (int i = 0; i < PlayerManager.NUMBER_OF_PLAYER_MAX; i++) {
+			final JToggleButton button = new JToggleButton("Computer");
+			button.addChangeListener(new ChangeListener() {
+				
+				@Override
+				public void stateChanged(ChangeEvent arg0) {
+					if (button.isSelected()) {
+						button.setText("Human");
+					} else {
+						button.setText("Computer");
+					}
+				}
+			});
+			panel.add(button);
+			JLabel lbl = new JLabel("Name : ");
+			panel.add(lbl);
+			labelList.add(lbl);
+			JTextField name = new JTextField();
+			nameTextFieldList.add(name);
+			panel.add(name);
+			if (i != 0) {
+				button.setEnabled(false);
+				lbl.setEnabled(false);
+				name.setEnabled(false);
+			}
+		}*/
+		
 		GridLayout gridLayout = new GridLayout(PlayerManager.NUMBER_OF_PLAYER_MAX, 4);
 		panel.setLayout(gridLayout);
 		for (int i = 0; i < PlayerManager.NUMBER_OF_PLAYER_MAX; i++) {

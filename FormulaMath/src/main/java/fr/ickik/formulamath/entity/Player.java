@@ -92,7 +92,7 @@ public class Player {
 
 	@Override
 	public String toString() {
-		return Integer.toString(id) + " " + name + " (" + type + ") :" + position.toString();
+		return "id:" + Integer.toString(id) + " name:" + name + " (" + type + ") :" + position.toString();
 	}
 	
 	/**

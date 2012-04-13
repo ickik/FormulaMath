@@ -45,7 +45,7 @@ public class RoadDirectionList extends LinkedList<RoadDirectionInformation> {
 		StringBuilder str = new StringBuilder();
 		Iterator<RoadDirectionInformation> it = iterator();
 		while (it.hasNext()) {
-			str.append(it.next());
+			str.append(it.next()).append("\n");
 		}
 		return str.toString();
 	}

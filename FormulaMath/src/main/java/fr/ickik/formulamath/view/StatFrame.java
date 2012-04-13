@@ -71,6 +71,7 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 			public void windowClosed(WindowEvent arg0) {
 				callingFrame.setEnabled(true);
 				StatFrame.this.dispose();
+				callingFrame.toFront();
 			}
 			
 			@Override
@@ -111,6 +112,7 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				callingFrame.setEnabled(true);
 				StatFrame.this.dispose();
+				callingFrame.toFront();
 			}
 		});
 		return button;

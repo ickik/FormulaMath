@@ -36,12 +36,15 @@ public class MapManager {
 	 * @param size the number of cases of square's side.
 	 */
 	public MapManager(int size) {
-		log.debug("Constructor begin");
+		log.trace("Constructor begin");
+		log.debug("Size of the map defined : {}", size);
 		this.mapSize = size;
 		carte = new ArrayList<List<CaseModel>>(size);
 		init();
 		constructRoad();
-		log.debug("Constructor exiting");
+		log.debug("Road list operational : size {}",roadList.size());
+		log.debug("{}", roadList.toString());
+		log.trace("Constructor exiting");
 	}
 
 	private void init() {
@@ -85,7 +88,7 @@ public class MapManager {
 		Orientation coteDepart = traceStartingLine(positionDepart, positionDepart2);
 		initStartPosition(positionDepart, positionDepart2);
 		Position position = new Position((positionDepart.getX() + positionDepart2.getX()) / 2, (positionDepart.getY() + positionDepart2.getY()) / 2);
-		roadList.add(new RoadDirectionInformation(coteDepart, position, position));
+		roadList.add(new RoadDirectionInformation(coteDepart, position, position.clone()));
 
 		Queue<Direction> previousDirection = new ArrayDeque<Direction>(2);
 		while (!isFinished) {

@@ -21,7 +21,7 @@
 		</encoder>
 	</appender>
 
-	<logger name="fr.ickik.formulamath" level="trace">
+	<logger name="fr.ickik.updater" level="trace">
 		<appender-ref ref="FILE" />
 		<appender-ref ref="STDOUT" />
 	</logger>

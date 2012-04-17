@@ -6,7 +6,7 @@ package fr.ickik.updater;
  * @author Ickik.
  * @version 0.1.002, 26 mar. 2012.
  */
-public enum FormulaMathProperty {
+enum FormulaMathProperty {
 
 //	/**
 //	 * Define the color of the background of the 2 frames.

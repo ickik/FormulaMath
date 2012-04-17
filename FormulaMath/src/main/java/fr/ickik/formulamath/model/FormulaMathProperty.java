@@ -1,10 +1,12 @@
 package fr.ickik.formulamath.model;
 
+import fr.ickik.formulamath.view.AbstractFormulaMathFrame;
+
 /**
  * This enum lists all properties of the property file. It is used to store
  * player's data.
  * @author Ickik.
- * @version 0.1.002, 26 mar. 2012.
+ * @version 0.1.003, 16 apr. 2012.
  */
 public enum FormulaMathProperty {
 
@@ -82,6 +84,21 @@ public enum FormulaMathProperty {
 		@Override
 		public String getDefaultValue() {
 			return "http://patrick.allgeyer.perso.sfr.fr";
+		}
+	},
+	
+	/**
+	 * The version of the application.
+	 */
+	VERSION {
+		@Override
+		public String toString() {
+			return "formulamath.version";
+		}
+
+		@Override
+		public String getDefaultValue() {
+			return AbstractFormulaMathFrame.VERSION;
 		}
 	};
 	

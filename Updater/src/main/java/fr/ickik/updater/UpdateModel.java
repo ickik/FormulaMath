@@ -27,9 +27,9 @@ import org.xml.sax.helpers.DefaultHandler;
  * and search the last release to update. It download and placed it in the right directory.
  * After downloading, it rename the jar file into the current jar file to start the application.
  * @author Ickik
- * @version 0.1.002, 5 apr. 2012
+ * @version 0.1.003, 17 apr. 2012
  */
-public final class UpdateModel {
+final class UpdateModel {
 
 	private final List<Version> versionList = new ArrayList<Version>();
 	private List<UpdaterListener> listenerList = new ArrayList<UpdaterListener>();
@@ -86,11 +86,12 @@ public final class UpdateModel {
 	
 	private void renameFile(String fileName) {
 		File newVersion = new File(fileName);
-		File currentVersion = new File("./FormulaMath.jar");
-		File oldVersion = new File("./old.jar");
+		String newFileName = fileName.substring(0,fileName.indexOf('-')) + fileName.substring(fileName.lastIndexOf('.'));
+		File currentVersion = new File("./" + newFileName);
+		File oldVersion = new File("./old.tmp");
 		if (newVersion.exists()) {
 			if (currentVersion.renameTo(oldVersion)) {
-				if (newVersion.renameTo(new File("./FormulaMath.jar"))) {
+				if (newVersion.renameTo(new File("./" + newFileName))) {
 					oldVersion.delete();
 				}
 			} else {
@@ -277,7 +278,7 @@ public final class UpdateModel {
 	}
 
 
-	class VersionHandler extends DefaultHandler {
+	private class VersionHandler extends DefaultHandler {
 
 		private String versionName;
 		private String url;

@@ -19,7 +19,7 @@ import java.util.Properties;
  * @author Ickik.
  * @version 0.1.002, 23 mar. 2012.
  */
-public final class PropertiesModel {
+final class PropertiesModel {
 	private final String userPath;
 	private final String directory = ".FormulaMath";
 	private final String propertiesFile = "FormulaMath.properties";

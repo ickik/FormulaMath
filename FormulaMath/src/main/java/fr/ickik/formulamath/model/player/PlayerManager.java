@@ -80,7 +80,7 @@ public final class PlayerManager {
 	public List<Vector> getVectorsPossibilities(Player player) {
 		log.trace("getVectorsPossibilities entering");
 		List<Vector> list = new ArrayList<Vector>(5);
-
+		log.trace("Player {} , init vector {}", player.toString(), player.getVector().toString());
 		if (isMovingAvailable(player.getPosition().getX() + player.getVector().getX(), player.getPosition().getY() - player.getVector().getY(), player)) {
 			list.add(player.getVector());
 		}
@@ -413,9 +413,10 @@ public final class PlayerManager {
 						break;
 					}
 					log.debug("Vector determined : {}", vector.toString());
+					log.debug("AI initial position {}", p.getPosition().toString());
 					playerRoadPosition.put(p.getId(), 0);
 					play(vector);
-					updateIndexPlayerGame();
+					log.debug("AI new position {}", p.getPosition().toString());
 					fireUpdateCaseListener(p);
 				} else {
 					log.debug("Human turn first move");
@@ -471,10 +472,11 @@ public final class PlayerManager {
 	 * @param index the index in the list of available position.
 	 */
 	public void updateStartPositionPlayer(Player p, int index) {
-		log.trace("updateStartPositionPlayer({}, {})", p, index);
+		log.trace("updateStartPositionPlayer(index= {} for player {})", Integer.toString(p.getId()) + " - " + p.getName(), index);
 		List<Position> list = mapManager.getStartingPositionList();
 		p.getPosition().setX(list.get(index).getX());
 		p.getPosition().setY(list.get(index).getY());
+		log.debug("Player starting position {}", p.toString());
 		mapManager.getCase(list.get(index).getY(), list.get(index).getX()).setIdPlayer(p.getId());
 		updateIndexPlayerGame();
 		fireUpdateCaseListener(p);

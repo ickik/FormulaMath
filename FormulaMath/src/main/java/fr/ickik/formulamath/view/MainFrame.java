@@ -62,7 +62,7 @@ import fr.ickik.formulamath.model.player.PlayerManager;
 public final class MainFrame {
 
 	private final JFrame mainFrame;
-	public static final String NAME = "Formula Math";
+	public static final String NAME = "FormulaMath";
 	public static final String VERSION = "0.1";
 	private int caseSize = 15;
 	private final MapManager mapManager;
@@ -289,9 +289,9 @@ public final class MainFrame {
 				log.debug("Vector ({}, {})", xMoving, yMoving);
 				int xTrayPanel = playerManager.getCurrentPlayer().getPosition().getX() + distance;
 				int yTrayPanel = playerManager.getCurrentPlayer().getPosition().getY() + distance;
-				log.debug("Player position ({}, {})", xTrayPanel, yTrayPanel);
+				log.debug("Player position on grid ({}, {})", xTrayPanel, yTrayPanel);
 				JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
-				log.debug("Test futur position ({}, {})", (xTrayPanel + xMoving), (yTrayPanel - yMoving));
+				log.debug("Test futur position on grid ({}, {})", (xTrayPanel + xMoving), (yTrayPanel - yMoving));
 				JCase c2 = caseArrayList.get(yTrayPanel - yMoving).get(xTrayPanel + xMoving);
 				log.debug("Futur position is occuped : {}", c2.getModel().isOccuped());
 				if (c2.getModel().isOccuped()) {
@@ -306,8 +306,8 @@ public final class MainFrame {
 					return;
 				}
 				log.trace("The player can move");
-				playerManager.getCurrentPlayer().getVector().setX(xMoving);
-				playerManager.getCurrentPlayer().getVector().setY(yMoving);
+				//playerManager.getCurrentPlayer().getVector().setX(xMoving);
+				//playerManager.getCurrentPlayer().getVector().setY(yMoving);
 				if (playerManager.initFirstMove(new Vector(xMoving, yMoving))) {
 					log.debug("next player is AI if it exists one");
 					if (playerManager.initAIFirstMove()) {
@@ -318,7 +318,7 @@ public final class MainFrame {
 						yField.setText("");
 					}
 					log.debug("Display choice panel");
-					removeButtonListener(play);
+					removeButtonListener(play);//Duplication
 					panel.removeAll();
 					getChoicePanel(play, panel);
 				} else {
@@ -598,7 +598,7 @@ public final class MainFrame {
 			}
 		});
 		
-		JButton centered = new JButton("center");
+		JButton centered = new JButton("☼");
 		centered.addActionListener(getPlayerFocusListener());
 		panel.add(up, BorderLayout.NORTH);
 		panel.add(left, BorderLayout.WEST);

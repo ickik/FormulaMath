@@ -28,6 +28,9 @@ public abstract class AbstractFormulaMathFrame extends JFrame {
 	}
 	
 	private void addIcon() {
+		//ClassLoader cl = this.getClass().getClassLoader();
+		//Icon saveIcon  = new ImageIcon(cl.getResource("images/save.gif"));
+		//Icon cutIcon   = new ImageIcon(cl.getResource("images/cut.gif"));
 		ImageIcon icon = new ImageIcon(ConfigurationFrame.class.getResource("img/FormulaMath_icon.png"));
 		setIconImages(Arrays.asList(icon.getImage()));
 	}

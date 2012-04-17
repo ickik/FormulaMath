@@ -5,7 +5,7 @@ import java.awt.Frame;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-public class ExecutionThreadGroup extends ThreadGroup {
+final class ExecutionThreadGroup extends ThreadGroup {
 
 	public ExecutionThreadGroup() {
 		super("ExecutionGroup");

@@ -14,7 +14,7 @@ import javax.swing.JProgressBar;
  * @author Patrick Allgeyer
  * @version 0.1.002, 29 mar. 2012
  */
-public final class UpdateFrame extends JFrame {
+final class UpdateFrame extends JFrame {
 
 	/**
 	 * 

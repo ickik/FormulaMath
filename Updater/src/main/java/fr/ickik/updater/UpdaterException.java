@@ -6,7 +6,7 @@ package fr.ickik.updater;
  * @author Ickik
  * @version 0.1.000, 14 apr. 2012
  */
-public class UpdaterException extends Exception {
+final class UpdaterException extends Exception {
 
 	/**
 	 * 

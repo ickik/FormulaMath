@@ -581,7 +581,7 @@ public class MapManager {
 				break;
 
 			case RIGHT:
-				if (mapSize - positionDepart2.getX() > ROAD_SIZE && mapSize - positionDepart2.getY() > ROAD_SIZE) {
+				if (positionDepart2.getX() > ROAD_SIZE + 1 && positionDepart2.getY() > ROAD_SIZE + 1) {
 					positionDepart2.setX(positionDepart.getX() + 1);
 					positionDepart.setX(positionDepart.getX() + 1);
 					positionDepart.setY(positionDepart.getY() + ROAD_SIZE);

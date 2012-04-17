@@ -73,7 +73,7 @@ public final class Stats {
 	}
 	
 	/**
-	 * The variance of distance is the square of the square type representing the dispertion
+	 * The variance of distance is the square of the square type representing the dispersion
 	 * of distance played.
 	 * @return the variance.
 	 */
@@ -82,9 +82,9 @@ public final class Stats {
 	}
 	
 	/**
-	 * Return the square type of the moves for the run. The square type is the dispertion
+	 * Return the square type of the moves for the run. The square type is the dispersion
 	 * of player near the average distance.
-	 * @return the sqaure type.
+	 * @return the square type.
 	 */
 	public double getSquareType() {
 		return squareType;
@@ -92,7 +92,7 @@ public final class Stats {
 	
 	/**
 	 * Return the count of every {@link Vector} played on the run.
-	 * @return the vount of every vector played.
+	 * @return the count of every vector played.
 	 */
 	public Map<Vector, Integer> getVectorCountMap() {
 		return vectorCountMap;

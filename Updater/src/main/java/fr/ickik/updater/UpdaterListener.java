@@ -1,6 +1,6 @@
 package fr.ickik.updater;
 
-public interface UpdaterListener {
+interface UpdaterListener {
 
 	void updateValue(int value, String msg);
 

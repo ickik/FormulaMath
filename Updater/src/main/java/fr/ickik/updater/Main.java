@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
  * @author Ickik
  * @version 0.1.001, 13 apr. 2012
  */
-public class Main {
+public final class Main {
 
 	/**
 	 * @param args

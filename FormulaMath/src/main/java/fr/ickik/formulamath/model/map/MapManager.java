@@ -719,12 +719,7 @@ public class MapManager {
 
 		if (positionDepart.getY() == positionDepart2.getY()) {
 			for (int i = minX; i <= maxX; i++) {
-				try {
 				carte.get(positionDepart.getY()).get(i).setField(terrain);
-				} catch (NullPointerException e) {
-					log.debug(toString());
-					e.printStackTrace();
-				}
 			}
 		}
 		log.debug("traceLargeur exiting");

@@ -72,6 +72,18 @@ public enum FormulaMathProperty {
 		
 	},
 	
+	/*THEME {
+		@Override
+		public String toString() {
+			return "formulamath.theme";
+		}
+		
+		@Override
+		public String getDefaultValue() {
+			return "Metal";
+		}
+	},*/
+	
 	/**
 	 * Server address to update.
 	 */

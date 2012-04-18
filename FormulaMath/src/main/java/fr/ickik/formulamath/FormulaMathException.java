@@ -19,4 +19,8 @@ public class FormulaMathException extends Exception {
 	public FormulaMathException() {
 		super();
 	}
+
+	public FormulaMathException(String message) {
+		super(message);
+	}
 }

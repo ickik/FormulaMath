@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import fr.ickik.formulamath.FormulaMathException;
 import fr.ickik.formulamath.model.ChuckNorrisTimer;
 import fr.ickik.formulamath.model.FormulaMathProperty;
 import fr.ickik.formulamath.model.PropertiesModel;
@@ -29,7 +30,7 @@ import fr.ickik.formulamath.model.PropertiesModel;
  * This class only get an instance of the AboutServer. The about
  * frame resume the application (title, version, author, contact).
  * @author Ickik.
- * @version 0.1.002, 22 mar. 2012.
+ * @version 0.1.003, 17 apr. 2012.
  */
 public final class AboutFrame {
 
@@ -60,7 +61,11 @@ public final class AboutFrame {
 		JPanel panel = new JPanel(new GridLayout(4,2));
 		panel.add(new JLabel(MainFrame.getTitle()));
 		JLabel label = new JLabel("Developed by Ickik");
-		label.addMouseListener(getMouseListener());
+		try {
+			label.addMouseListener(getMouseListener());
+		} catch (FormulaMathException e) {
+			e.printStackTrace();
+		}
 		panel.add(label);
 		label.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		JLabel mail = new JLabel("<html>(<a href=\"\">patrick.allgeyer</a>)</html>");
@@ -92,17 +97,22 @@ public final class AboutFrame {
 		};
 	}
 	
-	private MouseListener getMouseListener() {
+	private MouseListener getMouseListener() throws FormulaMathException {
 		return new MouseListener() {
-			private boolean selected = ChuckNorrisTimer.getInstance(null).isRunning();
+			private boolean selected = ChuckNorrisTimer.getInstance().isRunning();
 			
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				selected = !selected;
-				if (selected) {
-					ChuckNorrisTimer.getInstance(null).start();
-				} else {
-					ChuckNorrisTimer.getInstance(null).stop();
+				try {
+					if (selected) {
+						ChuckNorrisTimer.getInstance().start();
+					} else {
+						ChuckNorrisTimer.getInstance().stop();
+					}
+				} catch (FormulaMathException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 				PropertiesModel.getSingleton().put(FormulaMathProperty.CHUCK_NORRIS_ACTIVATE, Boolean.toString(selected));
 				mainFrame.repaint();

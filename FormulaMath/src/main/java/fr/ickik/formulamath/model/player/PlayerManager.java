@@ -25,7 +25,7 @@ import fr.ickik.formulamath.model.map.Orientation;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.1.006, 10 apr. 2012.
+ * @version 0.1.007, 17 apr. 2012.
  */
 public final class PlayerManager {
 
@@ -287,12 +287,21 @@ public final class PlayerManager {
 		humanPlaying();
 	}
 	
+	/**
+	 * Return the adding length of the vector to run as fastest as possible the straight line.
+	 * @param distance the total distance to run
+	 * @param vitesse the current speed.
+	 * @return the number to add to the current vector.
+	 */
 	private int getNextPlay(int distance, int vitesse) {
 		if (distance == 0) {
 			if (vitesse == 2) {
 				return -1;
 			}
 			return vitesse;
+		}
+		if (distance > vitesse * vitesse) {
+			return 1;
 		}
 		int nbLess = getNbStep(distance, vitesse - 1, 0);
 		int nbEqual = getNbStep(distance, vitesse, 0);
@@ -305,6 +314,14 @@ public final class PlayerManager {
 		return 0;
 	}
 
+	/**
+	 * Return the number of step to run the distance depending the speed.
+	 * This method is recursively called with a variation of speed from 1, 0 or -1.
+	 * @param distance the distance to run
+	 * @param vitesse the current speed
+	 * @param step the current number of step
+	 * @return the number of step to run the distance
+	 */
 	private int getNbStep(int distance, int vitesse, int step) {
 		if (distance == 0 && vitesse == 1) {
 			return step;
@@ -430,6 +447,9 @@ public final class PlayerManager {
 	private int getFirstMove(int distance) {
 		log.debug("getFirstMove : distance = {}", Integer.toString(distance));
 		Map<Integer,Integer> distanceMap = new HashMap<Integer,Integer>();
+		if (distance > 12) {
+			return distance / 3;
+		}
 		int halfDistance = distance / 2;
 		for (int i = 1; i <= halfDistance; i++) {
 			distanceMap.put(getNbStepFirstMove(distance, i, 0), i);

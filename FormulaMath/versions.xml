@@ -2,9 +2,12 @@
 <versions>
 	<version>
 		<nom>1.0.1</nom>
-		<file>
-			<url>http://patrick.allgeyer.perso.sfr.fr/FormulaMath-1.0.1.jar</url>
-			<destination>./FormulaMath-1.0.1.jar</destination>
-		</file>
+		<files>
+			<file>
+				<url>http://patrick.allgeyer.perso.sfr.fr/FormulaMath-1.0.1.jar
+				</url>
+				<destination>./FormulaMath-1.0.1.jar</destination>
+			</file>
+		</files>
 	</version>
 </versions>

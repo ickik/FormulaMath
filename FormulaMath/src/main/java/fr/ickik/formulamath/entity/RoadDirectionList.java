@@ -12,7 +12,7 @@ import fr.ickik.formulamath.model.map.MapManager;
  * the best way of the road.
  * 
  * @author Ickik.
- * @version 0.1.000, 23 dec. 2011.
+ * @version 0.1.001, 17 apr. 2012.
  */
 public class RoadDirectionList extends LinkedList<RoadDirectionInformation> {
 
@@ -35,9 +35,24 @@ public class RoadDirectionList extends LinkedList<RoadDirectionInformation> {
 			previous.getEnd().setY(e.getEnd().getY());
 			return true;
 		}
-		previous.getEnd().setX(e.getBegin().getX());
-		previous.getEnd().setY(e.getBegin().getY());
+		previousPositionCorrection(previous, e);
 		return super.add(e);
+	}
+	
+	private void previousPositionCorrection(RoadDirectionInformation previousRoadDirection, RoadDirectionInformation currentRoadDirection) {
+		switch(previousRoadDirection.getOrientation()) {
+		case EAST:
+		case WEST:
+			previousRoadDirection.getEnd().setX(currentRoadDirection.getBegin().getX());
+			previousRoadDirection.getEnd().setY(previousRoadDirection.getBegin().getY());
+			break;
+			
+		case NORTH:
+		case SOUTH:
+			previousRoadDirection.getEnd().setX(previousRoadDirection.getBegin().getX());
+			previousRoadDirection.getEnd().setY(currentRoadDirection.getBegin().getY());
+			break;
+		}
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package fr.ickik.formulamath.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Shape;
@@ -13,6 +14,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.geom.Line2D;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -714,16 +716,37 @@ public final class MainFrame {
 	
 	private JMenu getHelp() {
 		JMenu help = new JMenu("Help");
+		JMenuItem guide = new JMenuItem("Guide");
+		guide.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				openHelpFile();
+			}
+		});
+		
 		JMenuItem about = new JMenuItem("About");
 		about.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				AboutFrame.getNewInstance(mainFrame);
 			}
 		});
+		
+		help.add(guide);
+		help.addSeparator();
 		help.add(about);
 		return help;
+	}
+	
+	private void openHelpFile() {
+		if (Desktop.isDesktopSupported()) {
+			try {
+				Desktop.getDesktop().open(new File("./help.pdf"));
+			} catch (IOException e) {
+				log.error("Help file not found or corrupted! {}", e.getMessage());
+				displayErrorMessage(e.getMessage());
+			}
+		}
 	}
 	
 	private void displayErrorMessage(String msg) {
@@ -747,7 +770,7 @@ public final class MainFrame {
 					changeUIManager(lnfInfo.getClassName());
 				}
 			});
-//			if (PropertiesModel.getSingleton().getProperty(FormulaMathProperty.).equals(lnfInfo.getClassName())) {
+//			if (PropertiesModel.getSingleton().getProperty(FormulaMathProperty.).equals(lnfInfo.getName())) {
 //				checkBox.setSelected(true);
 //			}
 		}

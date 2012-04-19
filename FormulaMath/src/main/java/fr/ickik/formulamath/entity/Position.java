@@ -79,7 +79,7 @@ public class Position implements Cloneable {
 	@Override
 	public int hashCode() {
 		int hash = 23;
-		hash *= x * y;
+		hash *= (x ^ y) * y;
 		return hash;
 	}
 

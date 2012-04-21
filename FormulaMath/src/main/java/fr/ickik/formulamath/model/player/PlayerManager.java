@@ -25,7 +25,7 @@ import fr.ickik.formulamath.model.map.Orientation;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.1.007, 17 apr. 2012.
+ * @version 0.1.009, 20 apr. 2012.
  */
 public final class PlayerManager {
 
@@ -45,6 +45,9 @@ public final class PlayerManager {
 	private static final PlayerManager singleton = new PlayerManager();
 	private static final Logger log = LoggerFactory.getLogger(PlayerManager.class);
 
+	/**
+	 * Hidden constructor.
+	 */
 	private PlayerManager() {
 		playerList = new ArrayList<Player>(NUMBER_OF_PLAYER_MAX);
 		finishPositionList = new ArrayList<Player>(NUMBER_OF_PLAYER_MAX);
@@ -66,6 +69,10 @@ public final class PlayerManager {
 	 * @param player the player to add to the manager.
 	 */
 	public void addPlayer(Player player) {
+		if (player == null) {
+			log.warn("Trying to add nul player in the player list");
+			return;
+		}
 		playerList.add(player);
 	}
 	
@@ -182,12 +189,17 @@ public final class PlayerManager {
 			
 			int roadPosition = playerRoadPosition.get(p.getId());
 			RoadDirectionInformation r = mapManager.getRoadDirectionInformationList().get(roadPosition);
-			int len = r.getLengthToEnd(p.getPosition());
+			int len = r.getLengthToEnd(p.getPosition()) - 1;
 			Vector vector = null;
-			log.debug("rest length of the vector:{}", len);
+			log.debug("AI rest length of the vector:{}", len);
 			log.trace("Orientation: {}", r.getOrientation());
 			if (len == 1 && (p.getVector().getX() == 1 ||  p.getVector().getX() == -1 || p.getVector().getY() == 1 || p.getVector().getY() == -1)) {
-				RoadDirectionInformation nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition + 1);
+				RoadDirectionInformation nextRoadDirection;
+				if (mapManager.getRoadDirectionInformationList().size() > roadPosition + 1) {
+					nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition + 1);
+				} else {
+					nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition);
+				}
 				//playerRoadPosition.put(p.getId(), roadPosition + 1);
 				log.trace("Next orientation: {}", nextRoadDirection.getOrientation());
 				switch (r.getOrientation()) {
@@ -200,9 +212,9 @@ public final class PlayerManager {
 					break;
 				case SOUTH:
 					if (nextRoadDirection.getOrientation() == Orientation.EAST) {
-						vector = new Vector(-1, -1);
-					} else {
 						vector = new Vector(1, -1);
+					} else {
+						vector = new Vector(-1, -1);
 					}
 					break;
 				case WEST:
@@ -258,22 +270,31 @@ public final class PlayerManager {
 				log.debug("Go in the same direction {}", r.getOrientation());
 				switch (r.getOrientation()) {
 				case NORTH:
-				case SOUTH:
 					int d = getNextPlay(len, p.getVector().getY());
 					log.debug("Next play : {}", d);
 					vector = new Vector(0, p.getVector().getY() + d);
 					break;
+				case SOUTH:
+					d = getNextPlay(len, p.getVector().getY());
+					log.debug("Next play : {}", d);
+					vector = new Vector(0, p.getVector().getY() - d);
+					break;
 				case WEST:
-				case EAST:
 					d = getNextPlay(len, p.getVector().getX());
 					log.debug("Next play : {}", d);
 					vector = new Vector(p.getVector().getX() + d, 0);
+					break;
+				case EAST:
+					d = getNextPlay(len, p.getVector().getX());
+					log.debug("Next play : {}", d);
+					vector = new Vector(p.getVector().getX() - d, 0);
 					break;
 				}
 			}
 			mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
 			log.debug("Player initial position: {}", p.getPosition());
-			log.debug("Vector {}", vector);
+			log.debug("Player last vector {}", p.getVector());
+			log.debug("{}", vector);
 			p.getPosition().setX(p.getPosition().getX() + vector.getX());
 			p.getPosition().setY(p.getPosition().getY() - vector.getY());
 			p.getVector().setX(vector.getX());
@@ -294,6 +315,7 @@ public final class PlayerManager {
 	 * @return the number to add to the current vector.
 	 */
 	private int getNextPlay(int distance, int vitesse) {
+		log.trace("getNextPlay({}, {})", distance, vitesse);
 		if (distance == 0) {
 			if (vitesse == 2) {
 				return -1;
@@ -306,6 +328,7 @@ public final class PlayerManager {
 		int nbLess = getNbStep(distance, vitesse - 1, 0);
 		int nbEqual = getNbStep(distance, vitesse, 0);
 		int nbMore = getNbStep(distance, vitesse + 1, 0);
+		log.debug("Next play possibilities : {}, {}, {}", new Object[]{nbLess, nbEqual, nbMore});
 		if (nbLess < nbEqual && nbLess < nbMore) {
 			return -1;
 		} else if (nbMore < nbEqual && nbMore < nbLess) {
@@ -410,28 +433,64 @@ public final class PlayerManager {
 				Player p = it.next();
 				if (p.getType().equals(PlayerType.COMPUTER)) {
 					log.debug("Computer first move");
-					int len = mapManager.getRoadDirectionInformationList().get(0).getLength();
+					int len = mapManager.getRoadDirectionInformationList().get(0).getLength() - 1;
 					log.trace("length of the road : {}, orientation:{}", len, mapManager.getRoadDirectionInformationList().get(0).toString());
 					int val = getFirstMove(len);
 					log.trace("length of the first move found : {}", val);
 					Vector vector = null;
-					switch (mapManager.getRoadDirectionInformationList().get(0).getOrientation()) {
-					case NORTH:
-						vector = new Vector(0, val);
-						break;
-					case WEST:
-						vector = new Vector(-val, 0);
-						break;
-					case SOUTH:
-						vector = new Vector(0, -val);
-						break;
-					case EAST:
-						vector = new Vector(val, 0);
-						break;
+					if (val != 1) {
+						switch (mapManager.getRoadDirectionInformationList().get(0).getOrientation()) {
+						case NORTH:
+							vector = new Vector(0, val);
+							break;
+						case WEST:
+							vector = new Vector(-val, 0);
+							break;
+						case SOUTH:
+							vector = new Vector(0, -val);
+							break;
+						case EAST:
+							vector = new Vector(val, 0);
+							break;
+						}
+						playerRoadPosition.put(p.getId(), 0);
+					} else {
+						RoadDirectionInformation r = mapManager.getRoadDirectionInformationList().get(0);
+						RoadDirectionInformation nextRoadDirection = mapManager.getRoadDirectionInformationList().get(1);
+						switch (r.getOrientation()) {
+						case NORTH:
+							if (nextRoadDirection.getOrientation() == Orientation.EAST) {
+								vector = new Vector(1, 1);
+							} else {
+								vector = new Vector(-1, 1);
+							}
+							break;
+						case SOUTH:
+							if (nextRoadDirection.getOrientation() == Orientation.EAST) {
+								vector = new Vector(1, -1);
+							} else {
+								vector = new Vector(-1, -1);
+							}
+							break;
+						case WEST:
+							if (nextRoadDirection.getOrientation() == Orientation.NORTH) {
+								vector = new Vector(-1, 1);
+							} else {
+								vector = new Vector(-1, -1);
+							}
+							break;
+						case EAST:
+							if (nextRoadDirection.getOrientation() == Orientation.NORTH) {
+								vector = new Vector(1, 1);
+							} else {
+								vector = new Vector(1, -1);
+							}
+							break;
+						}
+						playerRoadPosition.put(p.getId(), 1);
 					}
 					log.debug("Vector determined : {}", vector.toString());
 					log.debug("AI initial position {}", p.getPosition().toString());
-					playerRoadPosition.put(p.getId(), 0);
 					play(vector);
 					log.debug("AI new position {}", p.getPosition().toString());
 					fireUpdateCaseListener(p);
@@ -447,8 +506,11 @@ public final class PlayerManager {
 	private int getFirstMove(int distance) {
 		log.debug("getFirstMove : distance = {}", Integer.toString(distance));
 		Map<Integer,Integer> distanceMap = new HashMap<Integer,Integer>();
+		if (distance == 1) {
+			return 1;
+		}
 		if (distance > 12) {
-			return distance / 3;
+			return getHighDistance(distance);
 		}
 		int halfDistance = distance / 2;
 		for (int i = 1; i <= halfDistance; i++) {
@@ -458,6 +520,16 @@ public final class PlayerManager {
 		log.debug("Size of the list of the distance found : {}", Integer.toString(list.size()));
 		Collections.sort(list);
 		return distanceMap.get(list.get(0));
+	}
+	
+	private int getHighDistance(int distance) {
+		int sum = 0;
+		int value = 1;
+		while(sum + value <= distance) {
+			sum += value;
+			value++;
+		}
+		return value - 1;
 	}
 	
 	private int getNbStepFirstMove(int distance, int vitesse, int step) {

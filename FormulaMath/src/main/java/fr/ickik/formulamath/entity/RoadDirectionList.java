@@ -12,7 +12,7 @@ import fr.ickik.formulamath.model.map.MapManager;
  * the best way of the road.
  * 
  * @author Ickik.
- * @version 0.1.001, 17 apr. 2012.
+ * @version 0.1.002, 19 apr. 2012.
  */
 public class RoadDirectionList extends LinkedList<RoadDirectionInformation> {
 
@@ -45,12 +45,14 @@ public class RoadDirectionList extends LinkedList<RoadDirectionInformation> {
 		case WEST:
 			previousRoadDirection.getEnd().setX(currentRoadDirection.getBegin().getX());
 			previousRoadDirection.getEnd().setY(previousRoadDirection.getBegin().getY());
+			currentRoadDirection.getBegin().setY(previousRoadDirection.getEnd().getY());
 			break;
 			
 		case NORTH:
 		case SOUTH:
 			previousRoadDirection.getEnd().setX(previousRoadDirection.getBegin().getX());
 			previousRoadDirection.getEnd().setY(currentRoadDirection.getBegin().getY());
+			currentRoadDirection.getBegin().setX(previousRoadDirection.getEnd().getX());
 			break;
 		}
 	}

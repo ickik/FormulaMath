@@ -5,7 +5,6 @@ import java.awt.Desktop;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -51,11 +49,16 @@ public class ConfigurationFrame {
 	private final List<JLabel> labelList = new ArrayList<JLabel>(PlayerManager.NUMBER_OF_PLAYER_MAX);
 	private final Logger log = LoggerFactory.getLogger(ConfigurationFrame.class);
 	private int numberOfPlayerSelected = 1;
+	//private final CompletionService<MapManager> completion;
 	
 	/**
 	 * Default constructor. Creates the frame to configure the game.
 	 */
 	public ConfigurationFrame() {
+		/*ExecutorService executor = Executors.newSingleThreadExecutor();
+		completion = new ExecutorCompletionService<MapManager>(executor);
+		completion.submit(new MapManagerConstructor());
+		executor.shutdown();*/
 		configurationFrame = new JFrame(MainFrame.NAME + " " + MainFrame.VERSION);
 		createMainFrame();
 		centeredFrame(configurationFrame);
@@ -96,7 +99,21 @@ public class ConfigurationFrame {
 						max = i + 1;
 					}
 				}
+				/*MapManager map = null;
+				try {
+					map = completion.take().get();
+				} catch (InterruptedException e) {
+					log.error("ExecutorService has been interrupted : {}", e.getMessage());
+				} catch (ExecutionException e) {
+					log.error("ExecutorService encount an exception during execution : {}", e.getMessage());
+				} finally {
+					map = new MapManager(100);
+					map.init();
+					map.constructRoad();
+				}*/
 				MapManager mapManager = new MapManager(100);
+				mapManager.init();
+				mapManager.constructRoad();
 				PlayerManager pm = PlayerManager.getInstance();
 				pm.setMapManager(mapManager);
 				for (int i = 0; i < max; i++) {//Si aucun joueur n'est selectionné, par defaut il est CPU

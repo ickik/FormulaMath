@@ -65,7 +65,7 @@ public final class MainFrame {
 
 	private final JFrame mainFrame;
 	public static final String NAME = "FormulaMath";
-	public static final String VERSION = "0.1";
+	public static final String VERSION = "0.2";
 	private int caseSize = 15;
 	private final MapManager mapManager;
 	private final PlayerManager playerManager;
@@ -512,7 +512,24 @@ public final class MainFrame {
 				log.trace("Current Player : {}", player);
 				int distance = (caseArrayList.size() - mapManager.getMapSize()) / 2;
 				JCase c = caseArrayList.get(player.getPosition().getY() + distance).get(player.getPosition().getX() + distance);
-				JCase c2 = caseArrayList.get(player.getPosition().getY() - vector.getY() + distance).get(player.getPosition().getX() + vector.getX() + distance);
+				
+				int yEndCase = player.getPosition().getY() - vector.getY() + distance;
+				int xEndCase = player.getPosition().getX() + vector.getX() + distance;
+				if (xEndCase < 0) {
+					xEndCase = 0;
+				}
+				if (xEndCase >= mapManager.getMapSize()) {
+					xEndCase = mapManager.getMapSize() - 1;
+				}
+				
+				if (yEndCase < 0) {
+					yEndCase = 0;
+				}
+				if (yEndCase >= mapManager.getMapSize()) {
+					yEndCase = mapManager.getMapSize() - 1;
+				}
+				
+				JCase c2 = caseArrayList.get(yEndCase).get(xEndCase);
 				
 				Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
 				
@@ -781,18 +798,15 @@ public final class MainFrame {
 		try {
 			UIManager.setLookAndFeel(className);
 			SwingUtilities.updateComponentTreeUI(mainFrame);
+			//PropertiesModel.getSingleton().put(FormulaMathProperty., className);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Class {} not found on system : {}", className, e.getMessage());
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Class {} cannot be instantiate : {}", className, e.getMessage());
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Class {} cannot be acces : {}", className, e.getMessage());
 		} catch (UnsupportedLookAndFeelException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Look and Feel {} not supported by the system : {}", className, e.getMessage());
 		}
 	}
 	

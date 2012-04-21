@@ -27,13 +27,13 @@ import fr.ickik.formulamath.model.player.PlayerManager;
  * per turn, the variance, the square type and a graphic which resume the number of
  * vector played during the game.
  * @author Ickik
- * @version 0.1.001, 11 apr. 2012
+ * @version 0.1.002, 20 apr. 2012
  */
 public final class StatFrame extends AbstractFormulaMathFrame {
 
-	private static final long serialVersionUID = 176710123412877650L;
 	private final JFrame callingFrame;
-	
+	private final JFrame statFrame;
+
 	/**
 	 * Constructor which disabled the calling frame given in argument. The
 	 * calling frame is disable the time this frame is existing. It enable it
@@ -42,15 +42,17 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 	 */
 	public StatFrame(JFrame callingFrame) {
 		this.callingFrame = callingFrame;
-		addWindowListener(createWindowListener());
+		statFrame = new JFrame(getTitle());
+		statFrame.addWindowListener(createWindowListener());
 		callingFrame.setEnabled(false);
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.add(displayStats(), BorderLayout.CENTER);
 		panel.add(createButton(), BorderLayout.SOUTH);
-		add(panel);
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		centeredFrame();
-		setVisible(true);
+		statFrame.add(panel);
+		statFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		statFrame.setIconImages(getIconList());
+		centeredFrame(statFrame);
+		statFrame.setVisible(true);
 	}
 	
 	private WindowListener createWindowListener() {
@@ -70,7 +72,7 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 			@Override
 			public void windowClosed(WindowEvent arg0) {
 				callingFrame.setEnabled(true);
-				StatFrame.this.dispose();
+				statFrame.dispose();
 				callingFrame.toFront();
 			}
 			
@@ -100,7 +102,7 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 		panelLbl.add(new JLabel("Square type"));
 		panelLbl.add(new JLabel(Double.toString(stats.getSquareType())));
 		panel.add(panelLbl);
-		createGraph(stats.getVectorCountMap());
+		//panel.add(createGraph(stats.getVectorCountMap()));
 		return panel;
 	}
 	
@@ -111,14 +113,14 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				callingFrame.setEnabled(true);
-				StatFrame.this.dispose();
+				statFrame.dispose();
 				callingFrame.toFront();
 			}
 		});
 		return button;
 	}
 	
-	private void createGraph(Map<Vector, Integer> vectorCountMap) {
+	private JPanel createGraph(Map<Vector, Integer> vectorCountMap) {
 //	DefaultCategoryDataset cat = new DefaultCategoryDataset();
 //	cat.addValue(1.0, "(1,0)", "(1,0)");
 //	cat.addValue(4.0, "(1,1)", "(1,1)");
@@ -127,5 +129,6 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 //	JFrame f = new JFrame();
 //	f.add(panel);
 //	f.setVisible(true);
+		return new JPanel();
 	}
 }

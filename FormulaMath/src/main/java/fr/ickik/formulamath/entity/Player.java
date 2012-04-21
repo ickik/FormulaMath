@@ -119,4 +119,22 @@ public class Player {
 	public List<Vector> getMovingList() {
 		return movingList;
 	}
+	
+//	public String getOrientation() {
+//		StringBuilder orientation = new StringBuilder();
+//		if (movingVector.getY() > 0) {
+//			orientation.append(Orientation.NORTH);
+//		} else if (movingVector.getY() < 0) {
+//			orientation.append(Orientation.SOUTH);
+//		}
+//		if (orientation.length() > 0) {
+//			orientation.append("_");
+//		}
+//		if (movingVector.getX() > 0) {
+//			orientation.append(Orientation.WEST);
+//		} else if (movingVector.getX() < 0) {
+//			orientation.append(Orientation.EAST);
+//		}
+//		return orientation.toString();
+//	}
 }

@@ -2,6 +2,7 @@ package fr.ickik.formulamath.view;
 
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,10 +10,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import fr.ickik.formulamath.model.FormulaMathProperty;
+import fr.ickik.formulamath.model.PropertiesModel;
+
 /**
  * Abstract which define the default behavior of frames.
  * @author Ickik
- * @version 0.1.002, 20 apr. 2012
+ * @version 0.1.003, 23 apr. 2012
  */
 public abstract class AbstractFormulaMathFrame {
 
@@ -62,5 +66,18 @@ public abstract class AbstractFormulaMathFrame {
 		double l = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double l2 = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 		frame.setLocation((int) (l / 2 - w / 2), (int)(l2 / 2 - h / 2));
+	}
+	
+	/**
+	 * Save the version in the .property file. So if the user modifies the file,
+	 * the update will already functional.
+	 */
+	void saveVersion() {
+		PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.VERSION);
+		try {
+			PropertiesModel.getSingleton().save();
+		} catch (IOException e) {
+			
+		}
 	}
 }

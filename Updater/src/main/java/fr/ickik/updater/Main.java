@@ -30,7 +30,14 @@ public final class Main {
 					return ;
 				}
 				long jour = elapsedDays();
-				if (jour >= 7) {
+				int period;
+				try {
+					period = Integer.parseInt(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.UPDATE_PERIOD));
+				} catch (NumberFormatException e) {
+					PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.UPDATE_PERIOD);
+					period = Integer.parseInt(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.UPDATE_PERIOD));
+				}
+				if (jour > period) {
 					SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
 					String savedDate = dateFormat.format(Calendar.getInstance().getTime());
 					PropertiesModel.getSingleton().put(FormulaMathProperty.LAST_UPDATE, savedDate);

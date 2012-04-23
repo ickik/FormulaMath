@@ -55,6 +55,10 @@ public final class PropertiesModel {
 		properties.put(property.toString(), value);
 	}
 	
+	/**
+	 * Save all properties in the .properties file.
+	 * @throws IOException
+	 */
 	public void save() throws IOException {
 		File propertiesFile = new File(userPath + "/" + directory + "/" + this.propertiesFile);
 		FileOutputStream out = new FileOutputStream(propertiesFile);

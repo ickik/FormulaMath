@@ -150,8 +150,8 @@ public final class PlayerManager {
 	}
 	
 	/**
-	 * 
-	 * @param vector
+	 * Moves the last time the current player.
+	 * @param vector the last vector to move.
 	 */
 	public void lastPlay(Vector vector) {
 		log.debug("LastPlay {}", vector);

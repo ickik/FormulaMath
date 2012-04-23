@@ -182,6 +182,9 @@ public final class PlayerManager {
 		}
 	}
 	
+	/**
+	 * Iterates all AI players and set new available position.
+	 */
 	public void AIPlay() {
 		while (playerList.get(indexPlayerGame).getType() == PlayerType.COMPUTER) {
 			Player p = getCurrentPlayer();
@@ -277,17 +280,17 @@ public final class PlayerManager {
 				case SOUTH:
 					d = getNextPlay(len, p.getVector().getY());
 					log.debug("Next play : {}", d);
-					vector = new Vector(0, p.getVector().getY() - d);
+					vector = new Vector(0, p.getVector().getY() + d);
 					break;
 				case WEST:
 					d = getNextPlay(len, p.getVector().getX());
 					log.debug("Next play : {}", d);
-					vector = new Vector(p.getVector().getX() + d, 0);
+					vector = new Vector(p.getVector().getX() - d, 0);
 					break;
 				case EAST:
 					d = getNextPlay(len, p.getVector().getX());
 					log.debug("Next play : {}", d);
-					vector = new Vector(p.getVector().getX() - d, 0);
+					vector = new Vector(p.getVector().getX() + d, 0);
 					break;
 				}
 			}
@@ -329,7 +332,7 @@ public final class PlayerManager {
 		int nbEqual = getNbStep(distance, vitesse, 0);
 		int nbMore = getNbStep(distance, vitesse + 1, 0);
 		log.debug("Next play possibilities : {}, {}, {}", new Object[]{nbLess, nbEqual, nbMore});
-		if (nbLess < nbEqual && nbLess < nbMore) {
+		if (nbLess <= nbEqual && nbLess <= nbMore) {
 			return -1;
 		} else if (nbMore < nbEqual && nbMore < nbLess) {
 			return 1;
@@ -346,7 +349,7 @@ public final class PlayerManager {
 	 * @return the number of step to run the distance
 	 */
 	private int getNbStep(int distance, int vitesse, int step) {
-		if (distance == 0 && vitesse == 1) {
+		if ((distance == 0 || distance == 1) && vitesse == 1) {
 			return step;
 		}
 		if (distance < 0 || vitesse <= 0) {

@@ -203,7 +203,7 @@ public final class PlayerManager {
 				} else {
 					nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition);
 				}
-				//playerRoadPosition.put(p.getId(), roadPosition + 1);
+				playerRoadPosition.put(p.getId(), roadPosition + 1);
 				log.trace("Next orientation: {}", nextRoadDirection.getOrientation());
 				switch (r.getOrientation()) {
 				case NORTH:
@@ -236,37 +236,52 @@ public final class PlayerManager {
 					break;
 				}
 			} else if ((p.getVector().getX() == 1 ||  p.getVector().getX() == -1) && (p.getVector().getY() == 1 || p.getVector().getY() == -1)) {
-				RoadDirectionInformation nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition + 1);
-				playerRoadPosition.put(p.getId(), roadPosition + 1);
+				RoadDirectionInformation nextRoadDirection;
+				if (mapManager.getRoadDirectionInformationList().size() > roadPosition + 1) {
+					nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition + 1);
+					//playerRoadPosition.put(p.getId(), roadPosition + 1);
+				} else {
+					nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition);
+					//playerRoadPosition.put(p.getId(), roadPosition);
+				}
 				log.trace("Next orientation: {}", nextRoadDirection.getOrientation());
 				switch (r.getOrientation()) {
 				case NORTH:
-					if (nextRoadDirection.getOrientation() == Orientation.EAST) {
-						vector = new Vector(1, 0);
-					} else {
-						vector = new Vector(-1, 0);
-					}
+//					if (nextRoadDirection.getOrientation() == Orientation.EAST) {
+//						vector = new Vector(1, 0);
+//					} else if (nextRoadDirection.getOrientation() == Orientation.WEST) {
+//						vector = new Vector(-1, 0);
+//					} else {
+						vector = new Vector(0, 1);
+//					}
 					break;
 				case SOUTH:
-					if (nextRoadDirection.getOrientation() == Orientation.EAST) {
-						vector = new Vector(-1, 0);
-					} else {
-						vector = new Vector(1, 0);
-					}
+//					if (nextRoadDirection.getOrientation() == Orientation.EAST) {
+//						vector = new Vector(-1, 0);
+//					} else if (nextRoadDirection.getOrientation() == Orientation.WEST) {
+//						vector = new Vector(1, 0);
+//					} else {
+						vector = new Vector(0, -1);
+//					}
 					break;
 				case WEST:
-					if (nextRoadDirection.getOrientation() == Orientation.NORTH) {
-						vector = new Vector(0, 1);
-					} else {
-						vector = new Vector(0, -1);
-					}
+//					if (nextRoadDirection.getOrientation() == Orientation.NORTH) {
+//						vector = new Vector(-1, 0);
+////						vector = new Vector(0, 1);
+//					} else if (nextRoadDirection.getOrientation() == Orientation.SOUTH) {
+//						vector = new Vector(0, -1);
+//					} else {
+						vector = new Vector(-1, 0);
+//					}
 					break;
 				case EAST:
-					if (nextRoadDirection.getOrientation() == Orientation.NORTH) {
-						vector = new Vector(0, 1);
-					} else {
-						vector = new Vector(0, -1);
-					}
+//					if (nextRoadDirection.getOrientation() == Orientation.NORTH) {
+//						vector = new Vector(0, 1);
+//					} else if (nextRoadDirection.getOrientation() == Orientation.SOUTH) {
+//						vector = new Vector(0, -1);
+//					} else {
+						vector = new Vector(1, 0);
+//					}
 					break;
 				}
 			} else {
@@ -280,7 +295,7 @@ public final class PlayerManager {
 				case SOUTH:
 					d = getNextPlay(len, p.getVector().getY());
 					log.debug("Next play : {}", d);
-					vector = new Vector(0, p.getVector().getY() + d);
+					vector = new Vector(0, p.getVector().getY() - d);
 					break;
 				case WEST:
 					d = getNextPlay(len, p.getVector().getX());

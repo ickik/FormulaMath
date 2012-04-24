@@ -796,6 +796,12 @@ public final class MapManager {
 		return getRandomNumber(0, max);
 	}
 
+	/**
+	 * Return the {@link CaseModel} located at (w,h) coordinates.
+	 * @param h the y axis coordinate
+	 * @param w the x axis coordinate
+	 * @return the case model associates or null if the coordinates are out of the map.
+	 */
 	public CaseModel getCase(int h, int w) {
 		//log.trace("getCase x={}, y={}", w, h);
 		if (h < 0 || h >= carte.size() || w < 0 || w >= carte.get(h).size()) {

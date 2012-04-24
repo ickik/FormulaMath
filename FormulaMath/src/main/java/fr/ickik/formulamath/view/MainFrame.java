@@ -25,6 +25,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -51,6 +52,7 @@ import fr.ickik.formulamath.entity.Position;
 import fr.ickik.formulamath.entity.RoadDirectionInformation;
 import fr.ickik.formulamath.entity.Vector;
 import fr.ickik.formulamath.model.ChuckNorrisTimer;
+import fr.ickik.formulamath.model.FormulaMathSaver;
 import fr.ickik.formulamath.model.PropertiesModel;
 import fr.ickik.formulamath.model.map.Field;
 import fr.ickik.formulamath.model.map.MapManager;
@@ -59,7 +61,7 @@ import fr.ickik.formulamath.model.player.PlayerManager;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.1.007, 27 mar. 2012.
+ * @version 0.1.008, 24 apr. 2012.
  */
 public final class MainFrame {
 
@@ -169,6 +171,8 @@ public final class MainFrame {
 			}
 		});
 		scrollPane = new JScrollPane(trayPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.getHorizontalScrollBar().setUnitIncrement(5);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(5);
 		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, getMenuPanel());
 		split.setDividerLocation(new Double(Toolkit.getDefaultToolkit().getScreenSize().getWidth() * 0.9).intValue());
 		return split;
@@ -506,6 +510,10 @@ public final class MainFrame {
 					displayErrorMessage("No possibility selected");
 					return;
 				}
+				if (selectedPossibility > vectorList.size()) {
+					displayErrorMessage("Please select a vector");
+					return;
+				}
 				Vector vector = vectorList.get(selectedPossibility);
 				log.trace("Play button pushed, checkbox selected : {} => {}", selectedPossibility, vector);
 				Player player = playerManager.getCurrentPlayer();
@@ -583,6 +591,7 @@ public final class MainFrame {
 	}
 
 	private JPanel getDirectionalPanel() {
+		//JPanel panel = new JPanel(new GridLayout(3, 3));
 		JPanel panel = new JPanel(new BorderLayout());
 		JButton up = new JButton("↑");
 		up.addActionListener(new ActionListener() {
@@ -616,27 +625,42 @@ public final class MainFrame {
 				scrollPane.getHorizontalScrollBar().getModel().setValue(scrollPane.getHorizontalScrollBar().getModel().getValue() + 40);
 			}
 		});
-		
+//		panel.add(enabledButtonFactory();
 		JButton centered = new JButton("☼");
 		centered.addActionListener(getPlayerFocusListener());
+//		panel.add(enabledButtonFactory();
 		panel.add(up, BorderLayout.NORTH);
+//		panel.add(enabledButtonFactory();
 		panel.add(left, BorderLayout.WEST);
 		panel.add(right, BorderLayout.EAST);
+//		panel.add(enabledButtonFactory();
 		panel.add(down, BorderLayout.SOUTH);
+//		panel.add(enabledButtonFactory();
 		panel.add(centered, BorderLayout.CENTER);
 		return panel;
 	}
+	
+//	private JButton enabledButtonFactory() {
+//		JButton button = new JButton();
+//		button.setEnabled(false);
+//		return button;
+//	}
 	
 	private ActionListener getPlayerFocusListener() {
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Position pos = playerManager.getCurrentPlayer().getPosition();
+				if (pos.getX() == 0 && pos.getY() == 0) {
+					pos = mapManager.getStartingPositionList().get(1);
+				}
+				Dimension dimension = mainFrame.getSize();
 				double d = mapManager.getMapSize() / 100;
 				double x = d * (pos.getX() - 20);
 				double y = d * (pos.getY() - 20);
 				scrollPane.getHorizontalScrollBar().getModel().setValue(new Double(x * scrollPane.getHorizontalScrollBar().getModel().getMaximum() / 100).intValue());
 				scrollPane.getVerticalScrollBar().getModel().setValue(new Double(y * scrollPane.getVerticalScrollBar().getModel().getMaximum() / 100).intValue());
+				
 			}
 		};
 	}
@@ -698,14 +722,44 @@ public final class MainFrame {
 	private JMenu getFileMenu() {
 		JMenu file = new JMenu("File");
 		JMenuItem save = new JMenuItem("Save Map");
+		
 		save.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				
+				JFileChooser fileChooser = new JFileChooser();
+				fileChooser.setMultiSelectionEnabled(false);
+				int result = fileChooser.showSaveDialog(mainFrame);
+				if (result == JFileChooser.APPROVE_OPTION) {
+					try {
+						FormulaMathSaver.getInstance().saveMap(mapManager, fileChooser.getSelectedFile());
+					} catch (IOException e) {
+						log.error("The map could not be saved : {}", e.getMessage());
+						displayErrorMessage("The map could not be saved");
+					}
+				}
 			}
 		});
+		
+		JMenuItem openMap = new JMenuItem("Load Map");
+		openMap.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser fileChooser = new JFileChooser();
+				fileChooser.setMultiSelectionEnabled(false);
+				int result = fileChooser.showOpenDialog(mainFrame);
+				if (result == JFileChooser.APPROVE_OPTION) {
+					try {
+						FormulaMathSaver.getInstance().loadMap(fileChooser.getSelectedFile());
+					} catch (IOException e) {
+						log.error("The map could not be loaded : {}", e.getMessage());
+						displayErrorMessage("The map could not be loaded");
+					}
+				}
+			}
+		});
+		
 		JMenuItem quit = new JMenuItem("Quit");
 		quit.addActionListener(new ActionListener() {
 			
@@ -721,6 +775,7 @@ public final class MainFrame {
 			}
 		});
 		//file.add(save);
+		//file.add(loadMap);
 		file.addSeparator();
 		file.add(quit);
 		return file;

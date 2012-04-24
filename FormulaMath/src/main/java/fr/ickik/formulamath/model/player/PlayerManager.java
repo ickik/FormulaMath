@@ -161,7 +161,7 @@ public final class PlayerManager {
 		mapManager.getCase(endLineList.get(0).getY(), endLineList.get(0).getX()).setIdPlayer(p.getId());
 		fireUpdateCaseListener(p);
 		updateIndexPlayerGame();
-		//AIPlay();.
+		//AIPlay();
 		addFinishPlayer(p, true);
 		isWinner = true;
 	}
@@ -196,7 +196,7 @@ public final class PlayerManager {
 			Vector vector = null;
 			log.debug("AI rest length of the vector:{}", len);
 			log.trace("Orientation: {}", r.getOrientation());
-			if (len == 1 && (p.getVector().getX() == 1 ||  p.getVector().getX() == -1 || p.getVector().getY() == 1 || p.getVector().getY() == -1)) {
+			if ((len == 1 || len == 0) && (p.getVector().getX() == 1 ||  p.getVector().getX() == -1 || p.getVector().getY() == 1 || p.getVector().getY() == -1)) {
 				RoadDirectionInformation nextRoadDirection;
 				if (mapManager.getRoadDirectionInformationList().size() > roadPosition + 1) {
 					nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition + 1);
@@ -286,27 +286,45 @@ public final class PlayerManager {
 				}
 			} else {
 				log.debug("Go in the same direction {}", r.getOrientation());
-				switch (r.getOrientation()) {
-				case NORTH:
-					int d = getNextPlay(len, p.getVector().getY());
-					log.debug("Next play : {}", d);
-					vector = new Vector(0, p.getVector().getY() + d);
-					break;
-				case SOUTH:
-					d = getNextPlay(len, p.getVector().getY());
-					log.debug("Next play : {}", d);
-					vector = new Vector(0, p.getVector().getY() - d);
-					break;
-				case WEST:
-					d = getNextPlay(len, p.getVector().getX());
-					log.debug("Next play : {}", d);
-					vector = new Vector(p.getVector().getX() - d, 0);
-					break;
-				case EAST:
-					d = getNextPlay(len, p.getVector().getX());
-					log.debug("Next play : {}", d);
-					vector = new Vector(p.getVector().getX() + d, 0);
-					break;
+				if (roadPosition == mapManager.getRoadDirectionInformationList().size() - 1) {
+					log.trace("Last direction, final sprint");
+					switch (r.getOrientation()) {
+					case NORTH:
+						vector = new Vector(0, p.getVector().getY() + 1);
+						break;
+					case SOUTH:
+						vector = new Vector(0, p.getVector().getY() - 1);
+						break;
+					case WEST:
+						vector = new Vector(p.getVector().getX() - 1, 0);
+						break;
+					case EAST:
+						vector = new Vector(p.getVector().getX() + 1, 0);
+						break;
+					}
+				} else {
+					switch (r.getOrientation()) {
+					case NORTH:
+						int d = getNextPlay(len, p.getVector().getY());
+						log.debug("Next play : {}", d);
+						vector = new Vector(0, p.getVector().getY() + d);
+						break;
+					case SOUTH:
+						d = getNextPlay(len, p.getVector().getY());
+						log.debug("Next play : {}", d);
+						vector = new Vector(0, p.getVector().getY() - d);
+						break;
+					case WEST:
+						d = getNextPlay(len, p.getVector().getX());
+						log.debug("Next play : {}", d);
+						vector = new Vector(p.getVector().getX() - d, 0);
+						break;
+					case EAST:
+						d = getNextPlay(len, p.getVector().getX());
+						log.debug("Next play : {}", d);
+						vector = new Vector(p.getVector().getX() + d, 0);
+						break;
+					}
 				}
 			}
 			mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
@@ -318,6 +336,7 @@ public final class PlayerManager {
 			p.getVector().setX(vector.getX());
 			p.getVector().setY(vector.getY());
 			log.debug("Player new position: {}", p.getPosition());
+			//test franchissement end line
 			mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(p.getId());
 			
 			fireUpdateCaseListener(p);
@@ -334,8 +353,9 @@ public final class PlayerManager {
 	 */
 	private int getNextPlay(int distance, int vitesse) {
 		log.trace("getNextPlay({}, {})", distance, vitesse);
+		int v = Math.abs(vitesse);
 		if (distance == 0) {
-			if (vitesse == 2) {
+			if (v == 2) {
 				return -1;
 			}
 			return vitesse;
@@ -343,9 +363,9 @@ public final class PlayerManager {
 		if (distance > vitesse * vitesse) {
 			return 1;
 		}
-		int nbLess = getNbStep(distance, vitesse - 1, 0);
-		int nbEqual = getNbStep(distance, vitesse, 0);
-		int nbMore = getNbStep(distance, vitesse + 1, 0);
+		int nbLess = getNbStep(distance, v - 1, 0);
+		int nbEqual = getNbStep(distance, v, 0);
+		int nbMore = getNbStep(distance, v + 1, 0);
 		log.debug("Next play possibilities : {}, {}, {}", new Object[]{nbLess, nbEqual, nbMore});
 		if (nbLess <= nbEqual && nbLess <= nbMore) {
 			return -1;

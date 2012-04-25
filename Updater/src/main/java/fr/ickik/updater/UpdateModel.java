@@ -5,8 +5,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -192,6 +194,10 @@ final class UpdateModel {
 	
 	private Version getNextVersion() {
 		String currentVersion = PropertiesModel.getSingleton().getProperty(FormulaMathProperty.VERSION);
+		String jarVersion = open();
+		if (jarVersion.compareTo(currentVersion) > 0) {
+			currentVersion = jarVersion;
+		}
 		for(Version v : versionList) {
 			logger.debug("{} compareto {} = {}", new Object[]{v.getVersion(), currentVersion, v.getVersion().compareTo(currentVersion)});
 			if (v.getVersion().compareTo(currentVersion) >0) {
@@ -200,6 +206,38 @@ final class UpdateModel {
 			}
 		}
 		return getLastVersion();
+	}
+	
+	public String open() {
+		URL[] urlArray = null;
+		try {
+			urlArray = new URL[] {new File("FormulaMath.jar").toURI().toURL()};
+			ClassLoader classLoader = new URLClassLoader(urlArray);
+			Class<?> classe = Class.forName("fr.ickik.formulamath.view.AbstractFormulaMathFrame",false, classLoader);
+			//Class<?> classe = classLoader.loadClass("fr.ickik.formulamath.view.AbstractFormulaMathFrame");
+			Field field = classe.getDeclaredField("VERSION");
+			return (String) field.get(new String());
+			//field.get();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "";
 	}
 
 	private Version getLastVersion() {

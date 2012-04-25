@@ -27,6 +27,7 @@ import javax.swing.JTextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.ickik.formulamath.controler.FormulaMathControler;
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.model.map.MapManager;
 import fr.ickik.formulamath.model.player.PlayerManager;
@@ -125,7 +126,7 @@ public class ConfigurationFrame {
 					}
 					pm.addPlayer(new Player(type, nameTextFieldList.get(i).getText()));
 				}
-				new MainFrame(pm, mapManager);
+				new MainFrame(pm, mapManager, new FormulaMathControler(pm, mapManager));
 			}
 		});
 		JButton cancelAndQuit = new JButton("Cancel & Quit");
@@ -167,7 +168,7 @@ public class ConfigurationFrame {
 					}
 					pm.addPlayer(new Player(type, nameTextFieldList.get(i).getText()));
 				}
-				new MainFrame(pm, mapManager);
+				new MainFrame(pm, mapManager, new FormulaMathControler(pm, mapManager));
 			}
 		});
 		JButton cancelAndQuit = new JButton("Cancel & Quit");

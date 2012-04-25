@@ -2,7 +2,6 @@ package fr.ickik.formulamath.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Shape;
@@ -14,7 +13,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.geom.Line2D;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +44,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.ickik.formulamath.FormulaMathException;
+import fr.ickik.formulamath.controler.FormulaMathControler;
 import fr.ickik.formulamath.controler.UpdateCaseListener;
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Position;
@@ -76,8 +76,10 @@ public final class MainFrame {
 	private List<List<JCase>> caseArrayList;
 	private static final int MIN_ZOOM_SIZE = 10;
 	private static final int MAX_ZOOM_SIZE = 50;
+	private final FormulaMathControler controler;
 	
-	public MainFrame(PlayerManager playerManager, MapManager mapManager) {
+	public MainFrame(PlayerManager playerManager, MapManager mapManager, FormulaMathControler controler) {
+		this.controler = controler;
 		log.debug(mapManager.toString());
 		for (RoadDirectionInformation r : mapManager.getRoadDirectionInformationList()) {
 			log.debug(r.toString());
@@ -312,8 +314,6 @@ public final class MainFrame {
 					return;
 				}
 				log.trace("The player can move");
-				//playerManager.getCurrentPlayer().getVector().setX(xMoving);
-				//playerManager.getCurrentPlayer().getVector().setY(yMoving);
 				if (playerManager.initFirstMove(new Vector(xMoving, yMoving))) {
 					log.debug("next player is AI if it exists one");
 					if (playerManager.initAIFirstMove()) {
@@ -543,7 +543,7 @@ public final class MainFrame {
 				
 				if (isEndLineIntersection(line)) {
 					log.trace("{} win", player);
-					displayErrorMessage("end");
+					displayErrorMessage("you win --- end");
 					playerManager.lastPlay(vector);
 				}
 				
@@ -557,7 +557,7 @@ public final class MainFrame {
 	}
 	
 	private JLabel getFinishLabel() {
-		JLabel label = new JLabel("");
+		JLabel label = new JLabel("You win the game is finished");
 		return label;
 	}
 
@@ -655,9 +655,10 @@ public final class MainFrame {
 					pos = mapManager.getStartingPositionList().get(1);
 				}
 				Dimension dimension = mainFrame.getSize();
+				Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
 				double d = mapManager.getMapSize() / 100;
-				double x = d * (pos.getX() - 20);
-				double y = d * (pos.getY() - 20);
+				double x = d * (pos.getX() - (dimension.getWidth() * 20 / screenDimension.getWidth()));
+				double y = d * (pos.getY() - (dimension.getHeight() * 20 / screenDimension.getHeight()));
 				scrollPane.getHorizontalScrollBar().getModel().setValue(new Double(x * scrollPane.getHorizontalScrollBar().getModel().getMaximum() / 100).intValue());
 				scrollPane.getVerticalScrollBar().getModel().setValue(new Double(y * scrollPane.getVerticalScrollBar().getModel().getMaximum() / 100).intValue());
 				
@@ -684,6 +685,24 @@ public final class MainFrame {
 		}
 		return -1;
 	}
+	
+	/*public static boolean isEndLineIntersection(Position position, Vector vector) {
+		Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
+		
+		for (List<JCase> caseList : caseArrayList) {
+			for (JCase c : caseList) {
+				if (c.getModel() != null && c.getModel().getField() == Field.FINISHING_LINE) {
+					//if (shape.intersects(c.getRectangleShape())) {
+					if (shape.intersects(c.getX(), c.getY(), c.getWidth(), c.getHeight())) {
+						log.debug("intersection for shape and {} is {}", Field.FINISHING_LINE, true);
+						return true;
+					}
+				}
+			}
+		}
+		log.debug("intersection for shape and {} is {}", terrain, false);
+		return false;
+	}*/
 	
 	private boolean isGrassIntersection(Shape shape) {
 		log.debug("isGrassIntersection");
@@ -792,7 +811,12 @@ public final class MainFrame {
 		guide.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				openHelpFile();
+				try {
+					controler.openHelpFile();
+				} catch (FormulaMathException exception) {
+					log.error("Help file not found or corrupted : {}", exception.getMessage());
+					displayErrorMessage(exception.getMessage());
+				}
 			}
 		});
 		
@@ -808,17 +832,6 @@ public final class MainFrame {
 		help.addSeparator();
 		help.add(about);
 		return help;
-	}
-	
-	private void openHelpFile() {
-		if (Desktop.isDesktopSupported()) {
-			try {
-				Desktop.getDesktop().open(new File("./help.pdf"));
-			} catch (IOException e) {
-				log.error("Help file not found or corrupted! {}", e.getMessage());
-				displayErrorMessage(e.getMessage());
-			}
-		}
 	}
 	
 	private void displayErrorMessage(String msg) {

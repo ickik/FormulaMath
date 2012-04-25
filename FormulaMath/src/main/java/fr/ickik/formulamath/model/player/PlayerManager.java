@@ -25,7 +25,7 @@ import fr.ickik.formulamath.model.map.Orientation;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.1.009, 20 apr. 2012.
+ * @version 0.1.010, 25 apr. 2012.
  */
 public final class PlayerManager {
 
@@ -331,12 +331,24 @@ public final class PlayerManager {
 			log.debug("Player initial position: {}", p.getPosition());
 			log.debug("Player last vector {}", p.getVector());
 			log.debug("{}", vector);
+			for (int i = 0; i < vector.getX(); i++) {
+				for (int j = 0; j < vector.getY(); j++) {
+					if (p.getPosition().getX() + i >= 0 && p.getPosition().getX() + i < mapManager.getMapSize() && p.getPosition().getY() - j >= 0 && p.getPosition().getY() - j < mapManager.getMapSize()) {
+						CaseModel model = mapManager.getCase(p.getPosition().getY() - j, p.getPosition().getX() + i);
+						if (model.getField() == Field.FINISHING_LINE) {
+							lastPlay(new Vector(i, j));
+							return;
+						}
+					}
+				}
+			}
 			p.getPosition().setX(p.getPosition().getX() + vector.getX());
 			p.getPosition().setY(p.getPosition().getY() - vector.getY());
 			p.getVector().setX(vector.getX());
 			p.getVector().setY(vector.getY());
 			log.debug("Player new position: {}", p.getPosition());
 			//test franchissement end line
+			//mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).
 			mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(p.getId());
 			
 			fireUpdateCaseListener(p);

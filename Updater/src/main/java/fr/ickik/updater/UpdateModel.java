@@ -29,7 +29,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * and search the last release to update. It download and placed it in the right directory.
  * After downloading, it rename the jar file into the current jar file to start the application.
  * @author Ickik
- * @version 0.1.003, 17 apr. 2012
+ * @version 0.1.004, 3 mai 2012
  */
 final class UpdateModel {
 
@@ -187,20 +187,16 @@ final class UpdateModel {
 	private boolean isUpdateAvailable() {
 		Version v = getNextVersion();
 		logger.debug("next version is {}", v.getVersion());
-		boolean isUpdateAvailable = v.getVersion().compareTo(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.VERSION)) > 0;
+		boolean isUpdateAvailable = v.getVersion().compareTo(getCurrentVersion()) > 0;
 		logger.debug("{} is available ? {}", isUpdateAvailable);
 		return isUpdateAvailable;
 	}
 	
 	private Version getNextVersion() {
-		String currentVersion = PropertiesModel.getSingleton().getProperty(FormulaMathProperty.VERSION);
-		String jarVersion = open();
-		if (jarVersion.compareTo(currentVersion) > 0) {
-			currentVersion = jarVersion;
-		}
+		String currentVersion = getCurrentVersion();
 		for(Version v : versionList) {
 			logger.debug("{} compareto {} = {}", new Object[]{v.getVersion(), currentVersion, v.getVersion().compareTo(currentVersion)});
-			if (v.getVersion().compareTo(currentVersion) >0) {
+			if (v.getVersion().compareTo(currentVersion) > 0) {
 				logger.debug("{} compareto {} = {}", new Object[]{v.getVersion(), currentVersion, v.getVersion().compareTo(currentVersion)});
 				return v;
 			}
@@ -208,39 +204,40 @@ final class UpdateModel {
 		return getLastVersion();
 	}
 	
-	public String open() {
+	private String getCurrentVersion() {
+		String jarVersion = loadCurrentVersion();
+		if (jarVersion == null || jarVersion.isEmpty()) {
+			return PropertiesModel.getSingleton().getProperty(FormulaMathProperty.VERSION);
+		}
+		return jarVersion;
+	}
+	
+	private String loadCurrentVersion() {
 		URL[] urlArray = null;
 		try {
 			urlArray = new URL[] {new File("FormulaMath.jar").toURI().toURL()};
 			ClassLoader classLoader = new URLClassLoader(urlArray);
-			Class<?> classe = Class.forName("fr.ickik.formulamath.view.AbstractFormulaMathFrame",false, classLoader);
-			//Class<?> classe = classLoader.loadClass("fr.ickik.formulamath.view.AbstractFormulaMathFrame");
+			Class<?> classe = Class.forName("fr.ickik.formulamath.view.AbstractFormulaMathFrame", false, classLoader);
 			Field field = classe.getDeclaredField("VERSION");
 			return (String) field.get(new String());
-			//field.get();
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("loadCurrentVersion : {}", e.getMessage());
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("loadCurrentVersion : {}", e.getMessage());
 		} catch (NoSuchFieldException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("loadCurrentVersion : {}", e.getMessage());
 		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("loadCurrentVersion : {}", e.getMessage());
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("loadCurrentVersion : {}", e.getMessage());
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("loadCurrentVersion : {}", e.getMessage());
 		}
-		return "";
+		return null;
 	}
 
 	private Version getLastVersion() {
+		logger.debug("return the last version : {}", versionList.get(versionList.size() - 1).getVersion());
 		return versionList.get(versionList.size() - 1);
 	}
 

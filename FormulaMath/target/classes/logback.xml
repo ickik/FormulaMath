@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${user.home}/.FormulaMath/log/myApp.log</file>
+		<file>${user.home}/.FormulaMath/log/FormulaMath.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>${user.home}/.FormulaMath/log/myApp-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<fileNamePattern>${user.home}/.FormulaMath/log/FormulaMath-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 			<maxHistory>30</maxHistory>
 			<timeBasedFileNamingAndTriggeringPolicy
 				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
@@ -22,12 +22,12 @@
 	</appender>
 
 	<logger name="fr.ickik.formulamath" level="trace">
-		<!-- <appender-ref ref="FILE" />
-		<appender-ref ref="STDOUT" /> -->
+		<appender-ref ref="FILE" />
+		<appender-ref ref="STDOUT" />
 	</logger>
 	
 	<root level="debug">
-		<appender-ref ref="FILE" />
-		<appender-ref ref="STDOUT" />
+		<!-- <appender-ref ref="FILE" />
+		<appender-ref ref="STDOUT" /> -->
 	</root>
 </configuration>

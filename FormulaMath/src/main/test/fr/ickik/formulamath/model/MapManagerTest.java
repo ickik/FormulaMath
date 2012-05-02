@@ -15,8 +15,8 @@ public class MapManagerTest {
 		List<String> l = new ArrayList<String>();
 		for (int i = 0; i < 1000; i++) {
 		long t = System.currentTimeMillis();
-		MapManager manager = new MapManager(size);
-		manager.init();
+		MapManager manager = new MapManager();
+		manager.init(size);
 		manager.constructRoad();
 		l.add((System.currentTimeMillis() - t) + "ms   number of direction :" + manager.getRoadDirectionInformationList().size());
 		}
@@ -32,8 +32,8 @@ public class MapManagerTest {
 	@Test
 	public void MapGeneration() {
 		final int size = 100;
-		MapManager manager = new MapManager(size);
-		manager.init();
+		MapManager manager = new MapManager();
+		manager.init(size);
 		manager.constructRoad();
 		String mapString = manager.toString();
 		String[] map = mapString.split("\n");

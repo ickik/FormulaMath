@@ -2,6 +2,7 @@ package fr.ickik.formulamath.entity;
 
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.geom.AffineTransform;
 
 /**
  * Car represents the car picture which is associate to every player
@@ -16,6 +17,9 @@ public class Car {
 	
 	public Car(int playerId) {
 		this.playerId = playerId;
+		AffineTransform transform = new AffineTransform();
+		transform.rotate(2.0);
+		
 		image = Toolkit.getDefaultToolkit().createImage(Car.class.getResource("car_" + Integer.toString(playerId) + ".jpg"));
 //		orientationCarImageMap.put(Orientation.NORTH.toString(), Toolkit.getDefaultToolkit().createImage(Car.class.getResource("car_" + Integer.toString(playerId) + "_" + Orientation.NORTH + ".jpg")));
 //		orientationCarImageMap.put(Orientation.SOUTH.toString(), Toolkit.getDefaultToolkit().createImage(Car.class.getResource("car_" + Integer.toString(playerId) + "_" + Orientation.SOUTH + ".jpg")));

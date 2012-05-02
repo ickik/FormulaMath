@@ -2,14 +2,16 @@ package fr.ickik.formulamath;
 
 import javax.swing.JOptionPane;
 
-import fr.ickik.formulamath.view.ConfigurationFrame;
+import fr.ickik.formulamath.controler.FormulaMathController;
+import fr.ickik.formulamath.model.map.MapManager;
+import fr.ickik.formulamath.model.player.PlayerManager;
 
 /**
  * Main class which contains the main static method.
  * @author Ickik
  * @version 0.1.001, 13 apr. 2012
  */
-public class Main {
+public class FormulaMath {
 
 	/**
 	 * @param args
@@ -22,7 +24,9 @@ public class Main {
 					JOptionPane.showMessageDialog(null, "Java version not compatible please update", "ERROR!", JOptionPane.ERROR_MESSAGE);
 					return ;
 				}
-				new ConfigurationFrame();
+				MapManager mapManager = new MapManager();
+				PlayerManager.getInstance().setMapManager(mapManager);
+				FormulaMathController controller = new FormulaMathController(PlayerManager.getInstance(), mapManager);
 			}
 		}.start();
 	}

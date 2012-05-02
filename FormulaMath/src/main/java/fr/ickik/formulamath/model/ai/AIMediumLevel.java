@@ -1,4 +1,4 @@
-package fr.ickik.formulamath.model;
+package fr.ickik.formulamath.model.ai;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +12,7 @@ import fr.ickik.formulamath.entity.Vector;
 import fr.ickik.formulamath.model.map.MapManager;
 import fr.ickik.formulamath.model.map.Orientation;
 
-public class AIMediumLevel {
+public class AIMediumLevel implements AILevel {
 
 	private final MapManager mapManager;
 	private final Map<Integer, Integer> playerRoadPosition = new HashMap<Integer, Integer>();
@@ -25,16 +25,17 @@ public class AIMediumLevel {
 
 
 
-	public Vector AIPlay(Player p) {
-		log.debug("AI Player {} is under playing", p.toString());
+	@Override
+	public Vector getNextPlay(Player player) {
+		log.debug("AI Player {} is under playing", player.toString());
 
-		int roadPosition = playerRoadPosition.get(p.getId());
+		int roadPosition = playerRoadPosition.get(player.getId());
 		RoadDirectionInformation r = mapManager.getRoadDirectionInformationList().get(roadPosition);
-		int len = r.getLengthToEnd(p.getPosition());
+		int len = r.getLengthToEnd(player.getPosition());
 		Vector vector = null;
 		log.debug("AI rest length of the vector:{}", len);
 		log.trace("Orientation: {}", r.getOrientation());
-		if (len == 1 && (p.getVector().getX() == 1 ||  p.getVector().getX() == -1 || p.getVector().getY() == 1 || p.getVector().getY() == -1)) {
+		if (len == 1 && (player.getVector().getX() == 1 ||  player.getVector().getX() == -1 || player.getVector().getY() == 1 || player.getVector().getY() == -1)) {
 			RoadDirectionInformation nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition + 1);
 			//playerRoadPosition.put(p.getId(), roadPosition + 1);
 			log.trace("Next orientation: {}", nextRoadDirection.getOrientation());
@@ -68,9 +69,9 @@ public class AIMediumLevel {
 				}
 				break;
 			}
-		} else if ((p.getVector().getX() == 1 ||  p.getVector().getX() == -1) && (p.getVector().getY() == 1 || p.getVector().getY() == -1)) {
+		} else if ((player.getVector().getX() == 1 ||  player.getVector().getX() == -1) && (player.getVector().getY() == 1 || player.getVector().getY() == -1)) {
 			RoadDirectionInformation nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition + 1);
-			playerRoadPosition.put(p.getId(), roadPosition + 1);
+			playerRoadPosition.put(player.getId(), roadPosition + 1);
 			log.trace("Next orientation: {}", nextRoadDirection.getOrientation());
 			switch (r.getOrientation()) {
 			case NORTH:
@@ -106,37 +107,27 @@ public class AIMediumLevel {
 			log.debug("Go in the same direction {}", r.getOrientation());
 			switch (r.getOrientation()) {
 			case NORTH:
-				int d = getNextPlay(len, p.getVector().getY());
+				int d = getNextPlay(len, player.getVector().getY());
 				log.debug("Next play : {}", d);
-				vector = new Vector(0, p.getVector().getY() + d);
+				vector = new Vector(0, player.getVector().getY() + d);
 				break;
 			case SOUTH:
-				d = getNextPlay(len, p.getVector().getY());
+				d = getNextPlay(len, player.getVector().getY());
 				log.debug("Next play : {}", d);
-				vector = new Vector(0, p.getVector().getY() - d);
+				vector = new Vector(0, player.getVector().getY() - d);
 				break;
 			case WEST:
-				d = getNextPlay(len, p.getVector().getX());
+				d = getNextPlay(len, player.getVector().getX());
 				log.debug("Next play : {}", d);
-				vector = new Vector(p.getVector().getX() + d, 0);
+				vector = new Vector(player.getVector().getX() + d, 0);
 				break;
 			case EAST:
-				d = getNextPlay(len, p.getVector().getX());
+				d = getNextPlay(len, player.getVector().getX());
 				log.debug("Next play : {}", d);
-				vector = new Vector(p.getVector().getX() - d, 0);
+				vector = new Vector(player.getVector().getX() - d, 0);
 				break;
 			}
 		}
-		/*mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
-		log.debug("Player initial position: {}", p.getPosition());
-		log.debug("Player last vector {}", p.getVector());
-		log.debug("{}", vector);
-		p.getPosition().setX(p.getPosition().getX() + vector.getX());
-		p.getPosition().setY(p.getPosition().getY() - vector.getY());
-		p.getVector().setX(vector.getX());
-		p.getVector().setY(vector.getY());
-		log.debug("Player new position: {}", p.getPosition());
-		mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(p.getId());*/
 		return vector;
 	}
 

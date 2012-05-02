@@ -55,6 +55,19 @@ public final class PlayerManager {
 			finishPositionList.add(null);
 		}
 	}
+	
+	private PlayerManager(MapManager mapManager) {
+		this.mapManager = mapManager;
+		playerList = new ArrayList<Player>(NUMBER_OF_PLAYER_MAX);
+		finishPositionList = new ArrayList<Player>(NUMBER_OF_PLAYER_MAX);
+		for (int i = 0; i < NUMBER_OF_PLAYER_MAX; i++) {
+			finishPositionList.add(null);
+		}
+	}
+	
+	public void setMapManager(MapManager mapManager) {
+		this.mapManager = mapManager;
+	}
 
 	/**
 	 * Return the unique instance of the player manager.
@@ -124,6 +137,9 @@ public final class PlayerManager {
 			return true;
 		}
 		log.trace("model==null => {}", model==null);
+		if (model != null) {
+			log.trace("Model field: {}", model.getField());
+		}
 		return model == null;
 	}
 
@@ -186,7 +202,7 @@ public final class PlayerManager {
 	 * Iterates all AI players and set new available position.
 	 */
 	public void AIPlay() {
-		while (playerList.get(indexPlayerGame).getType() == PlayerType.COMPUTER) {
+		while (playerList.get(indexPlayerGame).getType() == PlayerType.COMPUTER && !finishPositionList.contains(playerList.get(indexPlayerGame))) {
 			Player p = getCurrentPlayer();
 			log.debug("AI Player {} is under playing", p.toString());
 			
@@ -331,8 +347,8 @@ public final class PlayerManager {
 			log.debug("Player initial position: {}", p.getPosition());
 			log.debug("Player last vector {}", p.getVector());
 			log.debug("{}", vector);
-			for (int i = 0; i < vector.getX(); i++) {
-				for (int j = 0; j < vector.getY(); j++) {
+			for (int i = 0; i <= vector.getX(); i++) {
+				for (int j = 0; j <= vector.getY(); j++) {
 					if (p.getPosition().getX() + i >= 0 && p.getPosition().getX() + i < mapManager.getMapSize() && p.getPosition().getY() - j >= 0 && p.getPosition().getY() - j < mapManager.getMapSize()) {
 						CaseModel model = mapManager.getCase(p.getPosition().getY() - j, p.getPosition().getX() + i);
 						if (model.getField() == Field.FINISHING_LINE) {
@@ -342,17 +358,16 @@ public final class PlayerManager {
 					}
 				}
 			}
-			p.getPosition().setX(p.getPosition().getX() + vector.getX());
+			play(vector);
+			/*p.getPosition().setX(p.getPosition().getX() + vector.getX());
 			p.getPosition().setY(p.getPosition().getY() - vector.getY());
 			p.getVector().setX(vector.getX());
 			p.getVector().setY(vector.getY());
 			log.debug("Player new position: {}", p.getPosition());
-			//test franchissement end line
-			//mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).
 			mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(p.getId());
 			
 			fireUpdateCaseListener(p);
-			updateIndexPlayerGame();
+			updateIndexPlayerGame();*/
 		}
 		humanPlaying();
 	}
@@ -676,10 +691,6 @@ public final class PlayerManager {
 			//u.updateEndGamePanel();
 			System.exit(0);
 		}
-	}
-	
-	public void setMapManager(MapManager mapManager) {
-		this.mapManager = mapManager;
 	}
 	
 	/**

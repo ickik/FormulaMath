@@ -45,11 +45,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.ickik.formulamath.FormulaMathException;
-import fr.ickik.formulamath.controler.FormulaMathControler;
+import fr.ickik.formulamath.controler.FormulaMathController;
 import fr.ickik.formulamath.controler.UpdateCaseListener;
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Position;
-import fr.ickik.formulamath.entity.RoadDirectionInformation;
 import fr.ickik.formulamath.entity.Vector;
 import fr.ickik.formulamath.model.ChuckNorrisTimer;
 import fr.ickik.formulamath.model.FormulaMathSaver;
@@ -76,14 +75,12 @@ public final class MainFrame {
 	private List<List<JCase>> caseArrayList;
 	private static final int MIN_ZOOM_SIZE = 10;
 	private static final int MAX_ZOOM_SIZE = 50;
-	private final FormulaMathControler controler;
+	private final FormulaMathController controller;
 	
-	public MainFrame(PlayerManager playerManager, MapManager mapManager, FormulaMathControler controler) {
-		this.controler = controler;
+	public MainFrame(PlayerManager playerManager, MapManager mapManager, FormulaMathController controller) {
+		this.controller = controller;
 		log.debug(mapManager.toString());
-		for (RoadDirectionInformation r : mapManager.getRoadDirectionInformationList()) {
-			log.debug(r.toString());
-		}
+		log.debug(mapManager.getRoadDirectionInformationList().toString());
 		mainFrame = new JFrame(getTitle());
 		ChuckNorrisTimer.getInstance(mainFrame);
 		this.playerManager = playerManager;
@@ -686,24 +683,6 @@ public final class MainFrame {
 		return -1;
 	}
 	
-	/*public static boolean isEndLineIntersection(Position position, Vector vector) {
-		Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
-		
-		for (List<JCase> caseList : caseArrayList) {
-			for (JCase c : caseList) {
-				if (c.getModel() != null && c.getModel().getField() == Field.FINISHING_LINE) {
-					//if (shape.intersects(c.getRectangleShape())) {
-					if (shape.intersects(c.getX(), c.getY(), c.getWidth(), c.getHeight())) {
-						log.debug("intersection for shape and {} is {}", Field.FINISHING_LINE, true);
-						return true;
-					}
-				}
-			}
-		}
-		log.debug("intersection for shape and {} is {}", terrain, false);
-		return false;
-	}*/
-	
 	private boolean isGrassIntersection(Shape shape) {
 		log.debug("isGrassIntersection");
 		return checkIntersection(shape, Field.GRASS);
@@ -812,7 +791,7 @@ public final class MainFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					controler.openHelpFile();
+					controller.openHelpFile();
 				} catch (FormulaMathException exception) {
 					log.error("Help file not found or corrupted : {}", exception.getMessage());
 					displayErrorMessage(exception.getMessage());

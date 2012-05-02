@@ -24,8 +24,8 @@ public final class MapManager {
 	public static final int ROAD_SIZE = 4;
 	public static final int EMPTY_PLAYER = 0;
 	private static final Logger log = LoggerFactory.getLogger(MapManager.class);
-	private final List<List<CaseModel>> carte;
-	private final int mapSize;
+	private List<List<CaseModel>> carte;
+	private int mapSize;
 	private final List<Position> startingPositionList = new ArrayList<Position>(2);
 	private final List<Position> finishingLinePositionList = new ArrayList<Position>(2);
 	private final RoadDirectionList roadList = new RoadDirectionList();
@@ -35,16 +35,18 @@ public final class MapManager {
 	 * The size of the map is the number of case on one side of the square.
 	 * @param size the number of cases of square's side.
 	 */
-	public MapManager(int size) {
+	public MapManager() {
 		log.trace("Constructor begin");
-		log.debug("Size of the map defined : {}", size);
-		this.mapSize = size;
-		carte = new ArrayList<List<CaseModel>>(size);
+		//log.debug("Size of the map defined : {}", size);
+		//this.mapSize = size;
+		//carte = new ArrayList<List<CaseModel>>(size);
 		log.trace("Constructor exiting");
 	}
 
-	public void init() {
+	public void init(int size) {
 		log.debug("Init begin");
+		this.mapSize = size;
+		carte = new ArrayList<List<CaseModel>>(size);
 		for (int i = 0; i < mapSize; i++) {
 			List<CaseModel> list = new ArrayList<CaseModel>(mapSize);
 			for (int j = 0; j < mapSize; j++) {

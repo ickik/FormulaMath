@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>FormulaMath</groupId>
 	<artifactId>FormulaMath</artifactId>
-	<version>0.1</version>
+	<version>0.2.1</version>
 	<name>FormulaMathGame</name>
 
 	<build>
@@ -18,7 +18,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>fr.ickik.formulamath.Main</mainClass>
+							<mainClass>fr.ickik.formulamath.FormulaMath</mainClass>
 						</manifest>
 					</archive>
 					<appendAssemblyId>false</appendAssemblyId>

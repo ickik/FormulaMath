@@ -11,8 +11,8 @@ public class MapManagerConstructor implements Callable<MapManager> {
 
 	@Override
 	public MapManager call() throws Exception {
-		MapManager manager = new MapManager(100);
-		manager.init();
+		MapManager manager = new MapManager();
+		manager.init(100);
 		manager.constructRoad();
 		return manager;
 	}

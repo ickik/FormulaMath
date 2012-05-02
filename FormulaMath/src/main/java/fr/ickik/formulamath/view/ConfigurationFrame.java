@@ -1,35 +1,30 @@
 package fr.ickik.formulamath.view;
 
 import java.awt.BorderLayout;
-import java.awt.Desktop;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.ickik.formulamath.controler.FormulaMathControler;
-import fr.ickik.formulamath.entity.Player;
-import fr.ickik.formulamath.model.map.MapManager;
+import fr.ickik.formulamath.FormulaMathException;
+import fr.ickik.formulamath.controler.FormulaMathController;
 import fr.ickik.formulamath.model.player.PlayerManager;
 import fr.ickik.formulamath.model.player.PlayerType;
 
@@ -38,31 +33,24 @@ import fr.ickik.formulamath.model.player.PlayerType;
  * The user can choose between Human and Computer players;
  * give a name to every player.
  * @author Ickik.
- * @version 0.1.003, 13 apr. 2012
+ * @version 0.2.000, 25 apr. 2012
  */
-public class ConfigurationFrame {
+public class ConfigurationFrame extends AbstractFormulaMathFrame {
 
-	private final JFrame configurationFrame;
-	//Can be changed in Toggle button to use less memory
-	private final List<List<JRadioButton>> radioButtonPlayerTypeList = new ArrayList<List<JRadioButton>>(PlayerManager.NUMBER_OF_PLAYER_MAX);
-	//private final List<JToggleButton> togglePlayerTypeList = new ArrayList<JToggleButton>(PlayerManager.NUMBER_OF_PLAYER_MAX);
+	private final List<JToggleButton> togglePlayerTypeList = new ArrayList<JToggleButton>(PlayerManager.NUMBER_OF_PLAYER_MAX);
 	private final List<JTextField> nameTextFieldList = new ArrayList<JTextField>(PlayerManager.NUMBER_OF_PLAYER_MAX);
 	private final List<JLabel> labelList = new ArrayList<JLabel>(PlayerManager.NUMBER_OF_PLAYER_MAX);
 	private final Logger log = LoggerFactory.getLogger(ConfigurationFrame.class);
 	private int numberOfPlayerSelected = 1;
-	//private final CompletionService<MapManager> completion;
-	
+	private final FormulaMathController controller;
+
 	/**
 	 * Default constructor. Creates the frame to configure the game.
 	 */
-	public ConfigurationFrame() {
-		/*ExecutorService executor = Executors.newSingleThreadExecutor();
-		completion = new ExecutorCompletionService<MapManager>(executor);
-		completion.submit(new MapManagerConstructor());
-		executor.shutdown();*/
-		configurationFrame = new JFrame(MainFrame.NAME + " " + MainFrame.VERSION);
+	public ConfigurationFrame(FormulaMathController controller) {
+		this.controller = controller;
 		createMainFrame();
-		centeredFrame(configurationFrame);
+		displayFrame();
 	}
 
 	private void createMainFrame() {
@@ -77,63 +65,20 @@ public class ConfigurationFrame {
 			log.debug("Help file not found");
 			panel.add(getButton(), BorderLayout.SOUTH);
 		}
-		configurationFrame.add(panel);
-		configurationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		configurationFrame.pack();
-		//Image icon = Toolkit.getDefaultToolkit().createImage(ConfigurationFrame.class.getResource("FormulaMath_icon2.png"));
-		//configurationFrame.setIconImage(icon);
-		configurationFrame.setVisible(true);
+		getFrame().add(panel);
 	}
 
 	private JPanel getButton() {
 		JPanel panel = new JPanel(new GridLayout(1, 3));
 		JButton okButton = new JButton("OK");
 		okButton.setMnemonic(KeyEvent.VK_O);
-		configurationFrame.getRootPane().setDefaultButton(okButton);
-		okButton.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent arg0) {
-				configurationFrame.dispose();
-				int max = 0;
-				for (int i = 0; i < numberOfPlayerSelected; i++) {
-					if (nameTextFieldList.get(i).isEnabled()) {
-						max = i + 1;
-					}
-				}
-				/*MapManager map = null;
-				try {
-					map = completion.take().get();
-				} catch (InterruptedException e) {
-					log.error("ExecutorService has been interrupted : {}", e.getMessage());
-				} catch (ExecutionException e) {
-					log.error("ExecutorService encount an exception during execution : {}", e.getMessage());
-				} finally {
-					map = new MapManager(100);
-					map.init();
-					map.constructRoad();
-				}*/
-				MapManager mapManager = new MapManager(100);
-				mapManager.init();
-				mapManager.constructRoad();
-				PlayerManager pm = PlayerManager.getInstance();
-				pm.setMapManager(mapManager);
-				for (int i = 0; i < max; i++) {//Si aucun joueur n'est selectionné, par defaut il est CPU
-					PlayerType type;
-					if (radioButtonPlayerTypeList.get(i).get(0).isSelected()) {
-						type = PlayerType.HUMAN;
-					} else {
-						type = PlayerType.COMPUTER;
-					}
-					pm.addPlayer(new Player(type, nameTextFieldList.get(i).getText()));
-				}
-				new MainFrame(pm, mapManager, new FormulaMathControler(pm, mapManager));
-			}
-		});
+		getFrame().getRootPane().setDefaultButton(okButton);
+		okButton.addActionListener(getOKActionListener());
 		JButton cancelAndQuit = new JButton("Cancel & Quit");
 		cancelAndQuit.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				configurationFrame.dispose();
+				getFrame().dispose();
 				System.exit(0);
 			}
 		});
@@ -141,41 +86,43 @@ public class ConfigurationFrame {
 		panel.add(cancelAndQuit);
 		return panel;
 	}
+	
+	private ActionListener getOKActionListener() {
+		return new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				getFrame().dispose();
+				int max = 0;
+				for (int i = 0; i < numberOfPlayerSelected; i++) {
+					if (nameTextFieldList.get(i).isEnabled()) {
+						max = i + 1;
+					}
+				}
+				controller.initManager(100);
+				for (int i = 0; i < max; i++) {//Si aucun joueur n'est selectionné, par defaut il est CPU
+					PlayerType type;
+					if (togglePlayerTypeList.get(i).isSelected()) {
+						type = PlayerType.HUMAN;
+					} else {
+						type = PlayerType.COMPUTER;
+					}
+					controller.addPlayer(type, nameTextFieldList.get(i).getText());
+				}
+				controller.closeConfigurationFrame();
+			}};
+	}
 
 	private JPanel getButtonHelp() {
 		JPanel panel = new JPanel(new GridBagLayout());
 		JButton okButton = new JButton("Ok");
 		okButton.setMnemonic(KeyEvent.VK_O);
-		configurationFrame.getRootPane().setDefaultButton(okButton);
-		okButton.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent arg0) {
-				configurationFrame.dispose();
-				int length = nameTextFieldList.size();
-				int max = 0;
-				for (int i = 0; i < length; i++) {
-					if (nameTextFieldList.get(i).isEnabled()) {
-						max = i + 1;
-					}
-				}
-				MapManager mapManager = new MapManager(100);
-				PlayerManager pm = PlayerManager.getInstance();
-				pm.setMapManager(mapManager);
-				for (int i = 0; i < max; i++) {
-					PlayerType type = PlayerType.COMPUTER;
-					if (radioButtonPlayerTypeList.get(i).get(0).isSelected()) {
-						type = PlayerType.HUMAN;
-					}
-					pm.addPlayer(new Player(type, nameTextFieldList.get(i).getText()));
-				}
-				new MainFrame(pm, mapManager, new FormulaMathControler(pm, mapManager));
-			}
-		});
+		getFrame().getRootPane().setDefaultButton(okButton);
+		okButton.addActionListener(getOKActionListener());
 		JButton cancelAndQuit = new JButton("Cancel & Quit");
 		cancelAndQuit.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				configurationFrame.dispose();
+				getFrame().dispose();
 				System.exit(0);
 			}
 		});
@@ -184,7 +131,12 @@ public class ConfigurationFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				openHelpFile();
+				try {
+					controller.openHelpFile();
+				} catch (FormulaMathException exception) {
+					log.error("Help file not found or corrupted : {}", exception.getMessage());
+					displayErrorMessage(exception.getMessage());
+				}
 			}
 		});
 		GridBagConstraints grid = new GridBagConstraints();
@@ -205,21 +157,6 @@ public class ConfigurationFrame {
 		return panel;
 	}
 	
-	private void openHelpFile() {
-		if (Desktop.isDesktopSupported()) {
-			try {
-				Desktop.getDesktop().open(new File("./help.pdf"));
-			} catch (IOException e) {
-				log.error("Help file not found or corrupted! {}", e.getMessage());
-				displayErrorMessage(e.getMessage());
-			}
-		}
-	}
-	
-	private void displayErrorMessage(String msg) {
-		JOptionPane.showMessageDialog(configurationFrame, msg, MainFrame.getTitle() + " - ERROR!", JOptionPane.ERROR_MESSAGE);
-	}
-	
 	private JPanel getNumberPlayerPanel() {
 		GridLayout gridLayout = new GridLayout(1, 2);
 		JPanel panel = new JPanel(gridLayout);
@@ -233,20 +170,17 @@ public class ConfigurationFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				numberOfPlayerSelected = comboBox.getSelectedIndex() + 1;
 				for (int i = 0; i < numberOfPlayerSelected; i++) {
-					radioButtonPlayerTypeList.get(i).get(0).setEnabled(true);
-					radioButtonPlayerTypeList.get(i).get(1).setEnabled(true);
+					togglePlayerTypeList.get(i).setEnabled(true);
 					labelList.get(i).setEnabled(true);
 					nameTextFieldList.get(i).setEnabled(true);
 				}
 				for (int i = numberOfPlayerSelected; i < PlayerManager.NUMBER_OF_PLAYER_MAX; i++) {
-					radioButtonPlayerTypeList.get(i).get(0).setEnabled(false);
-					radioButtonPlayerTypeList.get(i).get(1).setEnabled(false);
+					togglePlayerTypeList.get(i).setEnabled(false);
 					labelList.get(i).setEnabled(false);
 					nameTextFieldList.get(i).setEnabled(false);
 				}
 			}
 		});
-		//comboBox.setSelectedIndex(0);
 		panel.add(label);
 		panel.add(comboBox);
 		return panel;
@@ -254,10 +188,11 @@ public class ConfigurationFrame {
 
 	private JPanel getConfigurationPanel() {
 		JPanel panel = new JPanel();
-		/*GridLayout gridLayout = new GridLayout(PlayerManager.NUMBER_OF_PLAYER_MAX, 3);
+		GridLayout gridLayout = new GridLayout(PlayerManager.NUMBER_OF_PLAYER_MAX, 3);
 		panel.setLayout(gridLayout);
 		for (int i = 0; i < PlayerManager.NUMBER_OF_PLAYER_MAX; i++) {
 			final JToggleButton button = new JToggleButton("Computer");
+			//button.setMargin(new Insets(-10, -10, -10, -10));
 			button.addChangeListener(new ChangeListener() {
 				
 				@Override
@@ -269,6 +204,7 @@ public class ConfigurationFrame {
 					}
 				}
 			});
+			togglePlayerTypeList.add(button);
 			panel.add(button);
 			JLabel lbl = new JLabel("Name : ");
 			panel.add(lbl);
@@ -281,43 +217,8 @@ public class ConfigurationFrame {
 				lbl.setEnabled(false);
 				name.setEnabled(false);
 			}
-		}*/
-		
-		GridLayout gridLayout = new GridLayout(PlayerManager.NUMBER_OF_PLAYER_MAX, 4);
-		panel.setLayout(gridLayout);
-		for (int i = 0; i < PlayerManager.NUMBER_OF_PLAYER_MAX; i++) {
-			JRadioButton human = new JRadioButton("Human");
-			JRadioButton computer = new JRadioButton("Computer");
-			ButtonGroup group = new ButtonGroup();
-			List<JRadioButton> radioButtonList = new ArrayList<JRadioButton>(2);
-			group.add(human);
-			radioButtonList.add(human);
-			group.add(computer);
-			radioButtonList.add(computer);
-			radioButtonPlayerTypeList.add(radioButtonList);
-			panel.add(human);
-			panel.add(computer);
-			JLabel lbl = new JLabel("Name : ");
-			panel.add(lbl);
-			labelList.add(lbl);
-			JTextField name = new JTextField();
-			nameTextFieldList.add(name);
-			panel.add(name);
-			if (i != 0) {
-				human.setEnabled(false);
-				computer.setEnabled(false);
-				lbl.setEnabled(false);
-				name.setEnabled(false);
-			}
 		}
 		return panel;
 	}
-	
-	private void centeredFrame(JFrame frame) {
-		double w = frame.getWidth();
-		double h = frame.getHeight();
-		double l = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-		double l2 = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-		frame.setLocation((int) (l / 2 - w / 2), (int)(l2 / 2 - h / 2));
-	}
+
 }

@@ -27,12 +27,11 @@ import fr.ickik.formulamath.model.player.PlayerManager;
  * per turn, the variance, the square type and a graphic which resume the number of
  * vector played during the game.
  * @author Ickik
- * @version 0.1.002, 20 apr. 2012
+ * @version 0.1.003, 25 apr. 2012
  */
 public final class StatFrame extends AbstractFormulaMathFrame {
 
 	private final JFrame callingFrame;
-	private final JFrame statFrame;
 
 	/**
 	 * Constructor which disabled the calling frame given in argument. The
@@ -42,17 +41,13 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 	 */
 	public StatFrame(JFrame callingFrame) {
 		this.callingFrame = callingFrame;
-		statFrame = new JFrame(getTitle());
-		statFrame.addWindowListener(createWindowListener());
+		getFrame().addWindowListener(createWindowListener());
 		callingFrame.setEnabled(false);
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.add(displayStats(), BorderLayout.CENTER);
 		panel.add(createButton(), BorderLayout.SOUTH);
-		statFrame.add(panel);
-		statFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		statFrame.setIconImages(getIconList());
-		centeredFrame(statFrame);
-		statFrame.setVisible(true);
+		getFrame().add(panel);
+		displayFrame();
 	}
 	
 	private WindowListener createWindowListener() {
@@ -72,7 +67,7 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 			@Override
 			public void windowClosed(WindowEvent arg0) {
 				callingFrame.setEnabled(true);
-				statFrame.dispose();
+				getFrame().dispose();
 				callingFrame.toFront();
 			}
 			
@@ -113,7 +108,7 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				callingFrame.setEnabled(true);
-				statFrame.dispose();
+				getFrame().dispose();
 				callingFrame.toFront();
 			}
 		});

@@ -16,28 +16,47 @@ import fr.ickik.formulamath.model.PropertiesModel;
 /**
  * Abstract which define the default behavior of frames.
  * @author Ickik
- * @version 0.1.003, 23 apr. 2012
+ * @version 0.1.004, 25 apr. 2012
  */
 public abstract class AbstractFormulaMathFrame {
 
 	public static final String NAME = "FormulaMath";
-	public static final String VERSION = "0.2";
+	public static final String VERSION = "0.2.1";
+	private final JFrame frame;
 	
 	/**
 	 * Default constructor of the frame.
 	 */
 	public AbstractFormulaMathFrame() {
+		this.frame = new JFrame(getTitle());
+		saveVersion();
 	}
 	
-	String getTitle() {
+	JFrame getFrame() {
+		return frame;
+	}
+
+	private String getTitle() {
 		return NAME + " " + VERSION;
 	}
 	
-	List<Image> getIconList() {
+	public void close() {
+		frame.dispose();
+	}
+	
+	void displayFrame() {
+		frame.pack();
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setIconImages(getIconList());
+		centeredFrame();
+		frame.setVisible(true);
+	}
+	
+	private List<Image> getIconList() {
 		//ClassLoader cl = this.getClass().getClassLoader();
 		//Icon saveIcon  = new ImageIcon(cl.getResource("images/save.gif"));
 		//Icon cutIcon   = new ImageIcon(cl.getResource("images/cut.gif"));
-		ImageIcon icon = new ImageIcon(ConfigurationFrame.class.getResource("img/FormulaMath_icon.png"));
+		ImageIcon icon = new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/FormulaMath_icon.png"));
 		return Arrays.asList(icon.getImage());
 	}
 	
@@ -45,7 +64,7 @@ public abstract class AbstractFormulaMathFrame {
 	 * Display a Dialog message box with an error logo.
 	 * @param msg the message to display.
 	 */
-	void displayErrorMessage(String msg, JFrame frame) {
+	void displayErrorMessage(String msg) {
 		JOptionPane.showMessageDialog(frame, msg, MainFrame.getTitle() + " - ERROR!", JOptionPane.ERROR_MESSAGE);
 	}
 	
@@ -53,14 +72,14 @@ public abstract class AbstractFormulaMathFrame {
 	 * Display a Dialog message box with an information logo.
 	 * @param msg the message to display.
 	 */
-	void displayMessage(String msg, JFrame frame) {
+	void displayMessage(String msg) {
 		JOptionPane.showMessageDialog(frame, msg, MainFrame.getTitle(), JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	/**
 	 * Centered the JFrame in the screen.
 	 */
-	void centeredFrame(JFrame frame) {
+	void centeredFrame() {
 		double w = frame.getWidth();
 		double h = frame.getHeight();
 		double l = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
@@ -72,7 +91,7 @@ public abstract class AbstractFormulaMathFrame {
 	 * Save the version in the .property file. So if the user modifies the file,
 	 * the update will already functional.
 	 */
-	void saveVersion() {
+	private void saveVersion() {
 		PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.VERSION);
 		try {
 			PropertiesModel.getSingleton().save();

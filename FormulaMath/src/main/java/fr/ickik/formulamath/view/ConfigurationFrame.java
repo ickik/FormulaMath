@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.ickik.formulamath.FormulaMathException;
 import fr.ickik.formulamath.controler.FormulaMathController;
+import fr.ickik.formulamath.model.map.MapDimension;
 import fr.ickik.formulamath.model.player.PlayerManager;
 import fr.ickik.formulamath.model.player.PlayerType;
 
@@ -42,6 +43,7 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 	private final List<JLabel> labelList = new ArrayList<JLabel>(PlayerManager.NUMBER_OF_PLAYER_MAX);
 	private final Logger log = LoggerFactory.getLogger(ConfigurationFrame.class);
 	private int numberOfPlayerSelected = 1;
+	private int dimensionMapItem = 1;
 	private final FormulaMathController controller;
 
 	/**
@@ -98,7 +100,7 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 						max = i + 1;
 					}
 				}
-				controller.initManager(100);
+				controller.initManager(MapDimension.values()[dimensionMapItem].getValue());
 				for (int i = 0; i < max; i++) {//Si aucun joueur n'est selectionné, par defaut il est CPU
 					PlayerType type;
 					if (togglePlayerTypeList.get(i).isSelected()) {
@@ -158,9 +160,21 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 	}
 	
 	private JPanel getNumberPlayerPanel() {
-		GridLayout gridLayout = new GridLayout(1, 2);
+		GridLayout gridLayout = new GridLayout(2, 2);
 		JPanel panel = new JPanel(gridLayout);
 
+		final JComboBox<String> sizeComboBox = new JComboBox<String>();
+		for (MapDimension d : MapDimension.values()) {
+			sizeComboBox.addItem(d.toString());
+		}
+		sizeComboBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				dimensionMapItem = sizeComboBox.getSelectedIndex();
+			}
+		});
+		sizeComboBox.setSelectedIndex(dimensionMapItem);
+		
 		JLabel label = new JLabel("Number of player : ");
 		String[] nbPlayer = { "1", "2", "3", "4" };
 		final JComboBox<String> comboBox = new JComboBox<String>(nbPlayer);
@@ -181,6 +195,10 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 				}
 			}
 		});
+		
+		
+		panel.add(new JLabel("Dimension of the map : "));
+		panel.add(sizeComboBox);
 		panel.add(label);
 		panel.add(comboBox);
 		return panel;
@@ -191,19 +209,7 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 		GridLayout gridLayout = new GridLayout(PlayerManager.NUMBER_OF_PLAYER_MAX, 3);
 		panel.setLayout(gridLayout);
 		for (int i = 0; i < PlayerManager.NUMBER_OF_PLAYER_MAX; i++) {
-			final JToggleButton button = new JToggleButton("Computer");
-			//button.setMargin(new Insets(-10, -10, -10, -10));
-			button.addChangeListener(new ChangeListener() {
-				
-				@Override
-				public void stateChanged(ChangeEvent arg0) {
-					if (button.isSelected()) {
-						button.setText("Human");
-					} else {
-						button.setText("Computer");
-					}
-				}
-			});
+			JToggleButton button = toggleButtonFactory();
 			togglePlayerTypeList.add(button);
 			panel.add(button);
 			JLabel lbl = new JLabel("Name : ");
@@ -219,6 +225,21 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 			}
 		}
 		return panel;
+	}
+	
+	private JToggleButton toggleButtonFactory() {
+		final JToggleButton button = new JToggleButton("Computer");
+		button.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent arg0) {
+				if (button.isSelected()) {
+					button.setText("Human");
+				} else {
+					button.setText("Computer");
+				}
+			}
+		});
+		return button;
 	}
 
 }

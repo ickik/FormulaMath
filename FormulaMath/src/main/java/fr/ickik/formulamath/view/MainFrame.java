@@ -29,7 +29,6 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -60,13 +59,11 @@ import fr.ickik.formulamath.model.player.PlayerManager;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.1.008, 24 apr. 2012.
+ * @version 0.1.009, 3 mai 2012.
  */
-public final class MainFrame {
+public final class MainFrame extends AbstractFormulaMathFrame {
 
 	private final JFrame mainFrame;
-	public static final String NAME = "FormulaMath";
-	public static final String VERSION = "0.2";
 	private int caseSize = 15;
 	private final MapManager mapManager;
 	private final PlayerManager playerManager;
@@ -81,7 +78,7 @@ public final class MainFrame {
 		this.controller = controller;
 		log.debug(mapManager.toString());
 		log.debug(mapManager.getRoadDirectionInformationList().toString());
-		mainFrame = new JFrame(getTitle());
+		mainFrame = getFrame();
 		ChuckNorrisTimer.getInstance(mainFrame);
 		this.playerManager = playerManager;
 		this.mapManager = mapManager;
@@ -117,7 +114,6 @@ public final class MainFrame {
 		mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		mainFrame.add(getSplitPane(), BorderLayout.CENTER);
 		//mainFrame.setJMenuBar(getMenuBar());
-		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.addWindowListener(new WindowListener() {
 			
 			@Override
@@ -149,7 +145,7 @@ public final class MainFrame {
 			@Override
 			public void windowActivated(WindowEvent arg0) {}
 		});
-		mainFrame.setVisible(true);
+		displayFrame();
 	}
 
 	private JSplitPane getSplitPane() {
@@ -811,14 +807,6 @@ public final class MainFrame {
 		help.addSeparator();
 		help.add(about);
 		return help;
-	}
-	
-	private void displayErrorMessage(String msg) {
-		JOptionPane.showMessageDialog(mainFrame, msg, getTitle() + " - ERROR!", JOptionPane.ERROR_MESSAGE);
-	}
-	
-	private void displayMessage(String msg) {
-		JOptionPane.showMessageDialog(mainFrame, msg, getTitle(), JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	private JMenuItem displayThemeMenu() {

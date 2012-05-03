@@ -14,7 +14,8 @@ import fr.ickik.formulamath.model.FormulaMathProperty;
 import fr.ickik.formulamath.model.PropertiesModel;
 
 /**
- * Abstract which define the default behavior of frames.
+ * Abstract which define the default behavior of frames. This abstract class
+ * contains common function for views.
  * @author Ickik
  * @version 0.1.004, 25 apr. 2012
  */
@@ -53,11 +54,9 @@ public abstract class AbstractFormulaMathFrame {
 	}
 	
 	private List<Image> getIconList() {
-		//ClassLoader cl = this.getClass().getClassLoader();
-		//Icon saveIcon  = new ImageIcon(cl.getResource("images/save.gif"));
-		//Icon cutIcon   = new ImageIcon(cl.getResource("images/cut.gif"));
 		ImageIcon icon = new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/FormulaMath_icon.png"));
-		return Arrays.asList(icon.getImage());
+		ImageIcon bigIcon = new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/FormulaMath_big_icon.png"));
+		return Arrays.asList(icon.getImage(), bigIcon.getImage());
 	}
 	
 	/**

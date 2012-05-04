@@ -63,7 +63,7 @@ enum FormulaMathProperty {
 
 		@Override
 		public String getDefaultValue() {
-			return "0.2";
+			return "0.2.1";
 		}
 	};
 	

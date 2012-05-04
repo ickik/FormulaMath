@@ -29,7 +29,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * and search the last release to update. It download and placed it in the right directory.
  * After downloading, it rename the jar file into the current jar file to start the application.
  * @author Ickik
- * @version 0.1.004, 3 mai 2012
+ * @version 0.1.005, 3 mai 2012
  */
 final class UpdateModel {
 
@@ -63,7 +63,6 @@ final class UpdateModel {
 				PropertiesModel.getSingleton().save();
 			} catch (IOException e) {}
 			fireUpdateListener(MAX_PERCENTAGE, "Your application is up to date");
-			renameFiles(v);
 			fireRestartListener();
 			restartApplication();
 		} else {
@@ -77,28 +76,6 @@ final class UpdateModel {
 			Desktop.getDesktop().open(new File("FormulaMath.jar"));
 		} catch(Exception exception) {
 			exception.printStackTrace();
-		}
-	}
-	
-	private void renameFiles(Version v) {
-		for (String[] s : v.getFileList()) {
-			renameFile(s[1]);
-		}
-	}
-	
-	private void renameFile(String fileName) {
-		File newVersion = new File(fileName);
-		String newFileName = fileName.substring(0,fileName.indexOf('-')) + fileName.substring(fileName.lastIndexOf('.'));
-		File currentVersion = new File("./" + newFileName);
-		File oldVersion = new File("./old.tmp");
-		if (newVersion.exists()) {
-			if (currentVersion.renameTo(oldVersion)) {
-				if (newVersion.renameTo(new File("./" + newFileName))) {
-					oldVersion.delete();
-				}
-			} else {
-				logger.debug("Problem to rename file");
-			}
 		}
 	}
 	
@@ -164,9 +141,9 @@ final class UpdateModel {
 			}		
 
 			destinationFile.flush();
-		} catch (MalformedURLException e) { 
+		} catch (MalformedURLException e) {
 			logger.error(e.getMessage());
-		} catch (IOException e) { 
+		} catch (IOException e) {
 			logger.error(e.getMessage());
 		} finally{
 			try {
@@ -219,6 +196,8 @@ final class UpdateModel {
 			ClassLoader classLoader = new URLClassLoader(urlArray);
 			Class<?> classe = Class.forName("fr.ickik.formulamath.view.AbstractFormulaMathFrame", false, classLoader);
 			Field field = classe.getDeclaredField("VERSION");
+			classe = null;
+			classLoader = null;
 			return (String) field.get(new String());
 		} catch (MalformedURLException e) {
 			logger.error("loadCurrentVersion : {}", e.getMessage());

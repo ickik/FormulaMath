@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.GridLayout;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -16,12 +15,12 @@ import java.net.URI;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import fr.ickik.formulamath.FormulaMathException;
+import fr.ickik.formulamath.controler.FormulaMathController;
 import fr.ickik.formulamath.model.ChuckNorrisTimer;
 import fr.ickik.formulamath.model.FormulaMathProperty;
 import fr.ickik.formulamath.model.PropertiesModel;
@@ -34,32 +33,26 @@ import fr.ickik.formulamath.model.PropertiesModel;
  */
 public final class AboutFrame extends AbstractFormulaMathFrame {
 
-	private final JFrame mainFrame;
-	private final JFrame frame;
+	private final FormulaMathController controller;
 	
-	private AboutFrame(JFrame mainFrame) {
-		this.mainFrame = mainFrame;
-		mainFrame.setEnabled(false);
-		frame = new JFrame();
-		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		frame.add(createPanel(), BorderLayout.CENTER);
-		frame.add(createBellowPanel(), BorderLayout.SOUTH);
-		frame.pack();
-		centeredFrame(frame);
-		frame.setVisible(true);
+	public AboutFrame(FormulaMathController controller) {
+		this.controller = controller;
 	}
 	
-	/**
-	 * Return an instance of the About frame.
-	 * @return an instance of AboutFrame.
-	 */
-	public static AboutFrame getNewInstance(JFrame mainFrame) {
-		return new AboutFrame(mainFrame);
+	private void createFrame() {
+		getFrame().add(createPanel(), BorderLayout.CENTER);
+		getFrame().add(createBellowPanel(), BorderLayout.SOUTH);
+		displayFrame();
+		getFrame().setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+	}
+	
+	public void display() {
+		createFrame();
 	}
 	
 	private JPanel createPanel() {
 		JPanel panel = new JPanel(new GridLayout(4,2));
-		panel.add(new JLabel(frame.getTitle()));
+		panel.add(new JLabel(getFrame().getTitle()));
 		JLabel label = new JLabel("Developed by Ickik");
 		try {
 			label.addMouseListener(getMouseListener());
@@ -78,7 +71,7 @@ public final class AboutFrame extends AbstractFormulaMathFrame {
 	private JPanel createBellowPanel() {
 		JPanel buttonPanel = new JPanel();
 		JButton okButton = createOKButton();
-		frame.getRootPane().setDefaultButton(okButton);
+		getFrame().getRootPane().setDefaultButton(okButton);
 		BoxLayout boxLayout = new BoxLayout(buttonPanel, BoxLayout.Y_AXIS);
 		buttonPanel.setLayout(boxLayout);
 		okButton.setAlignmentX(0.5f);
@@ -105,12 +98,11 @@ public final class AboutFrame extends AbstractFormulaMathFrame {
 			public void mouseClicked(MouseEvent e) {
 				selected = !selected;
 				if (selected) {
-					ChuckNorrisTimer.getInstance().start();
+					controller.activateChuckNorrisTimer();
 				} else {
-					ChuckNorrisTimer.getInstance().stop();
+					controller.deactivateChuckNorrisTimer();
 				}
 				PropertiesModel.getSingleton().put(FormulaMathProperty.CHUCK_NORRIS_ACTIVATE, Boolean.toString(selected));
-				mainFrame.repaint();
 			}
 
 			@Override
@@ -124,30 +116,18 @@ public final class AboutFrame extends AbstractFormulaMathFrame {
 		};
 	}
 	
-	private void centeredFrame(JFrame frame) {
-		double w = frame.getWidth();
-		double h = frame.getHeight();
-		double l = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-		double l2 = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-		frame.setLocation((int) (l / 2 - w / 2), (int)(l2 / 2 - h / 2));
-	}
-	
 	private JButton createOKButton() {
 		JButton okButton = new JButton("OK");
 		okButton.setMnemonic(KeyEvent.VK_O);
-		frame.getRootPane().setDefaultButton(okButton);
+		getFrame().getRootPane().setDefaultButton(okButton);
 		okButton.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				quit();
+				controller.quitAboutFrame();
 			}
 		});
 		return okButton;
 	}
-	
-	private void quit() {
-		mainFrame.setEnabled(true);
-		frame.dispose();
-	}
+
 }

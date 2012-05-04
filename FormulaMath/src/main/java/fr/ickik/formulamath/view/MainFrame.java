@@ -799,7 +799,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		about.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				AboutFrame.getNewInstance(mainFrame);
+				controller.openAboutFrame();
 			}
 		});
 		

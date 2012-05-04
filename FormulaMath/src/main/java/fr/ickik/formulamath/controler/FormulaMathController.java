@@ -18,6 +18,7 @@ import fr.ickik.formulamath.model.map.MapManager;
 import fr.ickik.formulamath.model.map.MapManagerConstructor;
 import fr.ickik.formulamath.model.player.PlayerManager;
 import fr.ickik.formulamath.model.player.PlayerType;
+import fr.ickik.formulamath.view.AboutFrame;
 import fr.ickik.formulamath.view.ConfigurationFrame;
 import fr.ickik.formulamath.view.MainFrame;
 
@@ -25,7 +26,7 @@ import fr.ickik.formulamath.view.MainFrame;
  * Controller of the application in MVC design pattern. It receive event from the view to
  * transmit them to the appropriate model if needed.
  * @author Ickik
- * @version 0.1.001, 3 mai 2012
+ * @version 0.1.002, 4 mai 2012
  * @since 0.2
  */
 public final class FormulaMathController {
@@ -34,6 +35,7 @@ public final class FormulaMathController {
 	private final MapManager mapManager;
 	private final ConfigurationFrame configurationFrame;
 	private final MainFrame mainFrame;
+	private final AboutFrame aboutFrame;
 	private ExecutorCompletionService<MapManager> completion;
 	
 	private static final Logger log = LoggerFactory.getLogger(FormulaMathController.class);
@@ -43,6 +45,7 @@ public final class FormulaMathController {
 		this.mapManager = mapManager;
 		configurationFrame = new ConfigurationFrame(this);
 		mainFrame = new MainFrame(playerManager, mapManager, this);
+		aboutFrame = new AboutFrame(this);
 	}
 	
 	public void initManager(int size) {
@@ -84,5 +87,23 @@ public final class FormulaMathController {
 		log.debug("creation of main frame");
 		mainFrame.display();
 		ChuckNorrisTimer.getInstance().addChuckNorrisListener(mainFrame);
+	}
+	
+	public void openAboutFrame() {
+		mainFrame.disable();
+		aboutFrame.display();
+	}
+
+	public void quitAboutFrame() {
+		mainFrame.enable();
+		aboutFrame.close();
+	}
+	
+	public void activateChuckNorrisTimer() {
+		ChuckNorrisTimer.getInstance().start();
+	}
+	
+	public void deactivateChuckNorrisTimer() {
+		ChuckNorrisTimer.getInstance().stop();
 	}
 }

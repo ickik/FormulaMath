@@ -98,4 +98,12 @@ public abstract class AbstractFormulaMathFrame {
 			
 		}
 	}
+	
+	public void disable() {
+		frame.setEnabled(false);
+	}
+	
+	public void enable() {
+		frame.setEnabled(true);
+	}
 }

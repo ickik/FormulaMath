@@ -57,11 +57,13 @@ final class UpdateModel {
 		if (isUpdateAvailable()) {
 			fireUpdateListener(UPDATE_AVAILABLE_PERCENTAGE, "Search new version");
 			Version v = getNextVersion();
-			downloadFiles(v);
-			PropertiesModel.getSingleton().put(FormulaMathProperty.VERSION, v.getVersion());
-			try {
-				PropertiesModel.getSingleton().save();
-			} catch (IOException e) {}
+			if (v != null) {
+				downloadFiles(v);
+				PropertiesModel.getSingleton().put(FormulaMathProperty.VERSION, v.getVersion());
+				try {
+					PropertiesModel.getSingleton().save();
+				} catch (IOException e) {}
+			}
 			fireUpdateListener(MAX_PERCENTAGE, "Your application is up to date");
 			fireRestartListener();
 			restartApplication();
@@ -163,6 +165,9 @@ final class UpdateModel {
 
 	private boolean isUpdateAvailable() {
 		Version v = getNextVersion();
+		if (v == null) {
+			return false;
+		}
 		logger.debug("next version is {}", v.getVersion());
 		boolean isUpdateAvailable = v.getVersion().compareTo(getCurrentVersion()) > 0;
 		logger.debug("{} is available ? {}", isUpdateAvailable);
@@ -171,6 +176,9 @@ final class UpdateModel {
 	
 	private Version getNextVersion() {
 		String currentVersion = getCurrentVersion();
+		if (versionList.isEmpty()) {
+			return null;
+		}
 		for(Version v : versionList) {
 			logger.debug("{} compareto {} = {}", new Object[]{v.getVersion(), currentVersion, v.getVersion().compareTo(currentVersion)});
 			if (v.getVersion().compareTo(currentVersion) > 0) {

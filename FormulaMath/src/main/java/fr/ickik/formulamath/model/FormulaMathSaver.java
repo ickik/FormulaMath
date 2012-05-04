@@ -12,6 +12,12 @@ import java.util.Map;
 import fr.ickik.formulamath.model.map.Field;
 import fr.ickik.formulamath.model.map.MapManager;
 
+/**
+ * This model saves and load map to permit the player to replay maps.
+ * @author Ickik
+ * @version 0.1.000, 4 mai 2012
+ * @since 0.2
+ */
 public final class FormulaMathSaver {
 
 	private final Map<Integer, Field> valueFieldMap = new HashMap<Integer, Field>();

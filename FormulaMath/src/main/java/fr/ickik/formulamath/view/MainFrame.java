@@ -51,7 +51,6 @@ import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Position;
 import fr.ickik.formulamath.entity.Vector;
 import fr.ickik.formulamath.model.CaseModel;
-import fr.ickik.formulamath.model.FormulaMathSaver;
 import fr.ickik.formulamath.model.map.Field;
 import fr.ickik.formulamath.model.map.MapManager;
 import fr.ickik.formulamath.model.player.PlayerManager;
@@ -709,7 +708,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				int result = fileChooser.showSaveDialog(mainFrame);
 				if (result == JFileChooser.APPROVE_OPTION) {
 					try {
-						FormulaMathSaver.getInstance().saveMap(mapManager, fileChooser.getSelectedFile());
+						controller.saveMap(fileChooser.getSelectedFile());
 					} catch (IOException e) {
 						log.error("The map could not be saved : {}", e.getMessage());
 						displayErrorMessage("The map could not be saved");
@@ -728,7 +727,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				int result = fileChooser.showOpenDialog(mainFrame);
 				if (result == JFileChooser.APPROVE_OPTION) {
 					try {
-						FormulaMathSaver.getInstance().loadMap(fileChooser.getSelectedFile());
+						controller.loadMap(fileChooser.getSelectedFile());
 					} catch (IOException e) {
 						log.error("The map could not be loaded : {}", e.getMessage());
 						displayErrorMessage("The map could not be loaded");

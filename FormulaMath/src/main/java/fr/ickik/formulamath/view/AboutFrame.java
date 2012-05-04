@@ -21,9 +21,6 @@ import javax.swing.WindowConstants;
 
 import fr.ickik.formulamath.FormulaMathException;
 import fr.ickik.formulamath.controler.FormulaMathController;
-import fr.ickik.formulamath.model.ChuckNorrisTimer;
-import fr.ickik.formulamath.model.FormulaMathProperty;
-import fr.ickik.formulamath.model.PropertiesModel;
 
 /**
  * This class only get an instance of the AboutServer. The about
@@ -34,9 +31,11 @@ import fr.ickik.formulamath.model.PropertiesModel;
 public final class AboutFrame extends AbstractFormulaMathFrame {
 
 	private final FormulaMathController controller;
+	private boolean isChuckNorrisTimerActivated;
 	
-	public AboutFrame(FormulaMathController controller) {
+	public AboutFrame(FormulaMathController controller, boolean isChuckNorrisTimerActivated) {
 		this.controller = controller;
+		this.isChuckNorrisTimerActivated = isChuckNorrisTimerActivated;
 	}
 	
 	private void createFrame() {
@@ -92,17 +91,15 @@ public final class AboutFrame extends AbstractFormulaMathFrame {
 	
 	private MouseListener getMouseListener() throws FormulaMathException {
 		return new MouseListener() {
-			private boolean selected = ChuckNorrisTimer.getInstance().isRunning();
-			
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				selected = !selected;
-				if (selected) {
+				isChuckNorrisTimerActivated = !isChuckNorrisTimerActivated;
+				if (isChuckNorrisTimerActivated) {
 					controller.activateChuckNorrisTimer();
 				} else {
 					controller.deactivateChuckNorrisTimer();
 				}
-				PropertiesModel.getSingleton().put(FormulaMathProperty.CHUCK_NORRIS_ACTIVATE, Boolean.toString(selected));
 			}
 
 			@Override

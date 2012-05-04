@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import fr.ickik.formulamath.FormulaMathException;
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.model.ChuckNorrisTimer;
+import fr.ickik.formulamath.model.FormulaMathProperty;
+import fr.ickik.formulamath.model.FormulaMathSaver;
 import fr.ickik.formulamath.model.PropertiesModel;
 import fr.ickik.formulamath.model.map.MapDimension;
 import fr.ickik.formulamath.model.map.MapManager;
@@ -47,7 +49,7 @@ public final class FormulaMathController {
 		configurationFrame = new ConfigurationFrame(this);
 		mainFrame = new MainFrame(playerManager, mapManager, this);
 		this.playerManager.addUpdateCaseListener(mainFrame);
-		aboutFrame = new AboutFrame(this);
+		aboutFrame = new AboutFrame(this, ChuckNorrisTimer.getInstance().isRunning());
 	}
 	
 	public void initManager(int size) {
@@ -102,11 +104,15 @@ public final class FormulaMathController {
 	}
 	
 	public void activateChuckNorrisTimer() {
+		log.debug("Activate Chuck Noris Timer");
 		ChuckNorrisTimer.getInstance().start();
+		PropertiesModel.getSingleton().put(FormulaMathProperty.CHUCK_NORRIS_ACTIVATE, Boolean.toString(true));
 	}
 	
 	public void deactivateChuckNorrisTimer() {
+		log.debug("Deactivate Chuck Noris Timer");
 		ChuckNorrisTimer.getInstance().stop();
+		PropertiesModel.getSingleton().put(FormulaMathProperty.CHUCK_NORRIS_ACTIVATE, Boolean.toString(false));
 	}
 	
 	public void saveProperties() throws FormulaMathException {
@@ -117,5 +123,25 @@ public final class FormulaMathController {
 			log.error("Error saving properties for quiting : {} ", e.getMessage());
 			throw new FormulaMathException("Error during saving properties file");
 		}
+	}
+	
+	public void saveMap(File saveFile) throws IOException {
+		/*try {
+			FormulaMathSaver.getInstance().saveMap(mapManager, saveFile);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		FormulaMathSaver.getInstance().saveMap(mapManager, saveFile);
+	}
+	
+	public void loadMap(File loadFile) throws IOException {
+		/*try {
+			FormulaMathSaver.getInstance().loadMap(loadFile);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		FormulaMathSaver.getInstance().loadMap(loadFile);
 	}
 }

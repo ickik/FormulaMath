@@ -447,12 +447,14 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 
 			@Override
 			public void updateEndGamePanel(Player player) {
+				displayMessage(player.getName() + "(" + player.getId() + ") win the game is finished");
 				play.setText("End");
 				removeButtonListener(play);
 				play.addActionListener(getEndGameListener());
 				panel.removeAll();
-				panel.add(getFinishLabel());
+				panel.add(getFinishLabel(player));
 				panel.validate();
+				System.exit(0);
 			}
 		});
 		
@@ -530,8 +532,8 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		};
 	}
 	
-	private JLabel getFinishLabel() {
-		JLabel label = new JLabel("You win the game is finished");
+	private JLabel getFinishLabel(Player player) {
+		JLabel label = new JLabel(player.getName() + "(" + player.getId() + ") win the game is finished");
 		return label;
 	}
 

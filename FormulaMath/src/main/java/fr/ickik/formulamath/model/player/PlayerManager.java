@@ -212,7 +212,7 @@ public final class PlayerManager {
 			Vector vector = null;
 			log.debug("AI rest length of the vector:{}", len);
 			log.trace("Orientation: {}", r.getOrientation());
-			if ((len == 1 || len == 0) && (p.getVector().getX() == 1 ||  p.getVector().getX() == -1 || p.getVector().getY() == 1 || p.getVector().getY() == -1)) {
+			if ((Math.abs(len) == 1 || len == 0) && (p.getVector().getX() == 1 ||  p.getVector().getX() == -1 || p.getVector().getY() == 1 || p.getVector().getY() == -1)) {
 				RoadDirectionInformation nextRoadDirection;
 				if (mapManager.getRoadDirectionInformationList().size() > roadPosition + 1) {
 					nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition + 1);
@@ -353,6 +353,7 @@ public final class PlayerManager {
 						CaseModel model = mapManager.getCase(p.getPosition().getY() - j, p.getPosition().getX() + i);
 						if (model.getField() == Field.FINISHING_LINE) {
 							lastPlay(new Vector(i, j));
+							fireEndGameListener();
 							return;
 						}
 					}
@@ -688,8 +689,8 @@ public final class PlayerManager {
 
 	private void fireEndGameListener() {
 		for (UpdateCaseListener u : updateCaseListenerList) {
-			//u.updateEndGamePanel();
-			System.exit(0);
+			u.updateEndGamePanel(getCurrentPlayer());
+			//System.exit(0);
 		}
 	}
 	

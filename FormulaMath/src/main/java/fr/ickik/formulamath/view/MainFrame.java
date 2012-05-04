@@ -50,8 +50,8 @@ import fr.ickik.formulamath.controler.UpdateCaseListener;
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Position;
 import fr.ickik.formulamath.entity.Vector;
+import fr.ickik.formulamath.model.CaseModel;
 import fr.ickik.formulamath.model.FormulaMathSaver;
-import fr.ickik.formulamath.model.PropertiesModel;
 import fr.ickik.formulamath.model.map.Field;
 import fr.ickik.formulamath.model.map.MapManager;
 import fr.ickik.formulamath.model.player.PlayerManager;
@@ -61,7 +61,7 @@ import fr.ickik.formulamath.model.player.PlayerManager;
  * @author Ickik.
  * @version 0.1.010, 4 mai 2012.
  */
-public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener {
+public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
 	private final JFrame mainFrame;
 	private int caseSize = 15;
@@ -73,6 +73,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	private static final int MIN_ZOOM_SIZE = 10;
 	private static final int MAX_ZOOM_SIZE = 50;
 	private final FormulaMathController controller;
+	private static final int MAP_MARGIN = 20;
 	
 	public MainFrame(PlayerManager playerManager, MapManager mapManager, FormulaMathController controller) {
 		this.controller = controller;
@@ -82,22 +83,22 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		caseArrayList = new ArrayList<List<JCase>>(mapManager.getMapSize() + 20);
 	}
 	
-	public void display() {
-		initMap();
+	public void display(List<List<CaseModel>> carte) {
+		initMap(carte);
 		createMainFrame();
 	}
 	
-	private void initMap() {
-		int sideSize = mapManager.getMapSize() + 20;
+	private void initMap(List<List<CaseModel>> carte) {
+		int sideSize = carte.size() + MAP_MARGIN;
 		int x = 0;
 		int y = 0;
-		int endOfMapIndex = sideSize - 10;
+		int endOfMapIndex = sideSize - (MAP_MARGIN / 2);
 		for (int i = 0; i < sideSize; i++) {
 			x = 0;
 			List<JCase> caseList = new ArrayList<JCase>(sideSize);
 			for (int j = 0; j < sideSize; j++) {
-				if (i >= 10 && i <= endOfMapIndex && j >= 10 && j <= endOfMapIndex) {
-					caseList.add(new JCase(caseSize, mapManager.getCase(y, x)));
+				if (i >= 10 && i < endOfMapIndex && j >= 10 && j < endOfMapIndex) {
+					caseList.add(new JCase(caseSize, carte.get(y).get(x)));
 					x++;
 				} else {
 					caseList.add(new JCase(caseSize, null));
@@ -131,11 +132,9 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			@Override
 			public void windowClosing(WindowEvent arg0) {
 				try {
-					log.debug("Closing window and saving properties");
-					PropertiesModel.getSingleton().save();
-				} catch (IOException e) {
-					log.error("Error saving properties for quiting : {} ", e.getMessage());
-					displayErrorMessage("Error during saving properties");
+					controller.saveProperties();
+				} catch (FormulaMathException e) {
+					displayErrorMessage(e.getMessage());
 				}
 			}
 			
@@ -150,21 +149,6 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 
 	private JSplitPane getSplitPane() {
 		JPanel trayPanel = getTrayPanel();
-		playerManager.addUpdateCaseListener(new UpdateCaseListener() {
-
-			public void updatePlayerCase(Player player) {
-				mainFrame.repaint();
-			}
-
-			@Override
-			public void updatePlayerPossibilities(Player player) {}
-
-			@Override
-			public void updateEndGamePanel(Player player) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
 		scrollPane = new JScrollPane(trayPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.getHorizontalScrollBar().setUnitIncrement(5);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(5);
@@ -213,7 +197,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		}
 		for (int i = 0; i < positionList.size(); ) {
 			Position p = positionList.get(i);
-			if (mapManager.getCase(p.getY(), p.getX()).isOccuped()) {
+			if (caseArrayList.get(p.getY() + (MAP_MARGIN / 2)).get(p.getX() + (MAP_MARGIN / 2)).getModel().isOccuped()) {
 				positionList.remove(i);
 			} else {
 				solution[i].setText("( " + Integer.toString(p.getX()) + " , " + Integer.toString((mapManager.getMapSize() - p.getY()) - 1) + " )");
@@ -240,7 +224,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 					displayMessage(playerManager.getCurrentPlayer().toString());
 					for (int i = 0; i < positionList.size(); ) {
 						Position p = positionList.get(i);
-						if (mapManager.getCase(p.getY(), p.getX()).isOccuped()) {
+						if (caseArrayList.get(p.getY() + (MAP_MARGIN / 2)).get(p.getX() + (MAP_MARGIN / 2)).getModel().isOccuped()) {
 							positionList.remove(i);
 						} else {
 							solution[i].setText("( " + Integer.toString(p.getX()) + " , " + Integer.toString((mapManager.getMapSize() - p.getY()) - 1) + " )");
@@ -693,7 +677,6 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		for (List<JCase> caseList : caseArrayList) {
 			for (JCase c : caseList) {
 				if (c.getModel() != null && c.getModel().getField() == terrain) {
-					//if (shape.intersects(c.getRectangleShape())) {
 					if (shape.intersects(c.getX(), c.getY(), c.getWidth(), c.getHeight())) {
 						log.debug("intersection for shape and {} is {}", terrain, true);
 						return true;
@@ -760,9 +743,8 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					PropertiesModel.getSingleton().save();
-				} catch (IOException e) {
-					log.error("Error saving properties in quit menu : {} ", e.getMessage());
+					controller.saveProperties();
+				} catch (FormulaMathException e) {
 					displayErrorMessage("Error during saving properties");
 				}
 				System.exit(0);
@@ -849,5 +831,22 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	public void updateTitle(String title) {
 		getFrame().setTitle(title);
 		getFrame().validate();
+	}
+
+	@Override
+	public void updatePlayerCase(Player player) {
+		mainFrame.repaint();
+	}
+
+	@Override
+	public void updatePlayerPossibilities(Player player) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateEndGamePanel(Player player) {
+		// TODO Auto-generated method stub
+		
 	}
 }

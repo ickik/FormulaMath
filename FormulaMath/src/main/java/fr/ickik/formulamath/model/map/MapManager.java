@@ -36,11 +36,7 @@ public final class MapManager {
 	 * @param size the number of cases of square's side.
 	 */
 	public MapManager() {
-		log.trace("Constructor begin");
-		//log.debug("Size of the map defined : {}", size);
-		//this.mapSize = size;
-		//carte = new ArrayList<List<CaseModel>>(size);
-		log.trace("Constructor exiting");
+		log.trace("Constructor MapManager");
 	}
 
 	public void init(int size) {
@@ -805,11 +801,14 @@ public final class MapManager {
 	 * @return the case model associates or null if the coordinates are out of the map.
 	 */
 	public CaseModel getCase(int h, int w) {
-		//log.trace("getCase x={}, y={}", w, h);
 		if (h < 0 || h >= carte.size() || w < 0 || w >= carte.get(h).size()) {
 			return null;
 		}
 		return carte.get(h).get(w);
+	}
+	
+	public List<List<CaseModel>> getMap() {
+		return carte;
 	}
 
 	public List<Position> getStartingPositionList() {

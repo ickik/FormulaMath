@@ -93,8 +93,13 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 		return new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
+				if (!isHumanPlayer()) {
+					displayErrorMessage("No human player selected");
+					return;
+				}
 				controller.initManager(MapDimension.values()[dimensionMapItem].getValue());
 				log.trace("number of player selected : {}", numberOfPlayerSelected);
+				
 				for (int i = 0; i < numberOfPlayerSelected; i++) {//Si aucun joueur n'est selectionné, par defaut il est CPU
 					PlayerType type;
 					if (togglePlayerTypeList.get(i).isSelected()) {
@@ -106,6 +111,19 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 				}
 				controller.closeConfigurationFrame();
 			}};
+	}
+	
+	private boolean isHumanPlayer() {
+		int nbHuman = 0;
+		for (int i = 0; i < numberOfPlayerSelected; i++) {
+			if (togglePlayerTypeList.get(i).isSelected()) {
+				nbHuman++;
+			}
+		}
+		if (nbHuman == 0) {
+			return false;
+		}
+		return true;
 	}
 
 	private JPanel getButtonHelp() {

@@ -2,7 +2,6 @@ package fr.ickik.formulamath.view;
 
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,7 +29,7 @@ public abstract class AbstractFormulaMathFrame {
 	 */
 	public AbstractFormulaMathFrame() {
 		this.frame = new JFrame(getTitle());
-		saveVersion();
+		PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.VERSION);
 	}
 	
 	JFrame getFrame() {
@@ -84,19 +83,6 @@ public abstract class AbstractFormulaMathFrame {
 		double l = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		double l2 = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 		frame.setLocation((int) (l / 2 - w / 2), (int)(l2 / 2 - h / 2));
-	}
-	
-	/**
-	 * Save the version in the .property file. So if the user modifies the file,
-	 * the update will already functional.
-	 */
-	private void saveVersion() {
-		PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.VERSION);
-		try {
-			PropertiesModel.getSingleton().save();
-		} catch (IOException e) {
-			
-		}
 	}
 	
 	public void disable() {

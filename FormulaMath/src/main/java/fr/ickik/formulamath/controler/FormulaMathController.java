@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import fr.ickik.formulamath.FormulaMathException;
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.model.ChuckNorrisTimer;
+import fr.ickik.formulamath.model.PropertiesModel;
 import fr.ickik.formulamath.model.map.MapDimension;
 import fr.ickik.formulamath.model.map.MapManager;
 import fr.ickik.formulamath.model.map.MapManagerConstructor;
@@ -45,6 +46,7 @@ public final class FormulaMathController {
 		this.mapManager = mapManager;
 		configurationFrame = new ConfigurationFrame(this);
 		mainFrame = new MainFrame(playerManager, mapManager, this);
+		this.playerManager.addUpdateCaseListener(mainFrame);
 		aboutFrame = new AboutFrame(this);
 	}
 	
@@ -85,7 +87,7 @@ public final class FormulaMathController {
 		log.debug(mapManager.toString());
 		log.debug(mapManager.getRoadDirectionInformationList().toString());
 		log.debug("creation of main frame");
-		mainFrame.display();
+		mainFrame.display(mapManager.getMap());
 		ChuckNorrisTimer.getInstance().addChuckNorrisListener(mainFrame);
 	}
 	
@@ -105,5 +107,15 @@ public final class FormulaMathController {
 	
 	public void deactivateChuckNorrisTimer() {
 		ChuckNorrisTimer.getInstance().stop();
+	}
+	
+	public void saveProperties() throws FormulaMathException {
+		try {
+			log.debug("Closing window and saving properties");
+			PropertiesModel.getSingleton().save();
+		} catch (IOException e) {
+			log.error("Error saving properties for quiting : {} ", e.getMessage());
+			throw new FormulaMathException("Error during saving properties file");
+		}
 	}
 }

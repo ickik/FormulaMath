@@ -38,15 +38,11 @@ public final class AboutFrame extends AbstractFormulaMathFrame {
 		this.isChuckNorrisTimerActivated = isChuckNorrisTimerActivated;
 	}
 	
-	private void createFrame() {
+	public void display() {
 		getFrame().add(createPanel(), BorderLayout.CENTER);
 		getFrame().add(createBellowPanel(), BorderLayout.SOUTH);
 		displayFrame();
 		getFrame().setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-	}
-	
-	public void display() {
-		createFrame();
 	}
 	
 	private JPanel createPanel() {
@@ -121,7 +117,7 @@ public final class AboutFrame extends AbstractFormulaMathFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				controller.quitAboutFrame();
+				controller.closeAboutFrame();
 			}
 		});
 		return okButton;

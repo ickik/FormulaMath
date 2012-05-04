@@ -92,6 +92,7 @@ public abstract class AbstractFormulaMathFrame {
 	
 	public void enable() {
 		frame.setEnabled(true);
+		frame.toFront();
 	}
 	
 	public void updateLnF(String className) {

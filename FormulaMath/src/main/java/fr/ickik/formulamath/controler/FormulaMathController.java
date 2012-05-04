@@ -27,6 +27,7 @@ import fr.ickik.formulamath.model.player.PlayerType;
 import fr.ickik.formulamath.view.AboutFrame;
 import fr.ickik.formulamath.view.ConfigurationFrame;
 import fr.ickik.formulamath.view.MainFrame;
+import fr.ickik.formulamath.view.StatFrame;
 
 /**
  * Controller of the application in MVC design pattern. It receive event from the view to
@@ -42,6 +43,7 @@ public final class FormulaMathController {
 	private final ConfigurationFrame configurationFrame;
 	private final MainFrame mainFrame;
 	private final AboutFrame aboutFrame;
+	private final StatFrame statFrame;
 	private ExecutorCompletionService<MapManager> completion;
 	
 	private static final Logger log = LoggerFactory.getLogger(FormulaMathController.class);
@@ -54,6 +56,7 @@ public final class FormulaMathController {
 		mainFrame = new MainFrame(playerManager, mapManager, this);
 		this.playerManager.addUpdateCaseListener(mainFrame);
 		aboutFrame = new AboutFrame(this, ChuckNorrisTimer.getInstance().isRunning());
+		statFrame = new StatFrame(this);
 	}
 	
 	public void initManager(int size) {
@@ -102,9 +105,19 @@ public final class FormulaMathController {
 		aboutFrame.display();
 	}
 
-	public void quitAboutFrame() {
+	public void closeAboutFrame() {
 		mainFrame.enable();
 		aboutFrame.close();
+	}
+	
+	public void openStatFrame() {
+		mainFrame.disable();
+		statFrame.display(playerManager.getPlayerList(), playerManager.getFinishPositionList());
+	}
+	
+	public void closeStatFrame() {
+		mainFrame.enable();
+		statFrame.close();
 	}
 	
 	public void activateChuckNorrisTimer() {
@@ -166,4 +179,5 @@ public final class FormulaMathController {
 		}
 		//PropertiesModel.getSingleton().put(FormulaMathProperty., className);
 	}
+
 }

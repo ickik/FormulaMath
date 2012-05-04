@@ -17,7 +17,7 @@ import fr.ickik.formulamath.model.PropertiesModel;
  * Abstract which define the default behavior of frames. This abstract class
  * contains common function for views.
  * @author Ickik
- * @version 0.1.004, 25 apr. 2012
+ * @version 0.1.005, 4 mai 2012
  */
 public abstract class AbstractFormulaMathFrame {
 
@@ -37,7 +37,7 @@ public abstract class AbstractFormulaMathFrame {
 		return frame;
 	}
 
-	private String getTitle() {
+	public static String getTitle() {
 		return NAME + " " + VERSION;
 	}
 	
@@ -64,7 +64,7 @@ public abstract class AbstractFormulaMathFrame {
 	 * @param msg the message to display.
 	 */
 	void displayErrorMessage(String msg) {
-		JOptionPane.showMessageDialog(frame, msg, MainFrame.getTitle() + " - ERROR!", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(frame, msg, getTitle() + " - ERROR!", JOptionPane.ERROR_MESSAGE);
 	}
 	
 	/**
@@ -72,13 +72,13 @@ public abstract class AbstractFormulaMathFrame {
 	 * @param msg the message to display.
 	 */
 	void displayMessage(String msg) {
-		JOptionPane.showMessageDialog(frame, msg, MainFrame.getTitle(), JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(frame, msg, getTitle(), JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	/**
 	 * Centered the JFrame in the screen.
 	 */
-	void centeredFrame() {
+	private void centeredFrame() {
 		double w = frame.getWidth();
 		double h = frame.getHeight();
 		double l = Toolkit.getDefaultToolkit().getScreenSize().getWidth();

@@ -44,12 +44,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.ickik.formulamath.FormulaMathException;
+import fr.ickik.formulamath.controler.ChuckNorrisListener;
 import fr.ickik.formulamath.controler.FormulaMathController;
 import fr.ickik.formulamath.controler.UpdateCaseListener;
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Position;
 import fr.ickik.formulamath.entity.Vector;
-import fr.ickik.formulamath.model.ChuckNorrisTimer;
 import fr.ickik.formulamath.model.FormulaMathSaver;
 import fr.ickik.formulamath.model.PropertiesModel;
 import fr.ickik.formulamath.model.map.Field;
@@ -59,9 +59,9 @@ import fr.ickik.formulamath.model.player.PlayerManager;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.1.009, 3 mai 2012.
+ * @version 0.1.010, 4 mai 2012.
  */
-public final class MainFrame extends AbstractFormulaMathFrame {
+public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener {
 
 	private final JFrame mainFrame;
 	private int caseSize = 15;
@@ -76,13 +76,13 @@ public final class MainFrame extends AbstractFormulaMathFrame {
 	
 	public MainFrame(PlayerManager playerManager, MapManager mapManager, FormulaMathController controller) {
 		this.controller = controller;
-		log.debug(mapManager.toString());
-		log.debug(mapManager.getRoadDirectionInformationList().toString());
 		mainFrame = getFrame();
-		ChuckNorrisTimer.getInstance(mainFrame);
 		this.playerManager = playerManager;
 		this.mapManager = mapManager;
 		caseArrayList = new ArrayList<List<JCase>>(mapManager.getMapSize() + 20);
+	}
+	
+	public void display() {
 		initMap();
 		createMainFrame();
 	}
@@ -845,7 +845,9 @@ public final class MainFrame extends AbstractFormulaMathFrame {
 		}
 	}
 	
-	public static String getTitle() {
-		return NAME + " " + VERSION;
+	@Override
+	public void updateTitle(String title) {
+		getFrame().setTitle(title);
+		getFrame().validate();
 	}
 }

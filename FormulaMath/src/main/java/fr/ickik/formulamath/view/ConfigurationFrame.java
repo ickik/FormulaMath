@@ -34,7 +34,7 @@ import fr.ickik.formulamath.model.player.PlayerType;
  * The user can choose between Human and Computer players;
  * give a name to every player.
  * @author Ickik.
- * @version 0.2.000, 25 apr. 2012
+ * @version 0.2.001, 4 mai 2012
  */
 public class ConfigurationFrame extends AbstractFormulaMathFrame {
 
@@ -93,15 +93,9 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 		return new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
-				getFrame().dispose();
-				int max = 0;
-				for (int i = 0; i < numberOfPlayerSelected; i++) {
-					if (nameTextFieldList.get(i).isEnabled()) {
-						max = i + 1;
-					}
-				}
 				controller.initManager(MapDimension.values()[dimensionMapItem].getValue());
-				for (int i = 0; i < max; i++) {//Si aucun joueur n'est selectionné, par defaut il est CPU
+				log.trace("number of player selected : {}", numberOfPlayerSelected);
+				for (int i = 0; i < numberOfPlayerSelected; i++) {//Si aucun joueur n'est selectionné, par defaut il est CPU
 					PlayerType type;
 					if (togglePlayerTypeList.get(i).isSelected()) {
 						type = PlayerType.HUMAN;
@@ -116,7 +110,7 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 
 	private JPanel getButtonHelp() {
 		JPanel panel = new JPanel(new GridBagLayout());
-		JButton okButton = new JButton("Ok");
+		JButton okButton = new JButton("OK");
 		okButton.setMnemonic(KeyEvent.VK_O);
 		getFrame().getRootPane().setDefaultButton(okButton);
 		okButton.addActionListener(getOKActionListener());

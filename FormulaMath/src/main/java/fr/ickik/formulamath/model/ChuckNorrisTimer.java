@@ -1,36 +1,36 @@
 package fr.ickik.formulamath.model;
 
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.JFrame;
 import javax.swing.Timer;
 
-import fr.ickik.formulamath.FormulaMathException;
-import fr.ickik.formulamath.view.MainFrame;
+import fr.ickik.formulamath.controler.ChuckNorrisListener;
+import fr.ickik.formulamath.view.AbstractFormulaMathFrame;
 
 /**
  * Class which manages the timer that display a chuck norris fact every minutes (default) in
  * the title of the first frame given in argument.
  * @author Ickik
- * @version 0.1.000, 16 apr. 2012
+ * @version 0.1.001, 4 mai 2012
  */
 public final class ChuckNorrisTimer {
 
-	private static ChuckNorrisTimer chuckTimer;
+	private static ChuckNorrisTimer chuckTimer = new  ChuckNorrisTimer();
 	private final Timer timer;
-	private final JFrame frame;
+	private String title;
+	private final List<ChuckNorrisListener> chuckNorrisListenerList = new ArrayList<ChuckNorrisListener>();
 	
-	private ChuckNorrisTimer(final JFrame mainFrame) {
-		frame = mainFrame;
+	private ChuckNorrisTimer() {
 		if (PropertiesModel.getSingleton().getProperty(FormulaMathProperty.CHUCK_NORRIS_TIME).isEmpty()) {
 			PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.CHUCK_NORRIS_TIME);
 		}
 		timer = new Timer(Integer.parseInt(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.CHUCK_NORRIS_TIME)) * 60000, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				frame.setTitle(MainFrame.NAME + " " + MainFrame.VERSION + " - " + ChuckNorrisSingleton.getInstance().getRandomFact());
-				frame.validate();
+				generateTitle();
 			}
 		});
 		if (Boolean.getBoolean(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.CHUCK_NORRIS_ACTIVATE))) {
@@ -39,30 +39,33 @@ public final class ChuckNorrisTimer {
 			stop();
 		}
 	}
-
-	public static ChuckNorrisTimer getInstance(JFrame mainFrame) {
-		if (chuckTimer == null) {
-			chuckTimer = new ChuckNorrisTimer(mainFrame);
+	
+	public void addChuckNorrisListener(ChuckNorrisListener listener) {
+		chuckNorrisListenerList.add(listener);
+		listener.updateTitle(title);
+	}
+	
+	private void fireUpdateTitle() {
+		for (ChuckNorrisListener listener : chuckNorrisListenerList) {
+			listener.updateTitle(title);
 		}
+	}
+
+	public static ChuckNorrisTimer getInstance() {
 		return chuckTimer;
 	}
 	
-	public static ChuckNorrisTimer getInstance() throws FormulaMathException {
-		if (chuckTimer == null) {
-			throw new FormulaMathException("Illegal state of the timer. You should instantiate with a frame the first time");
-		}
-		return chuckTimer;
+	private void generateTitle() {
+		title = AbstractFormulaMathFrame.getTitle() + " - " + ChuckNorrisSingleton.getInstance().getRandomFact();
+		fireUpdateTitle();
 	}
 	
 	public void start() {
-		frame.setTitle(MainFrame.NAME + " " + MainFrame.VERSION + " - " + ChuckNorrisSingleton.getInstance().getRandomFact());
-		frame.validate();
 		timer.start();
+		generateTitle();
 	}
 	
 	public void stop() {
-		frame.setTitle(MainFrame.NAME + " " + MainFrame.VERSION);
-		frame.validate();
 		timer.stop();
 	}
 	

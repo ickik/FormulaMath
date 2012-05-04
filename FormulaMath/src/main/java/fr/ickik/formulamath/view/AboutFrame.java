@@ -30,9 +30,9 @@ import fr.ickik.formulamath.model.PropertiesModel;
  * This class only get an instance of the AboutServer. The about
  * frame resume the application (title, version, author, contact).
  * @author Ickik.
- * @version 0.1.003, 17 apr. 2012.
+ * @version 0.1.004, 4 mai 2012.
  */
-public final class AboutFrame {
+public final class AboutFrame extends AbstractFormulaMathFrame {
 
 	private final JFrame mainFrame;
 	private final JFrame frame;
@@ -59,7 +59,7 @@ public final class AboutFrame {
 	
 	private JPanel createPanel() {
 		JPanel panel = new JPanel(new GridLayout(4,2));
-		panel.add(new JLabel(MainFrame.getTitle()));
+		panel.add(new JLabel(frame.getTitle()));
 		JLabel label = new JLabel("Developed by Ickik");
 		try {
 			label.addMouseListener(getMouseListener());
@@ -104,15 +104,10 @@ public final class AboutFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				selected = !selected;
-				try {
-					if (selected) {
-						ChuckNorrisTimer.getInstance().start();
-					} else {
-						ChuckNorrisTimer.getInstance().stop();
-					}
-				} catch (FormulaMathException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				if (selected) {
+					ChuckNorrisTimer.getInstance().start();
+				} else {
+					ChuckNorrisTimer.getInstance().stop();
 				}
 				PropertiesModel.getSingleton().put(FormulaMathProperty.CHUCK_NORRIS_ACTIVATE, Boolean.toString(selected));
 				mainFrame.repaint();

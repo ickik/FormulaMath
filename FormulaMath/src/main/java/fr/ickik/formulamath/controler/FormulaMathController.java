@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.ickik.formulamath.FormulaMathException;
 import fr.ickik.formulamath.entity.Player;
+import fr.ickik.formulamath.model.ChuckNorrisTimer;
 import fr.ickik.formulamath.model.map.MapDimension;
 import fr.ickik.formulamath.model.map.MapManager;
 import fr.ickik.formulamath.model.map.MapManagerConstructor;
@@ -32,7 +33,7 @@ public final class FormulaMathController {
 	private final PlayerManager playerManager;
 	private final MapManager mapManager;
 	private final ConfigurationFrame configurationFrame;
-	private MainFrame mainFrame;
+	private final MainFrame mainFrame;
 	private ExecutorCompletionService<MapManager> completion;
 	
 	private static final Logger log = LoggerFactory.getLogger(FormulaMathController.class);
@@ -41,7 +42,7 @@ public final class FormulaMathController {
 		this.playerManager = playerManager;
 		this.mapManager = mapManager;
 		configurationFrame = new ConfigurationFrame(this);
-		//mainFrame = new MainFrame(playerManager, mapManager);
+		mainFrame = new MainFrame(playerManager, mapManager, this);
 	}
 	
 	public void initManager(int size) {
@@ -50,8 +51,6 @@ public final class FormulaMathController {
 		completion = new ExecutorCompletionService<MapManager>(executor);
 		completion.submit(new MapManagerConstructor(mapManager, size));
 		executor.shutdown();
-		//mapManager.init(size);
-		//mapManager.constructRoad();
 	}
 	
 	public void openHelpFile() throws FormulaMathException {
@@ -80,7 +79,10 @@ public final class FormulaMathController {
 			mapManager.init(MapDimension.MEDIUM.getValue());
 			mapManager.constructRoad();
 		}
+		log.debug(mapManager.toString());
+		log.debug(mapManager.getRoadDirectionInformationList().toString());
 		log.debug("creation of main frame");
-		mainFrame = new MainFrame(playerManager, mapManager, this);
+		mainFrame.display();
+		ChuckNorrisTimer.getInstance().addChuckNorrisListener(mainFrame);
 	}
 }

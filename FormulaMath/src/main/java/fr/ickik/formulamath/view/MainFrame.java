@@ -35,10 +35,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -800,7 +798,8 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					changeUIManager(lnfInfo.getClassName());
+//					changeUIManager(lnfInfo.getClassName());
+					controller.setLookAndFeel(lnfInfo.getClassName());
 				}
 			});
 //			if (PropertiesModel.getSingleton().getProperty(FormulaMathProperty.).equals(lnfInfo.getName())) {
@@ -810,21 +809,21 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		return item;
 	}
 	
-	private void changeUIManager(String className) {
-		try {
-			UIManager.setLookAndFeel(className);
-			SwingUtilities.updateComponentTreeUI(mainFrame);
-			//PropertiesModel.getSingleton().put(FormulaMathProperty., className);
-		} catch (ClassNotFoundException e) {
-			log.error("Class {} not found on system : {}", className, e.getMessage());
-		} catch (InstantiationException e) {
-			log.error("Class {} cannot be instantiate : {}", className, e.getMessage());
-		} catch (IllegalAccessException e) {
-			log.error("Class {} cannot be acces : {}", className, e.getMessage());
-		} catch (UnsupportedLookAndFeelException e) {
-			log.error("Look and Feel {} not supported by the system : {}", className, e.getMessage());
-		}
-	}
+//	private void changeUIManager(String className) {
+//		try {
+//			UIManager.setLookAndFeel(className);
+//			SwingUtilities.updateComponentTreeUI(mainFrame);
+//			//controller.setLookAndFeel(className);
+//		} catch (ClassNotFoundException e) {
+//			log.error("Class {} not found on system : {}", className, e.getMessage());
+//		} catch (InstantiationException e) {
+//			log.error("Class {} cannot be instantiate : {}", className, e.getMessage());
+//		} catch (IllegalAccessException e) {
+//			log.error("Class {} cannot be acces : {}", className, e.getMessage());
+//		} catch (UnsupportedLookAndFeelException e) {
+//			log.error("Look and Feel {} not supported by the system : {}", className, e.getMessage());
+//		}
+//	}
 	
 	@Override
 	public void updateTitle(String title) {

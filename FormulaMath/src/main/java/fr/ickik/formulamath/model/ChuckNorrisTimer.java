@@ -56,7 +56,11 @@ public final class ChuckNorrisTimer {
 	}
 	
 	private void generateTitle() {
-		title = AbstractFormulaMathFrame.getTitle() + " - " + ChuckNorrisSingleton.getInstance().getRandomFact();
+		if (isRunning()) {
+			title = AbstractFormulaMathFrame.getTitle() + " - " + ChuckNorrisSingleton.getInstance().getRandomFact();
+		} else {
+			title = AbstractFormulaMathFrame.getTitle();
+		}
 		fireUpdateTitle();
 	}
 	
@@ -67,6 +71,7 @@ public final class ChuckNorrisTimer {
 	
 	public void stop() {
 		timer.stop();
+		generateTitle();
 	}
 	
 	public boolean isRunning() {

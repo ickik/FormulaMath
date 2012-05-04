@@ -208,7 +208,6 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 			}
 		});
 		
-		
 		panel.add(new JLabel("Dimension of the map : "));
 		panel.add(sizeComboBox);
 		panel.add(label);
@@ -234,6 +233,8 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 				button.setEnabled(false);
 				lbl.setEnabled(false);
 				name.setEnabled(false);
+			} else {
+				button.setSelected(true);
 			}
 		}
 		return panel;

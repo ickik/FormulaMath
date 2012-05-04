@@ -8,6 +8,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import fr.ickik.formulamath.model.FormulaMathProperty;
 import fr.ickik.formulamath.model.PropertiesModel;
@@ -91,5 +92,9 @@ public abstract class AbstractFormulaMathFrame {
 	
 	public void enable() {
 		frame.setEnabled(true);
+	}
+	
+	public void updateLnF(String className) {
+		SwingUtilities.updateComponentTreeUI(frame);
 	}
 }

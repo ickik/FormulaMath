@@ -20,6 +20,10 @@ public class FormulaMathException extends Exception {
 		super();
 	}
 
+	/**
+	 * Constructor of the exception with an appropriate message.
+	 * @param message the message to add to the exception.
+	 */
 	public FormulaMathException(String message) {
 		super(message);
 	}

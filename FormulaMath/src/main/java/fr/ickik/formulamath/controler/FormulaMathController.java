@@ -7,6 +7,9 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +49,7 @@ public final class FormulaMathController {
 	public FormulaMathController(PlayerManager playerManager, MapManager mapManager) {
 		this.playerManager = playerManager;
 		this.mapManager = mapManager;
+		//UIManager.setLookAndFeel(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.));
 		configurationFrame = new ConfigurationFrame(this);
 		mainFrame = new MainFrame(playerManager, mapManager, this);
 		this.playerManager.addUpdateCaseListener(mainFrame);
@@ -143,5 +147,23 @@ public final class FormulaMathController {
 			e.printStackTrace();
 		}*/
 		FormulaMathSaver.getInstance().loadMap(loadFile);
+	}
+	
+	public void setLookAndFeel(String className) {
+		try {
+			UIManager.setLookAndFeel(className);
+			mainFrame.updateLnF(className);
+			configurationFrame.updateLnF(className);
+			aboutFrame.updateLnF(className);
+		} catch (ClassNotFoundException e) {
+			log.error("Class {} not found on system : {}", className, e.getMessage());
+		} catch (InstantiationException e) {
+			log.error("Class {} cannot be instantiate : {}", className, e.getMessage());
+		} catch (IllegalAccessException e) {
+			log.error("Class {} cannot be acces : {}", className, e.getMessage());
+		} catch (UnsupportedLookAndFeelException e) {
+			log.error("Look and Feel {} not supported by the system : {}", className, e.getMessage());
+		}
+		//PropertiesModel.getSingleton().put(FormulaMathProperty., className);
 	}
 }

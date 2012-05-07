@@ -9,7 +9,7 @@ import fr.ickik.formulamath.view.JCase;
  * Model of the {@link JCase} component. It stores the type of the field and
  * the id of the player if one is this case.
  * @author Ickik.
- * @version 0.1.002, 3 dec 2011.
+ * @version 0.1.003, 7 mai 2012.
  */
 public class CaseModel {
 
@@ -61,7 +61,7 @@ public class CaseModel {
 	 * @return true if a player is on this case or false otherwise.
 	 */
 	public boolean isOccuped() {
-		return idPlayer > 0;
+		return idPlayer != MapManager.EMPTY_PLAYER;
 	}
 	
 	@Override

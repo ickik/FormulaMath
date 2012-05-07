@@ -80,7 +80,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		mainFrame = getFrame();
 		this.playerManager = playerManager;
 		this.mapManager = mapManager;
-		caseArrayList = new ArrayList<List<JCase>>(mapManager.getMapSize() + 20);
+		caseArrayList = new ArrayList<List<JCase>>(mapManager.getMapSize() + MAP_MARGIN);
 	}
 	
 	public void display(List<List<CaseModel>> carte) {
@@ -93,11 +93,12 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		int x = 0;
 		int y = 0;
 		int endOfMapIndex = sideSize - (MAP_MARGIN / 2);
+		int marge = MAP_MARGIN / 2;
 		for (int i = 0; i < sideSize; i++) {
 			x = 0;
 			List<JCase> caseList = new ArrayList<JCase>(sideSize);
 			for (int j = 0; j < sideSize; j++) {
-				if (i >= 10 && i < endOfMapIndex && j >= 10 && j < endOfMapIndex) {
+				if (i >= marge && i < endOfMapIndex && j >= marge && j < endOfMapIndex) {
 					caseList.add(new JCase(caseSize, carte.get(y).get(x)));
 					x++;
 				} else {
@@ -105,7 +106,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				}
 			}
 			caseArrayList.add(caseList);
-			if (i >= 10 && i <= (sideSize - 10)) {
+			if (i >= marge && i <= (sideSize - marge)) {
 				y++;
 			}
 		}
@@ -476,6 +477,11 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				try {
+					controller.saveProperties();
+				} catch (FormulaMathException exception) {
+					displayErrorMessage(exception.getMessage());
+				}
 				System.exit(0);
 			}
 		};

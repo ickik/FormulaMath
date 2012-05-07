@@ -19,7 +19,7 @@ enum FormulaMathProperty {
 		
 		@Override
 		public String getDefaultValue() {
-			return "7";
+			return "14";
 		}
 	},
 	

@@ -33,7 +33,7 @@ import fr.ickik.formulamath.view.StatFrame;
  * Controller of the application in MVC design pattern. It receive event from the view to
  * transmit them to the appropriate model if needed.
  * @author Ickik
- * @version 0.1.002, 4 mai 2012
+ * @version 0.1.003, 7 mai 2012
  * @since 0.2
  */
 public final class FormulaMathController {
@@ -51,9 +51,9 @@ public final class FormulaMathController {
 	public FormulaMathController(PlayerManager playerManager, MapManager mapManager) {
 		this.playerManager = playerManager;
 		this.mapManager = mapManager;
-		//UIManager.setLookAndFeel(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.));
+		setLookAndFeel(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.THEME));
 		configurationFrame = new ConfigurationFrame(this);
-		mainFrame = new MainFrame(playerManager, mapManager, this);
+		mainFrame = new MainFrame(playerManager, mapManager, this, PropertiesModel.getSingleton().getProperty(FormulaMathProperty.THEME));
 		this.playerManager.addUpdateCaseListener(mainFrame);
 		aboutFrame = new AboutFrame(this, ChuckNorrisTimer.getInstance().isRunning());
 		statFrame = new StatFrame(this);
@@ -85,11 +85,13 @@ public final class FormulaMathController {
 	public void closeConfigurationFrame() {
 		log.debug("Close configuration frame");
 		configurationFrame.close();
+		
 		try {
 			log.trace("Wait completion service");
 			completion.take();
 		} catch (InterruptedException e) {
-			log.warn("ExecutorService has been interrupted : {}", e.getMessage());
+			log.warn("ExecutorService has been interrupted (or crashed) : {}", e.getMessage());
+			log.warn("Creation of default medium size map");
 			mapManager.init(MapDimension.MEDIUM.getValue());
 			mapManager.constructRoad();
 		}
@@ -135,6 +137,7 @@ public final class FormulaMathController {
 	public void saveProperties() throws FormulaMathException {
 		try {
 			log.debug("Closing window and saving properties");
+			PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.VERSION);
 			PropertiesModel.getSingleton().save();
 		} catch (IOException e) {
 			log.error("Error saving properties for quiting : {} ", e.getMessage());
@@ -165,9 +168,16 @@ public final class FormulaMathController {
 	public void setLookAndFeel(String className) {
 		try {
 			UIManager.setLookAndFeel(className);
-			mainFrame.updateLnF(className);
-			configurationFrame.updateLnF(className);
-			aboutFrame.updateLnF(className);
+			if (mainFrame != null) {
+				mainFrame.updateLnF(className);
+			}
+			if (configurationFrame != null) {
+				configurationFrame.updateLnF(className);
+			}
+			if (aboutFrame != null) {
+				aboutFrame.updateLnF(className);
+			}
+			PropertiesModel.getSingleton().put(FormulaMathProperty.THEME, className);
 		} catch (ClassNotFoundException e) {
 			log.error("Class {} not found on system : {}", className, e.getMessage());
 		} catch (InstantiationException e) {
@@ -177,7 +187,6 @@ public final class FormulaMathController {
 		} catch (UnsupportedLookAndFeelException e) {
 			log.error("Look and Feel {} not supported by the system : {}", className, e.getMessage());
 		}
-		//PropertiesModel.getSingleton().put(FormulaMathProperty., className);
 	}
 
 }

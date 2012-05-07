@@ -35,6 +35,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
@@ -56,7 +57,7 @@ import fr.ickik.formulamath.model.player.PlayerManager;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.1.010, 4 mai 2012.
+ * @version 0.1.011, 7 mai 2012.
  */
 public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
@@ -71,9 +72,11 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	private static final int MAX_ZOOM_SIZE = 50;
 	private final FormulaMathController controller;
 	private static final int MAP_MARGIN = 20;
+	private final String theme;
 	
-	public MainFrame(PlayerManager playerManager, MapManager mapManager, FormulaMathController controller) {
+	public MainFrame(PlayerManager playerManager, MapManager mapManager, FormulaMathController controller, String theme) {
 		this.controller = controller;
+		this.theme = theme;
 		mainFrame = getFrame();
 		this.playerManager = playerManager;
 		this.mapManager = mapManager;
@@ -111,7 +114,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	private void createMainFrame() {
 		mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		mainFrame.add(getSplitPane(), BorderLayout.CENTER);
-		//mainFrame.setJMenuBar(getMenuBar());
+		mainFrame.setJMenuBar(getMenuBar());
 		mainFrame.addWindowListener(new WindowListener() {
 			
 			@Override
@@ -758,6 +761,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	
 	private JMenu getConfigurationMenu() {
 		JMenu file = new JMenu("Configuration");
+		file.add(displayThemeMenu());
 		return file;
 	}
 	
@@ -790,8 +794,8 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		return help;
 	}
 	
-	private JMenuItem displayThemeMenu() {
-		JMenuItem item = new JMenuItem("Theme");
+	private JMenu displayThemeMenu() {
+		JMenu item = new JMenu("Theme");
 		ButtonGroup group = new ButtonGroup();
 		for (final LookAndFeelInfo lnfInfo : UIManager.getInstalledLookAndFeels()) {
 			JCheckBoxMenuItem checkBox = new JCheckBoxMenuItem(lnfInfo.getName());
@@ -800,32 +804,17 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-//					changeUIManager(lnfInfo.getClassName());
 					controller.setLookAndFeel(lnfInfo.getClassName());
+					SwingUtilities.updateComponentTreeUI(getFrame());
 				}
 			});
-//			if (PropertiesModel.getSingleton().getProperty(FormulaMathProperty.).equals(lnfInfo.getName())) {
-//				checkBox.setSelected(true);
-//			}
+			if (theme.equals(lnfInfo.getClassName())) {
+				checkBox.setSelected(true);
+			}
+			item.add(checkBox);
 		}
 		return item;
 	}
-	
-//	private void changeUIManager(String className) {
-//		try {
-//			UIManager.setLookAndFeel(className);
-//			SwingUtilities.updateComponentTreeUI(mainFrame);
-//			//controller.setLookAndFeel(className);
-//		} catch (ClassNotFoundException e) {
-//			log.error("Class {} not found on system : {}", className, e.getMessage());
-//		} catch (InstantiationException e) {
-//			log.error("Class {} cannot be instantiate : {}", className, e.getMessage());
-//		} catch (IllegalAccessException e) {
-//			log.error("Class {} cannot be acces : {}", className, e.getMessage());
-//		} catch (UnsupportedLookAndFeelException e) {
-//			log.error("Look and Feel {} not supported by the system : {}", className, e.getMessage());
-//		}
-//	}
 	
 	@Override
 	public void updateTitle(String title) {

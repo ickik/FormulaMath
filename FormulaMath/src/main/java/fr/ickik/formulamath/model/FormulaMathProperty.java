@@ -6,7 +6,7 @@ import fr.ickik.formulamath.view.AbstractFormulaMathFrame;
  * This enum lists all properties of the property file. It is used to store
  * player's data.
  * @author Ickik.
- * @version 0.1.004, 23 apr. 2012.
+ * @version 0.1.005, 7 mai 2012.
  */
 public enum FormulaMathProperty {
 
@@ -87,7 +87,10 @@ public enum FormulaMathProperty {
 		
 	},
 	
-	/*THEME {
+	/**
+	 * The theme of the UIManager. The theme available are depending on OS.
+	 */
+	THEME {
 		@Override
 		public String toString() {
 			return "formulamath.theme";
@@ -95,9 +98,9 @@ public enum FormulaMathProperty {
 		
 		@Override
 		public String getDefaultValue() {
-			return "Metal";
+			return "javax.swing.plaf.metal.MetalLookAndFeel";
 		}
-	},*/
+	},
 	
 	/**
 	 * Server address to update.

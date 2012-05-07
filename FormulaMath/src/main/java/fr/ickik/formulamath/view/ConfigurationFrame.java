@@ -80,7 +80,7 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 		cancelAndQuit.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				getFrame().dispose();
+				close();
 				System.exit(0);
 			}
 		});
@@ -136,7 +136,7 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 		cancelAndQuit.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				getFrame().dispose();
+				close();
 				System.exit(0);
 			}
 		});

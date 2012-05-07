@@ -22,7 +22,7 @@ import fr.ickik.formulamath.model.PropertiesModel;
 public abstract class AbstractFormulaMathFrame {
 
 	public static final String NAME = "FormulaMath";
-	public static final String VERSION = "0.2.1";
+	public static final String VERSION = "0.2.2";
 	private final JFrame frame;
 	
 	/**
@@ -30,7 +30,6 @@ public abstract class AbstractFormulaMathFrame {
 	 */
 	public AbstractFormulaMathFrame() {
 		this.frame = new JFrame(getTitle());
-		PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.VERSION);
 	}
 	
 	JFrame getFrame() {
@@ -42,6 +41,7 @@ public abstract class AbstractFormulaMathFrame {
 	}
 	
 	public void close() {
+		PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.VERSION);
 		frame.dispose();
 	}
 	

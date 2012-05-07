@@ -2,8 +2,6 @@ package fr.ickik.updater;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.io.File;
-import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
@@ -12,7 +10,7 @@ import javax.swing.JProgressBar;
  * Frame displayed when an update is available. This frame is composed by a progress bar
  * that evolves with the download.
  * @author Patrick Allgeyer
- * @version 0.1.002, 29 mar. 2012
+ * @version 0.1.003, 7 mai 2012
  */
 final class UpdateFrame extends JFrame {
 
@@ -37,10 +35,10 @@ final class UpdateFrame extends JFrame {
 		setSize(new Dimension(xDimension,yDimension));
 		setUndecorated(true);
 		centeredFrame(this);
-		model.addUpdateListener(getUpdaterListener());
+		model.addUpdateListener(getUpdaterListener(model));
 	}
 	
-	private UpdaterListener getUpdaterListener() {
+	private UpdaterListener getUpdaterListener(final UpdateModel model) {
 		return new UpdaterListener() {
 
 			public void updateValue(int value, String msg) {
@@ -51,13 +49,6 @@ final class UpdateFrame extends JFrame {
 			public void start() {
 				bar.setString("The server will start");
 				waitDispose();
-				File currentVersion = new File("FormulaMath.jar");
-				try {
-					new ProcessBuilder("java -jar " + currentVersion.getName()).start();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 			}
 
 			public void restart() {

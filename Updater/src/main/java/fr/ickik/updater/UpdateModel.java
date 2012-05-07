@@ -1,5 +1,4 @@
 package fr.ickik.updater;
-import java.awt.Desktop;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,9 +26,9 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * The model which managed the update from a web server. It initializes the connection
  * and search the last release to update. It download and placed it in the right directory.
- * After downloading, it rename the jar file into the current jar file to start the application.
+ * The updater overrides all existing files and then start the application.
  * @author Ickik
- * @version 0.1.005, 3 mai 2012
+ * @version 0.1.006, 7 mai 2012
  */
 final class UpdateModel {
 
@@ -43,7 +42,7 @@ final class UpdateModel {
 	private static final int DOWNLOAD_PERCENTAGE = 75;
 	private static final int MAX_PERCENTAGE = 100;
 	private static final String xmlConfigurationFile = "versions.xml";
-	
+	public static final String APPLICATION = "FormulaMath.jar";
 	/**
 	 * Default constructor.
 	 */
@@ -66,19 +65,27 @@ final class UpdateModel {
 			}
 			fireUpdateListener(MAX_PERCENTAGE, "Your application is up to date");
 			fireRestartListener();
-			restartApplication();
+			startApplication();
 		} else {
 			fireUpdateListener(MAX_PERCENTAGE, "Your application is up to date");
 			fireStartListener();
+			startApplication();
 		}
 	}
 	
-	private void restartApplication() {
+	public void startApplication() {
+		File currentVersion = new File(APPLICATION);
 		try {
-			Desktop.getDesktop().open(new File("FormulaMath.jar"));
-		} catch(Exception exception) {
-			exception.printStackTrace();
+			new ProcessBuilder("java -jar " + currentVersion.getName()).start();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+//		try {
+//			Desktop.getDesktop().open(new File(APPLICATION));
+//		} catch(Exception exception) {
+//			exception.printStackTrace();
+//		}
 	}
 	
 	private void downloadFiles(Version v) {
@@ -164,6 +171,9 @@ final class UpdateModel {
 	}
 
 	private boolean isUpdateAvailable() {
+		if (versionList.isEmpty()) {
+			return false;
+		}
 		Version v = getNextVersion();
 		if (v == null) {
 			return false;

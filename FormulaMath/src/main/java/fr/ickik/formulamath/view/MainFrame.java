@@ -71,7 +71,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	private static final int MIN_ZOOM_SIZE = 10;
 	private static final int MAX_ZOOM_SIZE = 50;
 	private final FormulaMathController controller;
-	private static final int MAP_MARGIN = 20;
+	public static final int MAP_MARGIN = 20;
 	private final String theme;
 	
 	public MainFrame(PlayerManager playerManager, MapManager mapManager, FormulaMathController controller, String theme) {
@@ -173,10 +173,8 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	private JPanel getMenuPanel() {
 		final JPanel panel = new JPanel(new GridLayout(4, 1));
 		JButton play = new JButton("Play");
-		if (playerManager.existsHumanPlayer()) {
-			panel.add(getStartPanel(play));
-			panel.add(play);
-		}
+		panel.add(getStartPanel(play));
+		panel.add(play);
 		panel.add(getDirectionalPanel());
 		panel.add(getZoomPanel());
 		return panel;

@@ -22,7 +22,7 @@ import fr.ickik.formulamath.model.PropertiesModel;
 public abstract class AbstractFormulaMathFrame {
 
 	public static final String NAME = "FormulaMath";
-	public static final String VERSION = "0.2.2";
+	public static final String VERSION = "0.3";
 	private final JFrame frame;
 	
 	/**

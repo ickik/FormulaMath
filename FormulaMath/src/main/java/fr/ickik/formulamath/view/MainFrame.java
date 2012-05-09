@@ -57,7 +57,7 @@ import fr.ickik.formulamath.model.player.PlayerManager;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.1.011, 7 mai 2012.
+ * @version 0.1.012, 9 mai 2012.
  */
 public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
@@ -576,8 +576,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	}
 
 	private JPanel getDirectionalPanel() {
-		//JPanel panel = new JPanel(new GridLayout(3, 3));
-		JPanel panel = new JPanel(new BorderLayout());
+		JPanel panel = new JPanel(new GridLayout(3, 3));
 		JButton up = new JButton("↑");
 		up.addActionListener(new ActionListener() {
 			@Override
@@ -610,26 +609,25 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				scrollPane.getHorizontalScrollBar().getModel().setValue(scrollPane.getHorizontalScrollBar().getModel().getValue() + 40);
 			}
 		});
-//		panel.add(enabledButtonFactory();
 		JButton centered = new JButton("☼");
 		centered.addActionListener(getPlayerFocusListener());
-//		panel.add(enabledButtonFactory();
-		panel.add(up, BorderLayout.NORTH);
-//		panel.add(enabledButtonFactory();
-		panel.add(left, BorderLayout.WEST);
-		panel.add(right, BorderLayout.EAST);
-//		panel.add(enabledButtonFactory();
-		panel.add(down, BorderLayout.SOUTH);
-//		panel.add(enabledButtonFactory();
-		panel.add(centered, BorderLayout.CENTER);
+		panel.add(enabledButtonFactory());
+		panel.add(up);
+		panel.add(enabledButtonFactory());
+		panel.add(left);
+		panel.add(centered);
+		panel.add(right);
+		panel.add(enabledButtonFactory());
+		panel.add(down);
+		panel.add(enabledButtonFactory());
 		return panel;
 	}
 	
-//	private JButton enabledButtonFactory() {
-//		JButton button = new JButton();
-//		button.setEnabled(false);
-//		return button;
-//	}
+	private JButton enabledButtonFactory() {
+		JButton button = new JButton();
+		button.setEnabled(false);
+		return button;
+	}
 	
 	private ActionListener getPlayerFocusListener() {
 		return new ActionListener() {

@@ -34,7 +34,7 @@ import fr.ickik.formulamath.model.player.PlayerType;
  * The user can choose between Human and Computer players;
  * give a name to every player.
  * @author Ickik.
- * @version 0.2.001, 4 mai 2012
+ * @version 0.2.002, 12 mai 2012
  */
 public class ConfigurationFrame extends AbstractFormulaMathFrame {
 
@@ -53,6 +53,7 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 		this.controller = controller;
 		createMainFrame();
 		displayFrame();
+		getFrame().toFront();
 	}
 
 	private void createMainFrame() {

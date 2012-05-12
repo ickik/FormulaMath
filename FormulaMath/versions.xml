@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <versions>
 	<version>
-		<nom>0.2</nom>
+		<nom>0.2.1</nom>
 		<files>
 			<file>
-				<url>http://patrick.allgeyer.perso.sfr.fr/FormulaMath-0.2.jar
+				<url>http://patrick.allgeyer.perso.sfr.fr/FormulaMath-0.2.1.jar
 				</url>
-				<destination>./FormulaMath-0.2.jar</destination>
+				<destination>FormulaMath-0.2.1.jar</destination>
+			</file>
+		</files>
+		<nom>0.2.2</nom>
+		<files>
+			<file>
+				<url>http://patrick.allgeyer.perso.sfr.fr/FormulaMath-0.2.2.jar
+				</url>
+				<destination>FormulaMath-0.2.2.jar</destination>
 			</file>
 		</files>
 	</version>

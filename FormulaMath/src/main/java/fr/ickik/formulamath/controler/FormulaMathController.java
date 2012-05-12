@@ -51,6 +51,7 @@ public final class FormulaMathController {
 	private static final Logger log = LoggerFactory.getLogger(FormulaMathController.class);
 	
 	public FormulaMathController(PlayerManager playerManager, MapManager mapManager) {
+		propertiesCorrection();
 		this.playerManager = playerManager;
 		this.mapManager = mapManager;
 		setLookAndFeel(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.THEME));
@@ -59,6 +60,15 @@ public final class FormulaMathController {
 		this.playerManager.addUpdateCaseListener(mainFrame);
 		aboutFrame = new AboutFrame(this, ChuckNorrisTimer.getInstance().isRunning());
 		statFrame = new StatFrame(this);
+	}
+	
+	private void propertiesCorrection() {
+		PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.UPDATE_PERIOD);
+		try {
+			saveProperties();
+		} catch (FormulaMathException e) {
+			log.error("Error saving properties for correction : {} ", e.getMessage());
+		}
 	}
 	
 	public void initManager(int size) {

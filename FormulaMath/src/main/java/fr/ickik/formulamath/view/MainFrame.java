@@ -1,40 +1,28 @@
 package fr.ickik.formulamath.view;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.geom.Line2D;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -50,21 +38,25 @@ import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Position;
 import fr.ickik.formulamath.entity.Vector;
 import fr.ickik.formulamath.model.CaseModel;
-import fr.ickik.formulamath.model.map.Field;
 import fr.ickik.formulamath.model.map.MapManager;
 import fr.ickik.formulamath.model.player.PlayerManager;
 
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.1.012, 9 mai 2012.
+ * @version 0.2.000, 11 mai 2012.
  */
 public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
 	private final JFrame mainFrame;
+	private final JPanel gameMenuPanel;
+	private final JButton playButton;
 	private int caseSize = 15;
 	private final MapManager mapManager;
 	private final PlayerManager playerManager;
+	private final StartPositionChooserPanel startPositionChooserPanel;
+	private final PlayVectorChooserPanel playVectorChooserPanel;
+	private final FirstMovePanel firstMovePanel;
 	private static final Logger log = LoggerFactory.getLogger(MainFrame.class);
 	private JScrollPane scrollPane;
 	private List<List<JCase>> caseArrayList;
@@ -78,6 +70,11 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		this.controller = controller;
 		this.theme = theme;
 		mainFrame = getFrame();
+		gameMenuPanel = new JPanel();
+		playButton = new JButton("Play");
+		startPositionChooserPanel = new StartPositionChooserPanel(gameMenuPanel, playButton, controller);
+		firstMovePanel = new FirstMovePanel(gameMenuPanel, playButton, controller, mainFrame);
+		playVectorChooserPanel = new PlayVectorChooserPanel(gameMenuPanel, playButton, controller);
 		this.playerManager = playerManager;
 		this.mapManager = mapManager;
 		caseArrayList = new ArrayList<List<JCase>>(mapManager.getMapSize() + MAP_MARGIN);
@@ -86,6 +83,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	public void display(List<List<CaseModel>> carte) {
 		initMap(carte);
 		createMainFrame();
+		controller.chooseStartPosition();
 	}
 	
 	private void initMap(List<List<CaseModel>> carte) {
@@ -172,376 +170,11 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 
 	private JPanel getMenuPanel() {
 		final JPanel panel = new JPanel(new GridLayout(4, 1));
-		JButton play = new JButton("Play");
-		panel.add(getStartPanel(play));
-		panel.add(play);
+		panel.add(gameMenuPanel);
+		panel.add(playButton);
 		panel.add(getDirectionalPanel());
 		panel.add(getZoomPanel());
 		return panel;
-	}
-	
-	private JPanel getStartPanel(final JButton play) {
-		final JPanel panel = new JPanel(new GridLayout(mapManager.getStartingPositionList().size(), 1));
-		final JRadioButton[] solution = new JRadioButton[mapManager.getStartingPositionList().size()];
-		playerManager.initStartPosition();
-		final List<Position> positionList = new ArrayList<Position>(mapManager.getStartingPositionList());
-		ButtonGroup group = new ButtonGroup();
-		for (int i = 0; i < MapManager.ROAD_SIZE; i++) {
-			JRadioButton box = new JRadioButton("");
-			box.setEnabled(false);
-			box.setSelected(false);
-			group.add(box);
-			solution[i] = box;
-			panel.add(box);
-		}
-		for (int i = 0; i < positionList.size(); ) {
-			Position p = positionList.get(i);
-			if (caseArrayList.get(p.getY() + (MAP_MARGIN / 2)).get(p.getX() + (MAP_MARGIN / 2)).getModel().isOccuped()) {
-				positionList.remove(i);
-			} else {
-				solution[i].setText("( " + Integer.toString(p.getX()) + " , " + Integer.toString((mapManager.getMapSize() - p.getY()) - 1) + " )");
-				solution[i].setEnabled(true);
-				i++;
-			}
-		}
-		play.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int selected = getSelectedButton(solution);
-				if (selected == -1) {
-					return;
-				}
-				log.trace("Play button pushed, checkbox selected : {}", selected);
-				for (int i = 0; i < MapManager.ROAD_SIZE; i++) {
-					solution[i].setText("");
-					solution[i].setEnabled(false);
-				}
-				log.trace("checkbox disabled!");
-				playerManager.updateStartPositionPlayer(playerManager.getCurrentPlayer(), selected);
-				if (playerManager.initStartPosition()) {
-					displayMessage(playerManager.getCurrentPlayer().toString());
-					for (int i = 0; i < positionList.size(); ) {
-						Position p = positionList.get(i);
-						if (caseArrayList.get(p.getY() + (MAP_MARGIN / 2)).get(p.getX() + (MAP_MARGIN / 2)).getModel().isOccuped()) {
-							positionList.remove(i);
-						} else {
-							solution[i].setText("( " + Integer.toString(p.getX()) + " , " + Integer.toString((mapManager.getMapSize() - p.getY()) - 1) + " )");
-							solution[i].setEnabled(true);
-							i++;
-						}
-					}
-					for (int i = positionList.size(); i < MapManager.ROAD_SIZE; i++) {
-						solution[i].setText("");
-						solution[i].setEnabled(false);
-					}
-				} else {
-					removeButtonListener(play);
-					panel.removeAll();
-					getFirstStepPanel(play, panel);
-				}
-				
-			}
-		});
-		return panel;
-	}
-	
-	private void getFirstStepPanel(final JButton play, final JPanel panel) {
-		panel.setLayout(new GridLayout(2, 2));
-		panel.add(new JLabel("x"));
-		final JTextField xField = new JTextField();
-		xField.addKeyListener(getKeyListener(xField));
-		playerManager.initAIFirstMove();
-		panel.add(xField);
-		panel.add(new JLabel("y"));
-		final JTextField yField = new JTextField();
-		yField.addKeyListener(getKeyListener(yField));
-		panel.add(yField);
-		play.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				log.trace("First step action");
-				if (!checkFirstMovingValues(xField, yField)) {
-					displayErrorMessage("Values not correct");
-					return;
-				}
-				log.trace("values entered in the both textfield are correct");
-				int distance = (caseArrayList.size() - mapManager.getMapSize()) / 2;
-				int xMoving = getValue(xField);
-				int yMoving = getValue(yField);
-				log.debug("Vector ({}, {})", xMoving, yMoving);
-				int xTrayPanel = playerManager.getCurrentPlayer().getPosition().getX() + distance;
-				int yTrayPanel = playerManager.getCurrentPlayer().getPosition().getY() + distance;
-				log.debug("Player position on grid ({}, {})", xTrayPanel, yTrayPanel);
-				JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
-				log.debug("Test futur position on grid ({}, {})", (xTrayPanel + xMoving), (yTrayPanel - yMoving));
-				JCase c2 = caseArrayList.get(yTrayPanel - yMoving).get(xTrayPanel + xMoving);
-				log.debug("Futur position is occuped : {}", c2.getModel().isOccuped());
-				if (c2.getModel().isOccuped()) {
-					log.warn("Player {} on this case", c2.getModel().getIdPlayer());
-					displayErrorMessage("Player on it");
-					return;
-				}
-				Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
-				if (isGrassIntersection(line)) {
-					log.warn("The move intersect grass field");
-					displayErrorMessage("Your are in grass!!!!");
-					return;
-				}
-				log.trace("The player can move");
-				if (playerManager.initFirstMove(new Vector(xMoving, yMoving))) {
-					log.debug("next player is AI if it exists one");
-					if (playerManager.initAIFirstMove()) {
-						log.debug("AI has play, next player is human");
-						log.info("Next player is {}", playerManager.getCurrentPlayer().toString());
-						displayMessage(playerManager.getCurrentPlayer().toString());
-						xField.setText("");
-						yField.setText("");
-					}
-					log.debug("Display choice panel");
-					removeButtonListener(play);//Duplication
-					panel.removeAll();
-					getChoicePanel(play, panel);
-				} else {
-					log.debug("no AI player; Display choice panel");
-					removeButtonListener(play);
-					panel.removeAll();
-					getChoicePanel(play, panel);
-				}
-			}
-		});
-		panel.validate();
-	}
-	
-	private KeyListener getKeyListener(final JTextField textField) {
-		return new KeyListener() {
-
-			private final Pattern pattern = Pattern.compile("-{0,1}[\\d]+");
-
-			@Override
-			public void keyTyped(KeyEvent arg0) {}
-			
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-				if (pattern.matcher(textField.getText()).matches()) {
-					textField.setForeground(Color.GREEN);
-				} else {
-					textField.setForeground(Color.RED);
-				}
-			}
-			
-			@Override
-			public void keyPressed(KeyEvent arg0) {}
-		};	
-	}
-	
-	private boolean checkFirstMovingValues(JTextField xTextField, JTextField yTextField) {
-		Pattern pattern = Pattern.compile("-{0,1}[\\d]+");
-		Matcher xMatcher = pattern.matcher(xTextField.getText());
-		Matcher yMatcher = pattern.matcher(yTextField.getText());
-		return xMatcher.matches() && yMatcher.matches();
-	}
-	
-	private int getValue(JTextField xTextField) {
-		if ("".equals(xTextField)) {
-			return 0;
-		}
-		return Integer.parseInt(xTextField.getText());
-	}
-	
-	private void getChoicePanel(final JButton play, final JPanel panel) {
-		playerManager.AIPlay();
-		panel.setLayout(new GridLayout(5, 1));
-		final JCheckBox[] solution = new JCheckBox[5];
-		final List<Vector> vectorList = playerManager.getVectorsPossibilities(playerManager.getCurrentPlayer());
-		for (Vector v : vectorList) {
-			log.debug(v.toString());
-		}
-		ButtonGroup group = new ButtonGroup();
-		for (int i = 0; i < 5; i++) {
-			JCheckBox box = new JCheckBox("");
-			box.setEnabled(false);
-			box.setSelected(false);
-			group.add(box);
-			solution[i] = box;
-			panel.add(box);
-		}
-		
-		int distance = (caseArrayList.size() - mapManager.getMapSize()) / 2;
-		int xTrayPanel = playerManager.getCurrentPlayer().getPosition().getX() + distance;
-		int yTrayPanel = playerManager.getCurrentPlayer().getPosition().getY() + distance;
-		for (int i = 0; i < vectorList.size();) {
-			Vector v = vectorList.get(i);
-			JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
-			JCase c2 = caseArrayList.get(yTrayPanel - v.getY()).get(xTrayPanel + v.getX());
-			log.debug("solution : {}", vectorList.get(i).toString());
-			
-			Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
-			if (isGrassIntersection(line)) {
-				vectorList.remove(i);
-			} else {
-				solution[i].setEnabled(true);
-				log.debug("Solution displayed : {}", vectorList.get(i).toString());
-				solution[i].setText("( " + vectorList.get(i).getX() + ", " + vectorList.get(i).getY() + " )");
-				i++;
-			}
-		}
-		for (int i = vectorList.size(); i < 5; i++) {
-			solution[i].setText("");
-			solution[i].setEnabled(false);
-			solution[i].setSelected(false);
-		}
-		
-		playerManager.addUpdateCaseListener(new UpdateCaseListener() {
-			
-			@Override
-			public void updatePlayerPossibilities(Player player) {
-				vectorList.clear();
-				vectorList.addAll(playerManager.getVectorsPossibilities(player));
-				for (Vector v : vectorList) {
-					log.debug(v.toString());
-				}
-				int distance = (caseArrayList.size() - mapManager.getMapSize()) / 2;
-				int xTrayPanel = player.getPosition().getX() + distance;
-				int yTrayPanel = player.getPosition().getY() + distance;
-				for (int i = 0; i < vectorList.size();) {
-					Vector v = vectorList.get(i);
-					JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
-					JCase c2 = caseArrayList.get(yTrayPanel - v.getY()).get(xTrayPanel + v.getX());
-					
-					Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
-					if (isGrassIntersection(line)) {
-						log.debug("solution removed : {}", vectorList.get(i).toString());
-						vectorList.remove(i);
-					} else {
-						log.debug("solution displayed : {}", vectorList.get(i).toString());
-						i++;
-					}
-				}
-				if (vectorList.isEmpty()) {
-					displayErrorMessage("You lose\nNo possibility to play!!!");
-					//System.exit(0);
-				}
-				for (int i = 0; i < vectorList.size(); i++) {
-					Vector v = vectorList.get(i);
-					if (v != null) {
-						solution[i].setText("( " + v.getX() + ", " + v.getY() + " )");
-					} else {
-						solution[i].setText("");
-					}
-					solution[i].setEnabled(v != null);
-					solution[i].setSelected(false);
-				}
-				for (int i = vectorList.size(); i < 5; i++) {
-					solution[i].setText("");
-					solution[i].setEnabled(false);
-					solution[i].setSelected(false);
-				}
-				panel.revalidate();
-				if (playerManager.getNumberOfHumanPlayer() > 1) {
-					displayMessage(playerManager.getCurrentPlayer().getName());
-				}
-			}
-			
-			@Override
-			public void updatePlayerCase(Player player) {}
-
-			@Override
-			public void updateEndGamePanel(Player player) {
-				displayMessage(player.getName() + "(" + player.getId() + ") win the game is finished");
-				play.setText("End");
-				removeButtonListener(play);
-				play.addActionListener(getEndGameListener());
-				panel.removeAll();
-				panel.add(getFinishLabel(player));
-				panel.validate();
-				System.exit(0);
-			}
-		});
-		
-		play.addActionListener(getPlayActionListener(vectorList, solution));
-	}
-	
-	private void removeButtonListener(JButton button) {
-		ActionListener[] listenerArray = button.getActionListeners();
-		for (ActionListener l : listenerArray) {
-			button.removeActionListener(l);
-		}
-	}
-	
-	private ActionListener getEndGameListener() {
-		return new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					controller.saveProperties();
-				} catch (FormulaMathException exception) {
-					displayErrorMessage(exception.getMessage());
-				}
-				System.exit(0);
-			}
-		};
-	}
-	
-	private ActionListener getPlayActionListener(final List<Vector> vectorList, final JCheckBox[] solution) {
-		return new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				int selectedPossibility = getSelectedButton(solution);
-				if (selectedPossibility == -1) {
-					displayErrorMessage("No possibility selected");
-					return;
-				}
-				if (selectedPossibility > vectorList.size()) {
-					displayErrorMessage("Please select a vector");
-					return;
-				}
-				Vector vector = vectorList.get(selectedPossibility);
-				log.trace("Play button pushed, checkbox selected : {} => {}", selectedPossibility, vector);
-				Player player = playerManager.getCurrentPlayer();
-				log.trace("Current Player : {}", player);
-				int distance = (caseArrayList.size() - mapManager.getMapSize()) / 2;
-				JCase c = caseArrayList.get(player.getPosition().getY() + distance).get(player.getPosition().getX() + distance);
-				
-				int yEndCase = player.getPosition().getY() - vector.getY() + distance;
-				int xEndCase = player.getPosition().getX() + vector.getX() + distance;
-				if (xEndCase < 0) {
-					xEndCase = 0;
-				}
-				if (xEndCase >= mapManager.getMapSize()) {
-					xEndCase = mapManager.getMapSize() - 1;
-				}
-				
-				if (yEndCase < 0) {
-					yEndCase = 0;
-				}
-				if (yEndCase >= mapManager.getMapSize()) {
-					yEndCase = mapManager.getMapSize() - 1;
-				}
-				
-				JCase c2 = caseArrayList.get(yEndCase).get(xEndCase);
-				
-				Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
-				
-				if (isEndLineIntersection(line)) {
-					log.trace("{} win", player);
-					displayErrorMessage("you win --- end");
-					playerManager.lastPlay(vector);
-				}
-				
-				if (playerManager.play(vector)) {
-					for (JCheckBox cb : solution) {
-						cb.setSelected(false);
-					}
-				}
-			}
-		};
-	}
-	
-	private JLabel getFinishLabel(Player player) {
-		JLabel label = new JLabel(player.getName() + "(" + player.getId() + ") win the game is finished");
-		return label;
 	}
 
 	private JPanel getZoomPanel() {
@@ -655,41 +288,6 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			}
 		}
 		mainFrame.validate();
-	}
-	
-	private int getSelectedButton(JToggleButton[] buttonArray) {
-		int len = buttonArray.length;
-		for (int i = 0; i < len; i++) {
-			if (buttonArray[i].isSelected()) {
-				return i;
-			}
-		}
-		return -1;
-	}
-	
-	private boolean isGrassIntersection(Shape shape) {
-		log.debug("isGrassIntersection");
-		return checkIntersection(shape, Field.GRASS);
-	}
-	
-	private boolean isEndLineIntersection(Shape shape) {
-		log.debug("isEndLineIntersection {} {}", shape.getBounds().getLocation(), shape.getBounds().getSize());
-		return checkIntersection(shape, Field.FINISHING_LINE);
-	}
-	
-	private boolean checkIntersection(Shape shape, Field terrain) {
-		for (List<JCase> caseList : caseArrayList) {
-			for (JCase c : caseList) {
-				if (c.getModel() != null && c.getModel().getField() == terrain) {
-					if (shape.intersects(c.getX(), c.getY(), c.getWidth(), c.getHeight())) {
-						log.debug("intersection for shape and {} is {}", terrain, true);
-						return true;
-					}
-				}
-			}
-		}
-		log.debug("intersection for shape and {} is {}", terrain, false);
-		return false;
 	}
 	
 	private JMenuBar getMenuBar() {
@@ -825,7 +423,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	}
 
 	@Override
-	public void updatePlayerCase(Player player) {
+	public void updatePlayerCase() {
 		mainFrame.repaint();
 	}
 
@@ -836,8 +434,25 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	}
 
 	@Override
-	public void updateEndGamePanel(Player player) {
-		// TODO Auto-generated method stub
-		
+	public void displayPlayerStartingPossibilities(Player player, List<Position> startingPositionList, int mapSize) {
+		startPositionChooserPanel.construct(startingPositionList, mapSize);
+		displayMessage("Player " + player.getName() + " (" + player.getId() + ") must choose the start position");
+	}
+
+	@Override
+	public void displayPlayerFirstMove(Player player, int mapSize) {
+		firstMovePanel.construct(caseArrayList, player.getPosition(), mapSize);
+		displayMessage("Player " + player.getName() + " (" + player.getId() + ") must choose the first move");
+	}
+	
+	@Override
+	public void displayPlayerMovePossibilities(Player player, List<Vector> vectorList, int mapSize) {
+		playVectorChooserPanel.construct(player, vectorList, mapSize, caseArrayList);
+		displayMessage("Player " + player.getName() + " (" + player.getId() + ") must choose the next move");
+	}
+
+	@Override
+	public void updateEndGamePanel() {
+		displayMessage("message");
 	}
 }

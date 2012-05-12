@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import fr.ickik.formulamath.FormulaMathException;
 import fr.ickik.formulamath.entity.Player;
+import fr.ickik.formulamath.entity.Position;
+import fr.ickik.formulamath.entity.Vector;
 import fr.ickik.formulamath.model.ChuckNorrisTimer;
 import fr.ickik.formulamath.model.FormulaMathProperty;
 import fr.ickik.formulamath.model.FormulaMathSaver;
@@ -33,7 +35,7 @@ import fr.ickik.formulamath.view.StatFrame;
  * Controller of the application in MVC design pattern. It receive event from the view to
  * transmit them to the appropriate model if needed.
  * @author Ickik
- * @version 0.1.003, 7 mai 2012
+ * @version 0.1.004, 11 mai 2012
  * @since 0.2
  */
 public final class FormulaMathController {
@@ -187,6 +189,26 @@ public final class FormulaMathController {
 		} catch (UnsupportedLookAndFeelException e) {
 			log.error("Look and Feel {} not supported by the system : {}", className, e.getMessage());
 		}
+	}
+
+	public void chooseStartPosition() {
+		playerManager.initStartPosition();
+	}
+
+	public void startPosition(Position position) {
+		playerManager.updateStartPositionPlayer(position);
+	}
+
+	public void firstMove(Vector vector) {
+		playerManager.firstMove(vector);
+	}
+
+	public void play(Vector vector) {
+		playerManager.play(vector);
+	}
+
+	public void lastPlay(Vector vector) {
+		playerManager.lastPlay(vector);
 	}
 
 }

@@ -143,9 +143,6 @@ public final class PlayerManager {
 	}
 	
 	public void play(Vector vector) {
-		/*if (isWinner) {
-			return false;
-		}*/
 		Player p = getCurrentPlayer();
 		/*if (mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()) == null
 				|| mapManager.getCase(p.getPosition().getY() - vector.getY(), p.getPosition().getX() + vector.getX()) == null) {

@@ -11,14 +11,13 @@ import javax.swing.JComponent;
 
 import fr.ickik.formulamath.model.CaseModel;
 import fr.ickik.formulamath.model.map.Field;
-import fr.ickik.formulamath.model.player.PlayerManager;
 
 /**
  * Graphic component which represents a case in the map. Every side of the case
  * has the same size. A case is a shape (Rectangle) draw on the screen. The model
  * of the case defines the color of the case background.
  * @author Ickik.
- * @version 0.1.002, 19 mar 2012.
+ * @version 0.1.003, 15 mai 2012.
  */
 public class JCase extends JComponent {
 
@@ -29,6 +28,7 @@ public class JCase extends JComponent {
 
 	private Rectangle2D shape;
 	private final CaseModel model;
+	private static final Color[] colorList = new Color[] { Color.RED, Color.BLACK, Color.BLUE, Color.YELLOW };
 	
 	/**
 	 * Constructor of the component. The size in pixel must be parameterized and
@@ -87,7 +87,7 @@ public class JCase extends JComponent {
 			if (model.getIdPlayer() == 0) {
 				setBackground(model.getField().getColor());
 			} else {
-				setBackground(PlayerManager.getInstance().getColorById(model.getIdPlayer()));
+				setBackground(colorList[model.getIdPlayer()]);
 			}
 		} else {
 			setBackground(Color.WHITE);
@@ -116,12 +116,5 @@ public class JCase extends JComponent {
 		shape = new Rectangle2D.Double(0.0, 0.0, d.getWidth(), d.getHeight());
 		repaint();
 	}
-	
-	/**
-	 * Return the rectangle shape displayed on every JCase component.
-	 * @return the shape representing this component.
-	 */
-	/*public Rectangle2D getRectangleShape() {
-		return shape;
-	}*/
+
 }

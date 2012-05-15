@@ -1,6 +1,5 @@
 package fr.ickik.formulamath.model.player;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,7 +24,7 @@ import fr.ickik.formulamath.model.map.Orientation;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.2.000, 11 mai 2012.
+ * @version 0.2.001, 15 mai 2012.
  */
 public final class PlayerManager {
 
@@ -41,39 +40,15 @@ public final class PlayerManager {
 	 */
 	private final Map<Integer, Integer> playerRoadPosition = new HashMap<Integer, Integer>();
 	public static final int NUMBER_OF_PLAYER_MAX = 4;
-	private static final PlayerManager singleton = new PlayerManager();
 	private static final Logger log = LoggerFactory.getLogger(PlayerManager.class);
-
-	/**
-	 * Hidden constructor.
-	 */
-	private PlayerManager() {
-		playerList = new ArrayList<Player>(NUMBER_OF_PLAYER_MAX);
-		finishPositionList = new ArrayList<Player>(NUMBER_OF_PLAYER_MAX);
-		for (int i = 0; i < NUMBER_OF_PLAYER_MAX; i++) {
-			finishPositionList.add(null);
-		}
-	}
 	
-	private PlayerManager(MapManager mapManager) {
+	public PlayerManager(MapManager mapManager) {
 		this.mapManager = mapManager;
 		playerList = new ArrayList<Player>(NUMBER_OF_PLAYER_MAX);
 		finishPositionList = new ArrayList<Player>(NUMBER_OF_PLAYER_MAX);
 		for (int i = 0; i < NUMBER_OF_PLAYER_MAX; i++) {
 			finishPositionList.add(null);
 		}
-	}
-	
-	public void setMapManager(MapManager mapManager) {
-		this.mapManager = mapManager;
-	}
-
-	/**
-	 * Return the unique instance of the player manager.
-	 * @return the unique instance of the player manager.
-	 */
-	public static PlayerManager getInstance() {
-		return singleton;
 	}
 
 	/**
@@ -447,7 +422,6 @@ public final class PlayerManager {
 	}
 	
 	private void humanPlaying() {
-	//	fireUpdatePossibilitiesListener(getCurrentPlayer());
 		fireDisplayPlayerMovePossibilities();
 	}
 
@@ -670,15 +644,6 @@ public final class PlayerManager {
 		return playerList.get(indexPlayerGame);
 	}
 
-	/**
-	 * Get the color of the player depending the id of them.
-	 * @param idPlayer the id of the player.
-	 * @return the {@link Color} associates to the player.
-	 */
-	public Color getColorById(int idPlayer) {
-		return playerList.get(idPlayer - 1).getPlayerColor();
-	}
-
 	public void addUpdateCaseListener(UpdateCaseListener updateCaseListener) {
 		if (updateCaseListener == null) {
 			return;
@@ -705,28 +670,6 @@ public final class PlayerManager {
 		for (UpdateCaseListener u : updateCaseListenerList) {
 			u.updateEndGamePanel();
 		}
-	}
-	
-	/**
-	 * Return the number of human player in the game.
-	 * @return the number of human player in the game.
-	 */
-	public int getNumberOfHumanPlayer() {
-		int humanNb = 0;
-		for (Player p : getPlayerList()) {
-			if (p.getType() == PlayerType.HUMAN) {
-				humanNb++;
-			}
-		}
-		return humanNb;
-	}
-	
-	/**
-	 * Check if a human player exists and return true.
-	 * @return true if a human player exists, false otherwise.
-	 */
-	public boolean existsHumanPlayer() {
-		return getNumberOfHumanPlayer() >= 1;
 	}
 
 	/**

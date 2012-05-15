@@ -12,7 +12,7 @@ import fr.ickik.formulamath.model.player.PlayerType;
  * the name, the type of the player ({@link PlayerType}), a {@link Color},
  * a position and the last move.
  * @author Patrick Allgeyer.
- * @version 0.1.001, 20 mar. 2012.
+ * @version 0.1.002, 15 mai 2012.
  */
 public class Player {
 
@@ -25,7 +25,7 @@ public class Player {
 	private final PlayerType type;
 	private int playingCounter = 0;
 	private final List<Vector> movingList = new ArrayList<Vector>();
-	private static final Color[] colorList = new Color[] { Color.RED, Color.BLACK, Color.BLUE, Color.YELLOW };
+	
 
 	/**
 	 * Constructor of the Player, it needs the type of player and the
@@ -80,14 +80,6 @@ public class Player {
 	 */
 	public PlayerType getType() {
 		return type;
-	}
-
-	/**
-	 * Return the color of the player.
-	 * @return the color associates to the player.
-	 */
-	public Color getPlayerColor() {
-		return colorList[id - 1];
 	}
 
 	@Override

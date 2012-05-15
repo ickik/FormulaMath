@@ -9,7 +9,7 @@ import fr.ickik.formulamath.model.player.PlayerManager;
 /**
  * Main class which contains the main static method.
  * @author Ickik
- * @version 0.1.001, 13 apr. 2012
+ * @version 0.1.002, 15 mai 2012
  */
 public class FormulaMath {
 
@@ -25,8 +25,8 @@ public class FormulaMath {
 					return ;
 				}
 				MapManager mapManager = new MapManager();
-				PlayerManager.getInstance().setMapManager(mapManager);
-				FormulaMathController controller = new FormulaMathController(PlayerManager.getInstance(), mapManager);
+				PlayerManager playerManager = new PlayerManager(mapManager);
+				FormulaMathController controller = new FormulaMathController(playerManager, mapManager);
 			}
 		}.start();
 	}

@@ -21,7 +21,14 @@ import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Vector;
 import fr.ickik.formulamath.model.map.Field;
 
-public class PlayVectorChooserPanel {
+/**
+ * Panel creation class. It creates the panel for Human player to choose the
+ * start position on the starting line.
+ * @author Ickik
+ * @version 0.1.000, 14 mai 2012
+ * @since 0.3
+ */
+public final class PlayVectorChooserPanel {
 
 	private final JPanel panel;
 	private final JButton playButton;
@@ -35,6 +42,13 @@ public class PlayVectorChooserPanel {
 		this.controller = controller;
 	}
 	
+	/**
+	 * Construct the panel and display them into the main frame of the application.
+	 * @param player
+	 * @param vectorList
+	 * @param mapSize
+	 * @param caseArrayList
+	 */
 	public void construct(final Player player, final List<Vector> vectorList, final int mapSize,final List<List<JCase>> caseArrayList) {
 		panel.removeAll();
 		this.caseArrayList = caseArrayList;
@@ -58,7 +72,7 @@ public class PlayVectorChooserPanel {
 		}
 		
 		for (int i = 0; i < vectorList.size(); i++) {
-			JRadioButton box = new JRadioButton("( " + Integer.toString(vectorList.get(i).getX()) + " , " + Integer.toString(vectorList.get(i).getY() - 1) + " )");
+			JRadioButton box = new JRadioButton("( " + Integer.toString(vectorList.get(i).getX()) + " , " + Integer.toString(vectorList.get(i).getY()) + " )");
 			box.setEnabled(true);
 			box.setSelected(false);
 			group.add(box);

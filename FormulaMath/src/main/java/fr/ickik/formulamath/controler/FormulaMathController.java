@@ -1,6 +1,8 @@
 package fr.ickik.formulamath.controler;
 
 import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutorCompletionService;
@@ -35,7 +37,7 @@ import fr.ickik.formulamath.view.StatFrame;
  * Controller of the application in MVC design pattern. It receive event from the view to
  * transmit them to the appropriate model if needed.
  * @author Ickik
- * @version 0.1.004, 11 mai 2012
+ * @version 0.1.005, 14 mai 2012
  * @since 0.2
  */
 public final class FormulaMathController {
@@ -56,7 +58,7 @@ public final class FormulaMathController {
 		this.mapManager = mapManager;
 		setLookAndFeel(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.THEME));
 		configurationFrame = new ConfigurationFrame(this);
-		mainFrame = new MainFrame(playerManager, mapManager, this, PropertiesModel.getSingleton().getProperty(FormulaMathProperty.THEME));
+		mainFrame = new MainFrame(mapManager.getMapSize(), this, PropertiesModel.getSingleton().getProperty(FormulaMathProperty.THEME));
 		this.playerManager.addUpdateCaseListener(mainFrame);
 		aboutFrame = new AboutFrame(this, ChuckNorrisTimer.getInstance().isRunning());
 		statFrame = new StatFrame(this);
@@ -221,4 +223,15 @@ public final class FormulaMathController {
 		playerManager.lastPlay(vector);
 	}
 
+	public double[] focusPlayerPosition(Dimension dimension) {
+		Position pos = playerManager.getCurrentPlayer().getPosition();
+		if (pos.getX() == 0 && pos.getY() == 0) {
+			pos = mapManager.getStartingPositionList().get(1);
+		}
+		Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
+		double d = mapManager.getMapSize() / 100;
+		double x = d * (pos.getX() - (dimension.getWidth() * 20 / screenDimension.getWidth()));
+		double y = d * (pos.getY() - (dimension.getHeight() * 20 / screenDimension.getHeight()));
+		return new double[]{x, y};
+	}
 }

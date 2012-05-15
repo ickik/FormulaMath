@@ -21,9 +21,9 @@ import fr.ickik.formulamath.entity.Position;
  * This class create a JPanel which is displayed to give a start position choice for a human player.
  * @author Ickik
  * @version 0.1.000, 10 mai 2012
- * @since 0.2
+ * @since 0.3
  */
-public class StartPositionChooserPanel {
+public final class StartPositionChooserPanel {
 
 	private final JPanel panel;
 	private final JButton playButton;

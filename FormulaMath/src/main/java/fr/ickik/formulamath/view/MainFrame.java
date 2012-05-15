@@ -38,13 +38,11 @@ import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Position;
 import fr.ickik.formulamath.entity.Vector;
 import fr.ickik.formulamath.model.CaseModel;
-import fr.ickik.formulamath.model.map.MapManager;
-import fr.ickik.formulamath.model.player.PlayerManager;
 
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.2.000, 11 mai 2012.
+ * @version 0.2.001, 14 mai 2012.
  */
 public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
@@ -52,8 +50,6 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	private final JPanel gameMenuPanel;
 	private final JButton playButton;
 	private int caseSize = 15;
-	private final MapManager mapManager;
-	private final PlayerManager playerManager;
 	private final StartPositionChooserPanel startPositionChooserPanel;
 	private final PlayVectorChooserPanel playVectorChooserPanel;
 	private final FirstMovePanel firstMovePanel;
@@ -66,7 +62,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	public static final int MAP_MARGIN = 20;
 	private final String theme;
 	
-	public MainFrame(PlayerManager playerManager, MapManager mapManager, FormulaMathController controller, String theme) {
+	public MainFrame(int mapSize, FormulaMathController controller, String theme) {
 		this.controller = controller;
 		this.theme = theme;
 		mainFrame = getFrame();
@@ -75,9 +71,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		startPositionChooserPanel = new StartPositionChooserPanel(gameMenuPanel, playButton, controller);
 		firstMovePanel = new FirstMovePanel(gameMenuPanel, playButton, controller, mainFrame);
 		playVectorChooserPanel = new PlayVectorChooserPanel(gameMenuPanel, playButton, controller);
-		this.playerManager = playerManager;
-		this.mapManager = mapManager;
-		caseArrayList = new ArrayList<List<JCase>>(mapManager.getMapSize() + MAP_MARGIN);
+		caseArrayList = new ArrayList<List<JCase>>(mapSize + MAP_MARGIN);
 	}
 	
 	public void display(List<List<CaseModel>> carte) {
@@ -183,7 +177,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		zoom.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
-				if (caseSize > MIN_ZOOM_SIZE) {
+				if (caseSize < MAX_ZOOM_SIZE) {
 					caseSize++;
 					log.trace("Zoom : {}", caseSize);
 					repaintTrayPanel();
@@ -194,7 +188,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		dezoom.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				if (caseSize < MAX_ZOOM_SIZE) {
+				if (caseSize > MIN_ZOOM_SIZE) {
 					caseSize--;
 					log.trace("Dezoom : {}", caseSize);
 					repaintTrayPanel();
@@ -264,18 +258,9 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Position pos = playerManager.getCurrentPlayer().getPosition();
-				if (pos.getX() == 0 && pos.getY() == 0) {
-					pos = mapManager.getStartingPositionList().get(1);
-				}
-				Dimension dimension = mainFrame.getSize();
-				Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
-				double d = mapManager.getMapSize() / 100;
-				double x = d * (pos.getX() - (dimension.getWidth() * 20 / screenDimension.getWidth()));
-				double y = d * (pos.getY() - (dimension.getHeight() * 20 / screenDimension.getHeight()));
-				scrollPane.getHorizontalScrollBar().getModel().setValue(new Double(x * scrollPane.getHorizontalScrollBar().getModel().getMaximum() / 100).intValue());
-				scrollPane.getVerticalScrollBar().getModel().setValue(new Double(y * scrollPane.getVerticalScrollBar().getModel().getMaximum() / 100).intValue());
-				
+				double[] coordinateArray = controller.focusPlayerPosition(mainFrame.getSize());
+				scrollPane.getHorizontalScrollBar().getModel().setValue(new Double(coordinateArray[0] * scrollPane.getHorizontalScrollBar().getModel().getMaximum() / 100).intValue());
+				scrollPane.getVerticalScrollBar().getModel().setValue(new Double(coordinateArray[1] * scrollPane.getVerticalScrollBar().getModel().getMaximum() / 100).intValue());
 			}
 		};
 	}

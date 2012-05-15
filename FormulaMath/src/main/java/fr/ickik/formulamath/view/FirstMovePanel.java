@@ -27,7 +27,13 @@ import fr.ickik.formulamath.entity.Position;
 import fr.ickik.formulamath.entity.Vector;
 import fr.ickik.formulamath.model.map.Field;
 
-public class FirstMovePanel {
+/**
+ * This class create a JPanel which is displayed to give a the first move on map for a human player.
+ * @author Ickik
+ * @version 0.1.000, 14 mai 2012
+ * @since 0.3
+ */
+public final class FirstMovePanel {
 
 	private final JPanel panel;
 	private final JButton playButton;

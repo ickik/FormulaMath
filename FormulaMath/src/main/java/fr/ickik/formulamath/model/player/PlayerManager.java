@@ -34,6 +34,7 @@ public final class PlayerManager {
 	private MapManager mapManager;
 	private boolean fireUpdateCaseListener;
 	private final List<UpdateCaseListener> updateCaseListenerList = new ArrayList<UpdateCaseListener>();
+	//private AILevel computerLevel;
 	
 	/**
 	 * Map representing the index of the user (represented by the id) in the road model.
@@ -71,7 +72,7 @@ public final class PlayerManager {
 		return playerList;
 	}
 
-	public List<Vector> getVectorsPossibilities(Player player) {
+	private List<Vector> getVectorsPossibilities(Player player) {
 		log.trace("getVectorsPossibilities entering");
 		List<Vector> list = new ArrayList<Vector>(5);
 		log.trace("Player {} , init vector {}", player.toString(), player.getVector().toString());
@@ -119,11 +120,12 @@ public final class PlayerManager {
 	
 	public void play(Vector vector) {
 		Player p = getCurrentPlayer();
-		/*if (mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()) == null
-				|| mapManager.getCase(p.getPosition().getY() - vector.getY(), p.getPosition().getX() + vector.getX()) == null) {
-			//return false;
+		if (vector == null) {
+			addFinishPlayer(p, false);
+			updateIndexPlayerGame();
+			computerPlay();
+			return ;
 		}
-		*/
 		mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
 		p.getPosition().setX(p.getPosition().getX() + vector.getX());
 		p.getPosition().setY(p.getPosition().getY() - vector.getY());
@@ -345,7 +347,7 @@ public final class PlayerManager {
 			fireUpdateCaseListener(p);
 			updateIndexPlayerGame();*/
 		}
-		humanPlaying();
+		fireDisplayPlayerMovePossibilities();
 	}
 	
 	/**
@@ -421,10 +423,6 @@ public final class PlayerManager {
 		return nb;
 	}
 	
-	private void humanPlaying() {
-		fireDisplayPlayerMovePossibilities();
-	}
-
 	public void initStartPosition() {
 		log.debug("initStartPosition entering");
 		List<Position> list = mapManager.getStartingPositionList();
@@ -449,7 +447,7 @@ public final class PlayerManager {
 					mapManager.getCase(list.get(0).getY(), list.get(0).getX()).setIdPlayer(p.getId());
 					list.remove(0);
 					fireUpdateCaseListener(p);
-					log.debug("fire");
+					log.debug("initStartPosition fire for Computer");
 				} else {
 					log.debug("Human start position");
 					fireDisplayPlayerPossibilities(p, list);
@@ -476,6 +474,9 @@ public final class PlayerManager {
 	
 	private void fireDisplayPlayerMovePossibilities() {
 		List<Vector> list = getVectorsPossibilities(getCurrentPlayer());
+		if (list.isEmpty()) {
+			addFinishPlayer(getCurrentPlayer(), false);
+		}
 		for(UpdateCaseListener l : updateCaseListenerList) {
 			l.displayPlayerMovePossibilities(getCurrentPlayer(), list, mapManager.getMapSize());
 		}
@@ -680,4 +681,15 @@ public final class PlayerManager {
 	public List<Player> getFinishPositionList() {
 		return finishPositionList;
 	}
+
+	public void reinitialization() {
+		playerList.clear();
+		finishPositionList.clear();
+		playerRoadPosition.clear();
+		indexPlayerGame = 0;
+	}
+
+//	public void setComputerLevel(AILevel computerLevel) {
+//		this.computerLevel = computerLevel;
+//	}
 }

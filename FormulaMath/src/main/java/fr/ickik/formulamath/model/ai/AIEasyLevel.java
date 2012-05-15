@@ -30,7 +30,7 @@ public class AIEasyLevel implements AILevel {
 		Vector vector = null;
 		log.debug("AI rest length of the vector:{}", len);
 		log.trace("Orientation: {}", r.getOrientation());
-		if (len == 1) {
+		if (len == 1 || len == -1) {
 			RoadDirectionInformation nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition + 1);
 			switch (r.getOrientation()) {
 			case NORTH:

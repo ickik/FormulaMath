@@ -17,7 +17,7 @@ import fr.ickik.formulamath.model.CaseModel;
 /**
  * Contains and handles the map of the application. The map is a everytime a square.
  * @author Ickik.
- * @version 0.1.006, 20 apr. 2012.
+ * @version 0.1.007, 15 mai 2012.
  */
 public final class MapManager {
 
@@ -51,6 +51,14 @@ public final class MapManager {
 			carte.add(list);
 		}
 		log.debug("Map initialized");
+	}
+	
+	public void reinitialization() {
+		log.debug("Reinitialization of map");
+		startingPositionList.clear();
+		finishingLinePositionList.clear();
+		roadList.clear();
+		log.debug("End of Map Reinitialization");
 	}
 
 	private void initStartPosition(Position p, Position p2) {

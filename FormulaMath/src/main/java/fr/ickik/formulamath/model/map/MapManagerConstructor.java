@@ -6,6 +6,7 @@ import java.util.concurrent.Callable;
  * 
  * @author Ickik
  * @version 0.1.001, 3 mai 2012
+ * @since 0.3
  */
 public class MapManagerConstructor implements Callable<MapManager> {
 

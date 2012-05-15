@@ -26,7 +26,7 @@ import fr.ickik.formulamath.model.Stats;
  * per turn, the variance, the square type and a graphic which resume the number of
  * vector played during the game.
  * @author Ickik
- * @version 0.1.004, 5 mai 2012
+ * @version 0.1.005, 15 mai 2012
  */
 public final class StatFrame extends AbstractFormulaMathFrame {
 
@@ -49,9 +49,9 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 		getFrame().add(panel);
 	}
 	
-	public void display(List<Player> playerList, List<Player> finishPlayerList) {
+	public void display(int playerNumber, List<Player> finishPlayerList) {
 		statPanel.removeAll();
-		statPanel.add(displayStats(playerList, finishPlayerList));
+		statPanel.add(displayStats(playerNumber, finishPlayerList));
 		displayFrame();
 		getFrame().setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 	}
@@ -80,11 +80,19 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 		};
 	}
 	
-	private JScrollPane displayStats(List<Player> playerList, List<Player> finishPlayerList) {
-		JPanel statsPanel = new JPanel(new GridLayout(playerList.size(), 1));
-		for (int i = 0; i < playerList.size(); i++) {
-			Stats stats = new Stats(finishPlayerList.get(i));
-			statsPanel.add(getPlayerStatsPanel(i, stats));
+	private JScrollPane displayStats(int playerNumber, List<Player> finishPlayerList) {
+		JPanel statsPanel = new JPanel(new GridLayout(playerNumber, 1));
+//		for (int i = 0; i < playerNumber; i++) {
+//			Stats stats = new Stats(finishPlayerList.get(i));
+//			statsPanel.add(getPlayerStatsPanel(i, stats));
+//		}
+		int position = 1;
+		for (Player player : finishPlayerList) {
+			if (player != null) {
+				Stats stats = new Stats(player);
+				statsPanel.add(getPlayerStatsPanel(position, stats));
+				position++;
+			}
 		}
 		return new JScrollPane(statsPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	}
@@ -103,8 +111,17 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 		return panel;
 	}
 	
-	private JButton createButton() {
-		JButton button = new JButton();
+	private JPanel createButton() {
+		JPanel buttonPanel = new JPanel(new GridLayout(1, 1));
+		JButton replay = new JButton("Replay");
+		replay.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				controller.modelReinitialization();
+			}
+		});
+		JButton button = new JButton("Close");
 		button.addActionListener(new ActionListener() {
 			
 			@Override
@@ -112,7 +129,8 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 				controller.closeStatFrame();
 			}
 		});
-		return button;
+		buttonPanel.add(button);
+		return buttonPanel;
 	}
 	
 	private JPanel createGraph(Map<Vector, Integer> vectorCountMap) {

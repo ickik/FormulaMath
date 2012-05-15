@@ -42,7 +42,7 @@ import fr.ickik.formulamath.model.CaseModel;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.2.001, 14 mai 2012.
+ * @version 0.2.002, 15 mai 2012.
  */
 public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
@@ -62,6 +62,12 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	public static final int MAP_MARGIN = 20;
 	private final String theme;
 	
+	/**
+	 * Constructor of the JFrame, it initializes all panels and the map panel.
+	 * @param mapSize the size of the map model.
+	 * @param controller the controller of the application.
+	 * @param theme the theme of the JFrame. The theme is depending the OS.
+	 */
 	public MainFrame(int mapSize, FormulaMathController controller, String theme) {
 		this.controller = controller;
 		this.theme = theme;
@@ -413,12 +419,6 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	}
 
 	@Override
-	public void updatePlayerPossibilities(Player player) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void displayPlayerStartingPossibilities(Player player, List<Position> startingPositionList, int mapSize) {
 		startPositionChooserPanel.construct(startingPositionList, mapSize);
 		displayMessage("Player " + player.getName() + " (" + player.getId() + ") must choose the start position");
@@ -432,12 +432,19 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	
 	@Override
 	public void displayPlayerMovePossibilities(Player player, List<Vector> vectorList, int mapSize) {
+		log.debug("displayPlayerMovePossibilities for {}", player.toString());
+		log.debug("Vector Possibilities size : {}", Integer.toString(vectorList.size()));
 		playVectorChooserPanel.construct(player, vectorList, mapSize, caseArrayList);
+		if (vectorList.isEmpty()) {
+			displayMessage("No possibilities to play, you lose!");
+			controller.play(null);
+			return;
+		}
 		displayMessage("Player " + player.getName() + " (" + player.getId() + ") must choose the next move");
 	}
 
 	@Override
 	public void updateEndGamePanel() {
-		displayMessage("message");
+		controller.openStatFrame();
 	}
 }

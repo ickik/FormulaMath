@@ -49,13 +49,13 @@ public final class PlayVectorChooserPanel {
 	 * @param mapSize
 	 * @param caseArrayList
 	 */
-	public void construct(final Player player, final List<Vector> vectorList, final int mapSize,final List<List<JCase>> caseArrayList) {
+	public void construct(final Player player, final List<Vector> vectorList, final int mapSize, final List<List<JCase>> caseArrayList) {
 		panel.removeAll();
 		this.caseArrayList = caseArrayList;
 		panel.setLayout(new GridLayout(vectorList.size(), 1));
 		final JRadioButton[] solution = new JRadioButton[vectorList.size()];
 		ButtonGroup group = new ButtonGroup();
-		
+
 		int distance = (caseArrayList.size() - mapSize) / 2;
 		int xTrayPanel = player.getPosition().getX() + distance;
 		int yTrayPanel =player.getPosition().getY() + distance;
@@ -64,13 +64,17 @@ public final class PlayVectorChooserPanel {
 			JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
 			JCase c2 = caseArrayList.get(yTrayPanel - v.getY()).get(xTrayPanel + v.getX());
 			Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
-			
+
 			log.debug("solution : {}", vectorList.get(i).toString());
 			if (isGrassIntersection(line)) {
 				vectorList.remove(i);
 			}
 		}
-		
+		/*if (vectorList.isEmpty()) {
+			JOptionPane.showMessageDialog(panel, "No possibilities to play, you lose!", AbstractFormulaMathFrame.getTitle(), JOptionPane.INFORMATION_MESSAGE);
+			controller.play(null);
+			return;
+		}*/
 		for (int i = 0; i < vectorList.size(); i++) {
 			JRadioButton box = new JRadioButton("( " + Integer.toString(vectorList.get(i).getX()) + " , " + Integer.toString(vectorList.get(i).getY()) + " )");
 			box.setEnabled(true);
@@ -81,7 +85,7 @@ public final class PlayVectorChooserPanel {
 		}
 		panel.validate();
 		playButton.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				int selected = getSelectedButton(solution);
@@ -100,7 +104,7 @@ public final class PlayVectorChooserPanel {
 				JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
 				JCase c2 = caseArrayList.get(yTrayPanel - vector.getY()).get(xTrayPanel + vector.getX());
 				Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
-				
+
 				if (isEndLineIntersection(line)) {
 					controller.lastPlay(vector);
 				} else {

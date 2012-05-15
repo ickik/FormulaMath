@@ -11,6 +11,7 @@ import javax.swing.JComponent;
 
 import fr.ickik.formulamath.model.CaseModel;
 import fr.ickik.formulamath.model.map.Field;
+import fr.ickik.formulamath.model.map.MapManager;
 
 /**
  * Graphic component which represents a case in the map. Every side of the case
@@ -84,10 +85,10 @@ public class JCase extends JComponent {
 	
 	private void updateBackGroundColor() {
 		if (model != null) {
-			if (model.getIdPlayer() == 0) {
+			if (model.getIdPlayer() == MapManager.EMPTY_PLAYER) {
 				setBackground(model.getField().getColor());
 			} else {
-				setBackground(colorList[model.getIdPlayer()]);
+				setBackground(colorList[model.getIdPlayer() - 1]);
 			}
 		} else {
 			setBackground(Color.WHITE);

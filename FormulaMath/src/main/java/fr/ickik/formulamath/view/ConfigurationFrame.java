@@ -34,7 +34,7 @@ import fr.ickik.formulamath.model.player.PlayerType;
  * The user can choose between Human and Computer players;
  * give a name to every player.
  * @author Ickik.
- * @version 0.2.002, 12 mai 2012
+ * @version 0.2.003, 15 mai 2012
  */
 public class ConfigurationFrame extends AbstractFormulaMathFrame {
 
@@ -44,6 +44,7 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 	private final Logger log = LoggerFactory.getLogger(ConfigurationFrame.class);
 	private int numberOfPlayerSelected = 1;
 	private int dimensionMapItem = 1;
+	//private int computerLevel = 1;
 	private final FormulaMathController controller;
 
 	/**
@@ -51,6 +52,9 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 	 */
 	public ConfigurationFrame(FormulaMathController controller) {
 		this.controller = controller;
+	}
+	
+	public void display() {
 		createMainFrame();
 		displayFrame();
 		getFrame().toFront();
@@ -174,6 +178,7 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 	
 	private JPanel getNumberPlayerPanel() {
 		GridLayout gridLayout = new GridLayout(2, 2);
+//		GridLayout gridLayout = new GridLayout(3, 2);
 		JPanel panel = new JPanel(gridLayout);
 
 		final JComboBox<String> sizeComboBox = new JComboBox<String>();
@@ -187,6 +192,16 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 			}
 		});
 		sizeComboBox.setSelectedIndex(dimensionMapItem);
+		
+		/*final JComboBox<String> levelComboBox = new JComboBox<String>(AILevelFactory.LEVEL);
+		levelComboBox.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				computerLevel = levelComboBox.getSelectedIndex();
+			}
+		});
+		sizeComboBox.setSelectedIndex(computerLevel);*/
 		
 		JLabel label = new JLabel("Number of player : ");
 		String[] nbPlayer = { "1", "2", "3", "4" };
@@ -209,6 +224,8 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 			}
 		});
 		
+		//panel.add(new JLabel("Computer level : "));
+		//panel.add(levelComboBox);
 		panel.add(new JLabel("Dimension of the map : "));
 		panel.add(sizeComboBox);
 		panel.add(label);

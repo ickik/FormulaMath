@@ -44,10 +44,10 @@ public final class PlayVectorChooserPanel {
 	
 	/**
 	 * Construct the panel and display them into the main frame of the application.
-	 * @param player
-	 * @param vectorList
-	 * @param mapSize
-	 * @param caseArrayList
+	 * @param player the player for which display the possibilities.
+	 * @param vectorList the list of possibilities.
+	 * @param mapSize the size of the map.
+	 * @param caseArrayList the list of {@link JCase} displayed in the frame graphic, representation of the map.
 	 */
 	public void construct(final Player player, final List<Vector> vectorList, final int mapSize, final List<List<JCase>> caseArrayList) {
 		panel.removeAll();

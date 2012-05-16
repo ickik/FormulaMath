@@ -37,7 +37,7 @@ import fr.ickik.formulamath.view.StatFrame;
  * Controller of the application in MVC design pattern. It receive event from the view to
  * transmit them to the appropriate model if needed.
  * @author Ickik
- * @version 0.1.006, 15 mai 2012
+ * @version 0.1.007, 16 mai 2012
  * @since 0.2
  */
 public final class FormulaMathController {
@@ -52,6 +52,14 @@ public final class FormulaMathController {
 	
 	private static final Logger log = LoggerFactory.getLogger(FormulaMathController.class);
 	
+	/**
+	 * Constructor of the controller. It needs all model used in the application or creates them.
+	 * It initializes all frames to display them faster (it is a preloading). It corrects
+	 * some properties in the properties model at the beginning (Sometimes values could be updated through
+	 * this system like change the updater server). It opens configuration frame at the end to allows user to play.
+	 * @param playerManager the manager of players.
+	 * @param mapManager the map constructor and manager of case models.
+	 */
 	public FormulaMathController(PlayerManager playerManager, MapManager mapManager) {
 		propertiesCorrection();
 		this.playerManager = playerManager;
@@ -83,6 +91,10 @@ public final class FormulaMathController {
 		executor.shutdown();
 	}
 	
+	/**
+	 * Open help file using the default software configured in the system (OS).
+	 * @throws FormulaMathException if the file could not be opened.
+	 */
 	public void openHelpFile() throws FormulaMathException {
 		if (Desktop.isDesktopSupported()) {
 			try {
@@ -233,7 +245,11 @@ public final class FormulaMathController {
 	}
 
 	public void play(Vector vector) {
-		log.debug("Playing vector {}", vector.toString());
+		if (vector != null) {
+			log.debug("Playing vector {}", vector.toString());
+		} else {
+			log.debug("Playing vector null");
+		}
 		playerManager.play(vector);
 	}
 

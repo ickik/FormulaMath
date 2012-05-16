@@ -1,6 +1,8 @@
 package fr.ickik.formulamath.model.ai;
 
 
+import java.util.Map;
+
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Vector;
 
@@ -14,5 +16,5 @@ public interface AILevel {
 
 	//Position getStartingPosition(Player player);
 	//Vector getFirstMove(Player player);
-	Vector getNextPlay(Player player);
+	Vector getNextPlay(Player player,  Map<Integer, Integer> playerRoadPosition);
 }

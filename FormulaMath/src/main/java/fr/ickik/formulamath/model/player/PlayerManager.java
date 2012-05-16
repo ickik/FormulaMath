@@ -24,7 +24,7 @@ import fr.ickik.formulamath.model.map.Orientation;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.2.001, 15 mai 2012.
+ * @version 0.2.002, 16 mai 2012.
  */
 public final class PlayerManager {
 
@@ -127,6 +127,7 @@ public final class PlayerManager {
 			return ;
 		}
 		mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
+		p.incrementPlayingCounter();
 		p.getPosition().setX(p.getPosition().getX() + vector.getX());
 		p.getPosition().setY(p.getPosition().getY() - vector.getY());
 		p.getVector().setX(vector.getX());
@@ -145,6 +146,7 @@ public final class PlayerManager {
 		log.debug("LastPlay {}", vector);
 		List<Position> endLineList = mapManager.getFinishingLinePositionList();
 		Player p = getCurrentPlayer();
+		p.incrementPlayingCounter();
 		mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
 		mapManager.getCase(endLineList.get(0).getY(), endLineList.get(0).getX()).setIdPlayer(p.getId());
 		fireUpdateCaseListener(p);
@@ -155,6 +157,8 @@ public final class PlayerManager {
 	
 	private void addFinishPlayer(Player p, boolean isWinning) {
 		int begin, end;
+		log.trace("add player {} into finish list", p.toString());
+		log.trace("{} is {}", p.toString(), isWinning ? "winning" : "losing");
 		if (isWinning) {
 			begin = 0;
 			end = NUMBER_OF_PLAYER_MAX;
@@ -164,6 +168,7 @@ public final class PlayerManager {
 		}
 		for (int i = begin; i < end; i = (isWinning) ? i+1 : i-1) {
 			if (finishPositionList.get(i) == null) {
+				log.debug("the player {} finish at {} position", p.toString(), Integer.toString(i));
 				finishPositionList.set(i, p);
 			}
 		}
@@ -330,22 +335,12 @@ public final class PlayerManager {
 					}
 				}
 			}
-			mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
 			p.getPosition().setX(p.getPosition().getX() + vector.getX());
 			p.getPosition().setY(p.getPosition().getY() - vector.getY());
 			p.getVector().setX(vector.getX());
 			p.getVector().setY(vector.getY());
 			mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(p.getId());
 			updateIndexPlayerGame();
-			/*p.getPosition().setX(p.getPosition().getX() + vector.getX());
-			p.getPosition().setY(p.getPosition().getY() - vector.getY());
-			p.getVector().setX(vector.getX());
-			p.getVector().setY(vector.getY());
-			log.debug("Player new position: {}", p.getPosition());
-			mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(p.getId());
-			
-			fireUpdateCaseListener(p);
-			updateIndexPlayerGame();*/
 		}
 		fireDisplayPlayerMovePossibilities();
 	}
@@ -473,8 +468,10 @@ public final class PlayerManager {
 	}
 	
 	private void fireDisplayPlayerMovePossibilities() {
+		log.trace("Display moving possibilities for {}", getCurrentPlayer().toString());
 		List<Vector> list = getVectorsPossibilities(getCurrentPlayer());
 		if (list.isEmpty()) {
+			log.debug("No possibilities to play the player lose");
 			addFinishPlayer(getCurrentPlayer(), false);
 		}
 		for(UpdateCaseListener l : updateCaseListenerList) {
@@ -574,11 +571,17 @@ public final class PlayerManager {
 		getCurrentPlayer().getPosition().setY(getCurrentPlayer().getPosition().getY() - vector.getY());
 		getCurrentPlayer().getVector().setX(vector.getX());
 		getCurrentPlayer().getVector().setY(vector.getY());
+		getCurrentPlayer().incrementPlayingCounter();
 		mapManager.getCase(getCurrentPlayer().getPosition().getY(), getCurrentPlayer().getPosition().getX()).setIdPlayer(getCurrentPlayer().getId());
 		playerRoadPosition.put(getCurrentPlayer().getId(), 0);
 		fireUpdateCaseListener(getCurrentPlayer());
+		List<Player> playerList = getPlayerList().subList(getPlayerList().indexOf(getCurrentPlayer()), getPlayerList().size());
 		updateIndexPlayerGame();
-		initFirstMove();
+		if (playerList.isEmpty()) {
+			computerPlay();
+		} else {
+			initFirstMove();
+		}
 	}
 
 	private int getFirstMove(int distance) {

@@ -6,12 +6,15 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BoundedRangeModel;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
@@ -24,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
@@ -208,15 +212,16 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 
 	private JPanel getDirectionalPanel() {
 		JPanel panel = new JPanel(new GridLayout(3, 3));
-		JButton up = new JButton("↑");
+		JButton up = new JButton("↑");//, new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/up.png")));
 		up.addActionListener(new ActionListener() {
+			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				log.trace("Up move");
 				scrollPane.getVerticalScrollBar().getModel().setValue(scrollPane.getVerticalScrollBar().getModel().getValue() - 40);
 			}
 		});
-		JButton down = new JButton("↓");
+		JButton down = new JButton("↓");//, new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/down.png")));
 		down.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -224,7 +229,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				scrollPane.getVerticalScrollBar().getModel().setValue(scrollPane.getVerticalScrollBar().getModel().getValue() + 40);
 			}
 		});
-		JButton left = new JButton("←");
+		JButton left = new JButton("←");//, new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/left.png")));
 		left.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -232,7 +237,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				scrollPane.getHorizontalScrollBar().getModel().setValue(scrollPane.getHorizontalScrollBar().getModel().getValue() - 40);
 			}
 		});
-		JButton right = new JButton("→");
+		JButton right = new JButton("→");//, new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/right.png")));
 		right.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -242,19 +247,52 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		});
 		JButton centered = new JButton("☼");
 		centered.addActionListener(getPlayerFocusListener());
-		panel.add(enabledButtonFactory());
+		panel.add(disabledButtonFactory());
 		panel.add(up);
-		panel.add(enabledButtonFactory());
+		panel.add(disabledButtonFactory());
 		panel.add(left);
 		panel.add(centered);
 		panel.add(right);
-		panel.add(enabledButtonFactory());
+		panel.add(disabledButtonFactory());
 		panel.add(down);
-		panel.add(enabledButtonFactory());
+		panel.add(disabledButtonFactory());
 		return panel;
 	}
 	
-	private JButton enabledButtonFactory() {
+	private ActionListener getDirectionButtonActionListener(final JButton button, final BoundedRangeModel model, final int value) {
+		final ActionListener listener = new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				model.setValue(model.getValue() + value);
+			}
+		};
+		button.addMouseListener(new MouseListener() {
+			
+			final Timer timer = new Timer(500, listener);
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				timer.stop();
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				timer.start();
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent arg0) {}
+			
+			@Override
+			public void mouseEntered(MouseEvent arg0) {}
+			
+			@Override
+			public void mouseClicked(MouseEvent arg0) {}
+		});
+		return listener;
+	}
+	
+	private JButton disabledButtonFactory() {
 		JButton button = new JButton();
 		button.setEnabled(false);
 		return button;

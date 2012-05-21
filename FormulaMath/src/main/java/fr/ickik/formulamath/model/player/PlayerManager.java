@@ -24,7 +24,7 @@ import fr.ickik.formulamath.model.map.Orientation;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.2.002, 16 mai 2012.
+ * @version 0.2.003, 21 mai 2012.
  */
 public final class PlayerManager {
 
@@ -293,6 +293,12 @@ public final class PlayerManager {
 					case EAST:
 						vector = new Vector(p.getVector().getX() + 1, 0);
 						break;
+					}
+					if (len < Math.sqrt(vector.getX() * vector.getX() + vector.getY() * vector.getY())) {
+						log.trace("Last direction, last play, the AI will finished with {}", vector.toString());
+						lastPlay(vector);
+						fireEndGameListener();
+						return;
 					}
 				} else {
 					switch (r.getOrientation()) {

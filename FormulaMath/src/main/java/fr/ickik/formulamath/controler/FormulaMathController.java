@@ -217,6 +217,9 @@ public final class FormulaMathController {
 			if (aboutFrame != null) {
 				aboutFrame.updateLnF(className);
 			}
+			if (statFrame != null) {
+				statFrame.updateLnF(className);
+			}
 			PropertiesModel.getSingleton().put(FormulaMathProperty.THEME, className);
 		} catch (ClassNotFoundException e) {
 			log.error("Class {} not found on system : {}", className, e.getMessage());

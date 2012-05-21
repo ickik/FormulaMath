@@ -46,7 +46,7 @@ import fr.ickik.formulamath.model.CaseModel;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.2.002, 15 mai 2012.
+ * @version 0.2.003, 21 mai 2012.
  */
 public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
@@ -265,6 +265,40 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				model.setValue(model.getValue() + value);
+			}
+		};
+		button.addMouseListener(new MouseListener() {
+			
+			final Timer timer = new Timer(500, listener);
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				timer.stop();
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				timer.start();
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent arg0) {}
+			
+			@Override
+			public void mouseEntered(MouseEvent arg0) {}
+			
+			@Override
+			public void mouseClicked(MouseEvent arg0) {}
+		});
+		return listener;
+	}
+	
+	private ActionListener getDirectionButtonActionListener(final JButton button, final BoundedRangeModel hModel, final BoundedRangeModel vModel, final int value) {
+		final ActionListener listener = new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				hModel.setValue(hModel.getValue() + value);
+				vModel.setValue(vModel.getValue() + value);
 			}
 		};
 		button.addMouseListener(new MouseListener() {

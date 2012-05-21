@@ -25,7 +25,7 @@ import fr.ickik.formulamath.model.map.Field;
  * Panel creation class. It creates the panel for Human player to choose the
  * start position on the starting line.
  * @author Ickik
- * @version 0.1.000, 14 mai 2012
+ * @version 0.1.001, 21 mai 2012
  * @since 0.3
  */
 public final class PlayVectorChooserPanel {
@@ -53,7 +53,6 @@ public final class PlayVectorChooserPanel {
 		panel.removeAll();
 		this.caseArrayList = caseArrayList;
 		panel.setLayout(new GridLayout(vectorList.size(), 1));
-		final JRadioButton[] solution = new JRadioButton[vectorList.size()];
 		ButtonGroup group = new ButtonGroup();
 
 		int distance = (caseArrayList.size() - mapSize) / 2;
@@ -75,6 +74,7 @@ public final class PlayVectorChooserPanel {
 			controller.play(null);
 			return;
 		}*/
+		final JRadioButton[] solution = new JRadioButton[vectorList.size()];
 		for (int i = 0; i < vectorList.size(); i++) {
 			JRadioButton box = new JRadioButton("( " + Integer.toString(vectorList.get(i).getX()) + " , " + Integer.toString(vectorList.get(i).getY()) + " )");
 			box.setEnabled(true);
@@ -95,7 +95,9 @@ public final class PlayVectorChooserPanel {
 				Vector vector = vectorList.get(selected);
 				log.trace("Play button pushed, checkbox selected : {}", selected);
 				for (JToggleButton button : solution) {
-					button.setEnabled(false);
+					//if (button != null) {
+						button.setEnabled(false);
+					//}
 				}
 				log.trace("checkbox disabled!");//peut etre mettre le test de fin de ligne dans le model
 				int distance = (caseArrayList.size() - mapSize) / 2;

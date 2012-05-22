@@ -128,8 +128,20 @@ public final class PlayerManager {
 		}
 		mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
 		p.incrementPlayingCounter();
-		p.getPosition().setX(p.getPosition().getX() + vector.getX());
-		p.getPosition().setY(p.getPosition().getY() - vector.getY());
+		int x = p.getPosition().getX() + vector.getX();
+		int y = p.getPosition().getY() + vector.getY();
+		if (x < 0) {
+			x = 0;
+		} else if (x >= mapManager.getMapSize()) {
+			x = mapManager.getMapSize() - 1;
+		}
+		if (y < 0) {
+			x = 0;
+		} else if (y >= mapManager.getMapSize()) {
+			y = mapManager.getMapSize() - 1;
+		}
+		p.getPosition().setX(x);
+		p.getPosition().setY(y);
 		p.getVector().setX(vector.getX());
 		p.getVector().setY(vector.getY());
 		mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(p.getId());
@@ -170,6 +182,7 @@ public final class PlayerManager {
 			if (finishPositionList.get(i) == null) {
 				log.debug("the player {} finish at {} position", p.toString(), Integer.toString(i));
 				finishPositionList.set(i, p);
+				break;
 			}
 		}
 	}
@@ -297,7 +310,7 @@ public final class PlayerManager {
 					if (len < Math.sqrt(vector.getX() * vector.getX() + vector.getY() * vector.getY())) {
 						log.trace("Last direction, last play, the AI will finished with {}", vector.toString());
 						lastPlay(vector);
-						fireEndGameListener();
+						//fireEndGameListener();
 						return;
 					}
 				} else {
@@ -335,7 +348,7 @@ public final class PlayerManager {
 						CaseModel model = mapManager.getCase(p.getPosition().getY() - j, p.getPosition().getX() + i);
 						if (model.getField() == Field.FINISHING_LINE) {
 							lastPlay(new Vector(i, j));
-							fireEndGameListener();
+							//fireEndGameListener();
 							return;
 						}
 					}
@@ -405,6 +418,7 @@ public final class PlayerManager {
 	
 	private void updateIndexPlayerGame() {
 		if (playerList.size() == getNumberOfFinishPlayer()) {
+			log.debug("updateIndexPlayerGame : the players have finished");
 			fireEndGameListener();
 			return ;
 		}
@@ -479,6 +493,9 @@ public final class PlayerManager {
 		if (list.isEmpty()) {
 			log.debug("No possibilities to play the player lose");
 			addFinishPlayer(getCurrentPlayer(), false);
+			updateIndexPlayerGame();
+			computerPlay();
+			return;
 		}
 		for(UpdateCaseListener l : updateCaseListenerList) {
 			l.displayPlayerMovePossibilities(getCurrentPlayer(), list, mapManager.getMapSize());

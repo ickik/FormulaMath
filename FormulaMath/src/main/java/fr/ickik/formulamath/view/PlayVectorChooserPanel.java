@@ -61,7 +61,20 @@ public final class PlayVectorChooserPanel {
 		for (int i = 0; i < vectorList.size(); i++) {
 			Vector v = vectorList.get(i);
 			JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
-			JCase c2 = caseArrayList.get(yTrayPanel - v.getY()).get(xTrayPanel + v.getX());
+			int y = yTrayPanel - v.getY();
+			int x = xTrayPanel - v.getX();
+			if (y < 0) {
+				y = 0;
+			} else if (y >= caseArrayList.size()) {
+				y = caseArrayList.size() - 1;
+			}
+			if (x < 0) {
+				x = 0;
+			} else if (x >= caseArrayList.size()) {
+				x = caseArrayList.size() - 1;
+			}
+			
+			JCase c2 = caseArrayList.get(y).get(x);
 			Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
 
 			log.debug("solution : {}", vectorList.get(i).toString());

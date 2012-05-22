@@ -97,26 +97,6 @@ public final class FirstMovePanel {
 				log.trace("The player can move");
 				controller.firstMove(new Vector(xMoving, yMoving));
 				playButton.removeActionListener(this);
-				/*
-				if (playerManager.initFirstMove(new Vector(xMoving, yMoving))) {
-					log.debug("next player is AI if it exists one");
-					if (playerManager.initAIFirstMove()) {
-						log.debug("AI has play, next player is human");
-						log.info("Next player is {}", playerManager.getCurrentPlayer().toString());
-						displayMessage(playerManager.getCurrentPlayer().toString());
-						xField.setText("");
-						yField.setText("");
-					}
-					log.debug("Display choice panel");
-					removeButtonListener(play);//Duplication
-					panel.removeAll();
-					getChoicePanel(play, panel);
-				} else {
-					log.debug("no AI player; Display choice panel");
-					removeButtonListener(play);
-					panel.removeAll();
-					getChoicePanel(play, panel);
-				}*/
 			}
 		
 			/**

@@ -36,6 +36,14 @@ public final class PlayVectorChooserPanel {
 	private List<List<JCase>> caseArrayList;
 	private static final Logger log = LoggerFactory.getLogger(PlayVectorChooserPanel.class);
 	
+	/**
+	 * Constructor that initializes the variables to construct the panel to display the
+	 * vectors to the human player.
+	 * @param panel the panel to use to display the vectors.
+	 * @param playButton the button to validate the choice of one vector. It is used to
+	 * define a new listener.
+	 * @param controller the controller of the application.
+	 */
 	public PlayVectorChooserPanel(JPanel panel, JButton playButton, FormulaMathController controller) {
 		this.panel = panel;
 		this.playButton = playButton;
@@ -107,6 +115,7 @@ public final class PlayVectorChooserPanel {
 				}
 				Vector vector = vectorList.get(selected);
 				log.trace("Play button pushed, checkbox selected : {}", selected);
+				log.debug("Vector selected : {}", vector.toString());
 				for (JToggleButton button : solution) {
 					//if (button != null) {
 						button.setEnabled(false);
@@ -115,14 +124,17 @@ public final class PlayVectorChooserPanel {
 				log.trace("checkbox disabled!");//peut etre mettre le test de fin de ligne dans le model
 				int distance = (caseArrayList.size() - mapSize) / 2;
 				int xTrayPanel = player.getPosition().getX() + distance;
-				int yTrayPanel =player.getPosition().getY() + distance;
+				int yTrayPanel = player.getPosition().getY() + distance;
+				log.trace("Player's position in the map ({},{})", xTrayPanel, yTrayPanel);
 				JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
 				JCase c2 = caseArrayList.get(yTrayPanel - vector.getY()).get(xTrayPanel + vector.getX());
 				Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
 
 				if (isEndLineIntersection(line)) {
+					log.debug("End line intersection, lastPlay is called");
 					controller.lastPlay(vector);
 				} else {
+					log.debug("No intersection playing normally");
 					controller.play(vector);
 				}
 				playButton.removeActionListener(this);

@@ -24,7 +24,7 @@ import fr.ickik.formulamath.model.map.Orientation;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.2.003, 21 mai 2012.
+ * @version 0.2.004, 22 mai 2012.
  */
 public final class PlayerManager {
 
@@ -118,18 +118,24 @@ public final class PlayerManager {
 		return model == null;
 	}
 	
+	/**
+	 * Move the current player depending the vector given by argument.
+	 * @param vector the vector to move.
+	 */
 	public void play(Vector vector) {
 		Player p = getCurrentPlayer();
 		if (vector == null) {
+			log.debug("Vector is null");
 			addFinishPlayer(p, false);
 			updateIndexPlayerGame();
 			computerPlay();
 			return ;
 		}
+		log.debug("Vector to play : {}", vector.toString());
 		mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
 		p.incrementPlayingCounter();
 		int x = p.getPosition().getX() + vector.getX();
-		int y = p.getPosition().getY() + vector.getY();
+		int y = p.getPosition().getY() - vector.getY();
 		if (x < 0) {
 			x = 0;
 		} else if (x >= mapManager.getMapSize()) {
@@ -175,10 +181,10 @@ public final class PlayerManager {
 			begin = 0;
 			end = NUMBER_OF_PLAYER_MAX;
 		} else {
-			begin = NUMBER_OF_PLAYER_MAX;
+			begin = NUMBER_OF_PLAYER_MAX - 1;
 			end = 0;
 		}
-		for (int i = begin; i < end; i = (isWinning) ? i+1 : i-1) {
+		for (int i = begin; (isWinning) ? i < end : i > end; i = (isWinning) ? i+1 : i-1) {
 			if (finishPositionList.get(i) == null) {
 				log.debug("the player {} finish at {} position", p.toString(), Integer.toString(i));
 				finishPositionList.set(i, p);

@@ -438,9 +438,11 @@ public final class PlayerManager {
 		int nb = 0;
 		for (int i = 0; i < finishPositionList.size(); i++) {
 			if (finishPositionList.get(i) != null) {
+				log.trace("finishing list index= {} value = {}", Integer.toString(i), finishPositionList.get(i).toString());
 				nb++;
 			}
 		}
+		log.trace("Number of finishing player : {}", Integer.toString(nb));
 		return nb;
 	}
 	

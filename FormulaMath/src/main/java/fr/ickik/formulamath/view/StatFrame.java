@@ -100,11 +100,12 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 	private JPanel getPlayerStatsPanel(int position, Stats stats) {
 		JPanel panel = new JPanel(new GridLayout(1, 2));
 		JPanel panelLbl = new JPanel(new GridLayout(3, 2));
-		panelLbl.add(new JLabel("Average"));
+		String playerId = Integer.toString(position);
+		panelLbl.add(new JLabel(playerId +"Average"));
 		panelLbl.add(new JLabel(Double.toString(stats.getAverageDistance())));
-		panelLbl.add(new JLabel("Variance"));
+		panelLbl.add(new JLabel(playerId+"Variance"));
 		panelLbl.add(new JLabel(Double.toString(stats.getVariance())));
-		panelLbl.add(new JLabel("Square type"));
+		panelLbl.add(new JLabel(playerId+"Square type"));
 		panelLbl.add(new JLabel(Double.toString(stats.getSquareType())));
 		panel.add(panelLbl);
 		//panel.add(createGraph(stats.getVectorCountMap()));

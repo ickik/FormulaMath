@@ -127,7 +127,19 @@ public final class PlayVectorChooserPanel {
 				int yTrayPanel = player.getPosition().getY() + distance;
 				log.trace("Player's position in the map ({},{})", xTrayPanel, yTrayPanel);
 				JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
-				JCase c2 = caseArrayList.get(yTrayPanel - vector.getY()).get(xTrayPanel + vector.getX());
+				int x = xTrayPanel + vector.getX();
+				int y = yTrayPanel - vector.getY();
+				if (x < 0) {
+					x = 0;
+				} else if (x >= mapSize) {
+					x = mapSize - 1;
+				}
+				if (y < 0) {
+					y = 0;
+				} else if (y >= mapSize) {
+					y = mapSize - 1;
+				}
+				JCase c2 = caseArrayList.get(yTrayPanel - vector.getY()).get(xTrayPanel + vector.getX());//correction indexofboundexception
 				Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
 
 				if (isEndLineIntersection(line)) {

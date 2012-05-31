@@ -61,7 +61,7 @@ public final class FormulaMathController {
 	 * @param mapManager the map constructor and manager of case models.
 	 */
 	public FormulaMathController(PlayerManager playerManager, MapManager mapManager) {
-		propertiesCorrection();
+		//propertiesCorrection();
 		this.playerManager = playerManager;
 		this.mapManager = mapManager;
 		setLookAndFeel(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.THEME));
@@ -73,14 +73,14 @@ public final class FormulaMathController {
 		openConfigurationFrame();
 	}
 	
-	private void propertiesCorrection() {
+	/*private void propertiesCorrection() {
 		PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.UPDATE_PERIOD);
 		try {
 			saveProperties();
 		} catch (FormulaMathException e) {
 			log.error("Error saving properties for correction : {} ", e.getMessage());
 		}
-	}
+	}*/
 	
 //	public void initManager(int size, int level) {
 	public void initManager(int size) {

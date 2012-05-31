@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JToggleButton;
@@ -60,7 +61,6 @@ public final class PlayVectorChooserPanel {
 	public void construct(final Player player, final List<Vector> vectorList, final int mapSize, final List<List<JCase>> caseArrayList) {
 		panel.removeAll();
 		this.caseArrayList = caseArrayList;
-		panel.setLayout(new GridLayout(vectorList.size(), 1));
 		ButtonGroup group = new ButtonGroup();
 
 		int distance = (caseArrayList.size() - mapSize) / 2;
@@ -87,14 +87,17 @@ public final class PlayVectorChooserPanel {
 
 			log.debug("solution : {}", vectorList.get(i).toString());
 			if (isGrassIntersection(line)) {
+				log.trace("{} intersects grass", vectorList.get(i).toString());
 				vectorList.remove(i);
 			}
 		}
-		/*if (vectorList.isEmpty()) {
+		if (vectorList.isEmpty()) {
+			log.debug("The current human player loses, call controller.play(null)");
 			JOptionPane.showMessageDialog(panel, "No possibilities to play, you lose!", AbstractFormulaMathFrame.getTitle(), JOptionPane.INFORMATION_MESSAGE);
 			controller.play(null);
 			return;
-		}*/
+		}
+		panel.setLayout(new GridLayout(vectorList.size(), 1));
 		final JRadioButton[] solution = new JRadioButton[vectorList.size()];
 		for (int i = 0; i < vectorList.size(); i++) {
 			JRadioButton box = new JRadioButton("( " + Integer.toString(vectorList.get(i).getX()) + " , " + Integer.toString(vectorList.get(i).getY()) + " )");
@@ -117,9 +120,7 @@ public final class PlayVectorChooserPanel {
 				log.trace("Play button pushed, checkbox selected : {}", selected);
 				log.debug("Vector selected : {}", vector.toString());
 				for (JToggleButton button : solution) {
-					//if (button != null) {
-						button.setEnabled(false);
-					//}
+					button.setEnabled(false);
 				}
 				log.trace("checkbox disabled!");//peut etre mettre le test de fin de ligne dans le model
 				int distance = (caseArrayList.size() - mapSize) / 2;
@@ -139,7 +140,7 @@ public final class PlayVectorChooserPanel {
 				} else if (y >= mapSize) {
 					y = mapSize - 1;
 				}
-				JCase c2 = caseArrayList.get(yTrayPanel - vector.getY()).get(xTrayPanel + vector.getX());//correction indexofboundexception
+				JCase c2 = caseArrayList.get(yTrayPanel - vector.getY()).get(xTrayPanel + vector.getX());
 				Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
 
 				if (isEndLineIntersection(line)) {

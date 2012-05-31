@@ -48,7 +48,6 @@ final class UpdateFrame extends JFrame {
 
 			public void start() {
 				bar.setString("The application will start");
-				//waitDispose();
 			}
 
 			public void restart() {

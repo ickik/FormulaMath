@@ -1,7 +1,5 @@
 package fr.ickik.updater;
 
-import java.awt.Desktop;
-import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,7 +12,7 @@ import javax.swing.JOptionPane;
 /**
  * Main class which contains the main static method.
  * @author Ickik
- * @version 0.1.001, 13 apr. 2012
+ * @version 0.1.002, 31 mai 2012
  */
 public final class Updater {
 
@@ -29,34 +27,37 @@ public final class Updater {
 					JOptionPane.showMessageDialog(null, "Java version not compatible please update", "ERROR!", JOptionPane.ERROR_MESSAGE);
 					return ;
 				}
-				long jour = elapsedDays();
-				int period;
-				try {
-					period = Integer.parseInt(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.UPDATE_PERIOD));
-				} catch (NumberFormatException e) {
-					PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.UPDATE_PERIOD);
-					period = Integer.parseInt(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.UPDATE_PERIOD));
-				}
-				if (jour > period) {
-					SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
-					String savedDate = dateFormat.format(Calendar.getInstance().getTime());
-					PropertiesModel.getSingleton().put(FormulaMathProperty.LAST_UPDATE, savedDate);
-					try {
-						PropertiesModel.getSingleton().save();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					UpdateModel model = new UpdateModel();
-					if (model.isConnectionAvailable()) {
-						UpdateFrame main = new UpdateFrame(model);
-						main.setVisible(true);
-						model.update();
-					} else {
-						openApplication();
-					}
+//				long jour = elapsedDays();
+//				int period;
+//				try {
+//					period = Integer.parseInt(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.UPDATE_PERIOD));
+//				} catch (NumberFormatException e) {
+//					PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.UPDATE_PERIOD);
+//					period = Integer.parseInt(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.UPDATE_PERIOD));
+//				}
+//				UpdateModel model = new UpdateModel();
+//				if (jour >= period) {
+//					SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
+//					String savedDate = dateFormat.format(Calendar.getInstance().getTime());
+//					PropertiesModel.getSingleton().put(FormulaMathProperty.LAST_UPDATE, savedDate);
+//					try {
+//						PropertiesModel.getSingleton().save();
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
+				UpdateModel model = new UpdateModel();
+				if (model.isConnectionAvailable()) {
+					UpdateFrame main = new UpdateFrame(model);
+					main.setVisible(true);
+					model.update();
 				} else {
-					openApplication();
+					//openApplication();
+					model.startApplication();
 				}
+//				} else {
+//					//openApplication();
+//					model.startApplication();
+//				}
 			}
 		}.start();
 	}
@@ -69,15 +70,15 @@ public final class Updater {
 		return false;
 	}
 	
-	private static void openApplication() {
+	/*private static void openApplication() {
 		try {
 			Desktop.getDesktop().open(new File("FormulaMath.jar"));
 		} catch(Exception exception) {
 			exception.printStackTrace();
 		}
-	}
+	}*/
 	
-	private static long elapsedDays() {
+	/*private static long elapsedDays() {
 		String date = PropertiesModel.getSingleton().getProperty(FormulaMathProperty.LAST_UPDATE);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
 		Calendar calendar = Calendar.getInstance();
@@ -93,6 +94,6 @@ public final class Updater {
 			} catch (ParseException e1) {}
 		}
 		return TimeUnit.DAYS.convert(Calendar.getInstance().getTimeInMillis() - calendar.getTimeInMillis(), TimeUnit.MILLISECONDS);
-	}
+	}*/
 
 }

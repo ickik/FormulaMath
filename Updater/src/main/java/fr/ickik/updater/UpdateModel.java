@@ -50,6 +50,7 @@ final class UpdateModel {
 	 */
 	public UpdateModel() {
 		currentVersion = getCurrentVersion();
+		logger.debug("Current version of FormulaMath found : {}", currentVersion);
 	}
 
 	/**
@@ -203,6 +204,7 @@ final class UpdateModel {
 	
 	private String getCurrentVersion() {
 		String jarVersion = loadCurrentVersion();
+		logger.debug("getCurrentVersion from classloader : {}", jarVersion);
 		if (jarVersion == null || jarVersion.isEmpty()) {
 			return PropertiesModel.getSingleton().getProperty(FormulaMathProperty.VERSION);
 		}

@@ -17,7 +17,7 @@ public final class Updater {
 		new Thread(executionThreadGroup, "") {
 			public void run() {
 				if (!checkVersion()) {
-					JOptionPane.showMessageDialog(null, "Java version not compatible please update", "ERROR!", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Java version not compatible please update on www.java.com", "ERROR!", JOptionPane.ERROR_MESSAGE);
 					return ;
 				}
 				UpdateModel model = new UpdateModel();

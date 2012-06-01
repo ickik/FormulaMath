@@ -10,7 +10,7 @@ import javax.swing.JProgressBar;
  * Frame displayed when an update is available. This frame is composed by a progress bar
  * that evolves with the download.
  * @author Patrick Allgeyer
- * @version 0.1.004, 21 mai 2012
+ * @version 0.1.005, 1 june 2012
  */
 final class UpdateFrame extends JFrame {
 
@@ -44,10 +44,6 @@ final class UpdateFrame extends JFrame {
 			public void updateValue(int value, String msg) {
 				bar.setValue(value);
 				bar.setString(msg);
-			}
-
-			public void start() {
-				bar.setString("The application will start");
 			}
 
 			public void restart() {

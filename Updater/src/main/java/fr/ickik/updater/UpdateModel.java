@@ -1,4 +1,5 @@
 package fr.ickik.updater;
+import java.awt.Desktop;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,64 +29,61 @@ import org.xml.sax.helpers.DefaultHandler;
  * and search the last release to update. It download and placed it in the right directory.
  * The updater overrides all existing files and then start the application.
  * @author Ickik
- * @version 0.1.006, 7 mai 2012
+ * @version 0.1.007, 1 june 2012
  */
 final class UpdateModel {
 
 	private final List<Version> versionList = new ArrayList<Version>();
 	private List<UpdaterListener> listenerList = new ArrayList<UpdaterListener>();
 	private final Logger logger = LoggerFactory.getLogger(UpdateModel.class);
-	
-	private static final int VERSION_CHECKED_PERCENTAGE = 10;
-	private static final int UPDATE_AVAILABLE_PERCENTAGE = 15;
+	private String currentVersion;
+	private static final int UPDATE_AVAILABLE_PERCENTAGE = 10;
 	private static final int BEGIN_DOWNLOAD_PERCENTAGE = 20;
 	private static final int DOWNLOAD_PERCENTAGE = 75;
 	private static final int MAX_PERCENTAGE = 100;
 	private static final String xmlConfigurationFile = "versions.xml";
-	public static final String APPLICATION = "FormulaMath.jar";
+	private static final String extension = ".jar";
+	private static final String APPLICATION = "FormulaMath-";
+
 	/**
 	 * Default constructor.
 	 */
-	public UpdateModel() {}
+	public UpdateModel() {
+		currentVersion = getCurrentVersion();
+	}
 
 	/**
 	 * Search the last version and update the application.
 	 */
 	public void update() {
-		searchAvailableVersion();
-		if (isUpdateAvailable()) {
-			fireUpdateListener(UPDATE_AVAILABLE_PERCENTAGE, "Search new version");
-			Version v = getNextVersion();
-			if (v != null) {
-				downloadFiles(v);
-				PropertiesModel.getSingleton().put(FormulaMathProperty.VERSION, v.getVersion());
-				try {
-					PropertiesModel.getSingleton().save();
-				} catch (IOException e) {}
-			}
-			fireUpdateListener(MAX_PERCENTAGE, "Your application is up to date");
-			fireRestartListener();
-			startApplication();
-		} else {
-			fireUpdateListener(MAX_PERCENTAGE, "Your application is up to date");
-			fireStartListener();
-			startApplication();
+		fireUpdateListener(UPDATE_AVAILABLE_PERCENTAGE, "Search new version");
+		Version v = getNextVersion();
+		if (v != null) {
+			downloadFiles(v);
+			PropertiesModel.getSingleton().put(FormulaMathProperty.VERSION, v.getVersion());
+			try {
+				PropertiesModel.getSingleton().save();
+			} catch (IOException e) {}
+			currentVersion = v.getVersion();
 		}
+		fireUpdateListener(MAX_PERCENTAGE, "Your application is up to date");
+		fireRestartListener();
+		startApplication();
 	}
 	
 	public void startApplication() {
-		File currentVersion = new File(APPLICATION);
-		try {
-			new ProcessBuilder("java -jar " + currentVersion.getName()).start();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		File currentVersion = new File(APPLICATION);
 //		try {
-//			Desktop.getDesktop().open(new File(APPLICATION));
-//		} catch(Exception exception) {
-//			exception.printStackTrace();
+//			new ProcessBuilder("java -jar " + currentVersion.getName()).start();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
 //		}
+		try {
+			Desktop.getDesktop().open(new File(APPLICATION + currentVersion + extension));
+		} catch(Exception exception) {
+			exception.printStackTrace();
+		}
 	}
 	
 	private void downloadFiles(Version v) {
@@ -166,11 +164,15 @@ final class UpdateModel {
 
 
 	private void searchAvailableVersion() {
-		versionList.addAll(getAvailableVersions());
-		fireUpdateListener(VERSION_CHECKED_PERCENTAGE, "Search new version");
+		List<Version> list = getAvailableVersions();
+		if (list != null && !list.isEmpty()) {
+			versionList.addAll(getAvailableVersions());
+		}
+		//fireUpdateListener(VERSION_CHECKED_PERCENTAGE, "Search new version");
 	}
 
-	private boolean isUpdateAvailable() {
+	public boolean isUpdateAvailable() {
+		searchAvailableVersion();
 		if (versionList.isEmpty()) {
 			return false;
 		}
@@ -178,25 +180,25 @@ final class UpdateModel {
 		if (v == null) {
 			return false;
 		}
-		logger.debug("next version is {}", v.getVersion());
-		boolean isUpdateAvailable = v.getVersion().compareTo(getCurrentVersion()) > 0;
-		logger.debug("{} is available ? {}", isUpdateAvailable);
-		return isUpdateAvailable;
+		//logger.debug("next version is {}", v.getVersion());
+		//boolean isUpdateAvailable = v.getVersion().compareTo(currentVersion) > 0;
+		//logger.debug("{} is available ? {}", isUpdateAvailable);
+		return true;
 	}
 	
 	private Version getNextVersion() {
-		String currentVersion = getCurrentVersion();
-		if (versionList.isEmpty()) {
+		/*if (versionList.isEmpty()) {
 			return null;
-		}
+		}*/
 		for(Version v : versionList) {
 			logger.debug("{} compareto {} = {}", new Object[]{v.getVersion(), currentVersion, v.getVersion().compareTo(currentVersion)});
 			if (v.getVersion().compareTo(currentVersion) > 0) {
 				logger.debug("{} compareto {} = {}", new Object[]{v.getVersion(), currentVersion, v.getVersion().compareTo(currentVersion)});
+				logger.debug("Next version found: {}" , v.getVersion());
 				return v;
 			}
 		}
-		return getLastVersion();
+		return null;
 	}
 	
 	private String getCurrentVersion() {
@@ -210,7 +212,7 @@ final class UpdateModel {
 	private String loadCurrentVersion() {
 		URL[] urlArray = null;
 		try {
-			urlArray = new URL[] {new File("FormulaMath.jar").toURI().toURL()};
+			urlArray = new URL[] {new File(APPLICATION + currentVersion + extension).toURI().toURL()};
 			ClassLoader classLoader = new URLClassLoader(urlArray);
 			Class<?> classe = Class.forName("fr.ickik.formulamath.view.AbstractFormulaMathFrame", false, classLoader);
 			Field field = classe.getDeclaredField("VERSION");
@@ -233,10 +235,10 @@ final class UpdateModel {
 		return null;
 	}
 
-	private Version getLastVersion() {
+	/*private Version getLastVersion() {
 		logger.debug("return the last version : {}", versionList.get(versionList.size() - 1).getVersion());
 		return versionList.get(versionList.size() - 1);
-	}
+	}*/
 
 	/**
 	 * Check if the connection to the web server is available or not.
@@ -302,13 +304,6 @@ final class UpdateModel {
 			l.restart();
 		}
 	}
-	
-	private void fireStartListener() {
-		for (UpdaterListener l : listenerList) {
-			l.start();
-		}
-	}
-
 
 	private class VersionHandler extends DefaultHandler {
 

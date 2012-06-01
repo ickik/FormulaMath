@@ -8,37 +8,6 @@ package fr.ickik.updater;
  */
 enum FormulaMathProperty {
 	
-//	/**
-//	 * Period (in days) between to update.
-//	 */
-//	UPDATE_PERIOD {
-//		@Override
-//		public String toString() {
-//			return "update.period";
-//		}
-//		
-//		@Override
-//		public String getDefaultValue() {
-//			return "14";
-//		}
-//	},
-//	
-//	/**
-//	 * Last update date.
-//	 */
-//	LAST_UPDATE {
-//		@Override
-//		public String toString() {
-//			return "last.update.date";
-//		}
-//
-//		@Override
-//		public String getDefaultValue() {
-//			return "01/01/12";
-//		}
-//		
-//	},
-	
 	/**
 	 * Server address to update.
 	 */

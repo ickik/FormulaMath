@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -17,7 +16,6 @@ import javax.swing.WindowConstants;
 
 import fr.ickik.formulamath.controler.FormulaMathController;
 import fr.ickik.formulamath.entity.Player;
-import fr.ickik.formulamath.entity.Vector;
 import fr.ickik.formulamath.model.Stats;
 
 /**
@@ -26,7 +24,7 @@ import fr.ickik.formulamath.model.Stats;
  * per turn, the variance, the square type and a graphic which resume the number of
  * vector played during the game.
  * @author Ickik
- * @version 0.1.005, 15 mai 2012
+ * @version 0.1.006, 1 june 2012
  */
 public final class StatFrame extends AbstractFormulaMathFrame {
 
@@ -90,23 +88,27 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 		for (Player player : finishPlayerList) {
 			if (player != null) {
 				Stats stats = new Stats(player);
-				statsPanel.add(getPlayerStatsPanel(position, stats));
+				statsPanel.add(getPlayerStatsPanel(position, player, stats));
 				position++;
 			}
 		}
 		return new JScrollPane(statsPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	}
 	
-	private JPanel getPlayerStatsPanel(int position, Stats stats) {
-		JPanel panel = new JPanel(new GridLayout(1, 2));
+	private JPanel getPlayerStatsPanel(int position, Player player, Stats stats) {
+		JPanel panel = new JPanel(new GridLayout(1, 3));
 		JPanel panelLbl = new JPanel(new GridLayout(3, 2));
-		String playerId = Integer.toString(position);
-		panelLbl.add(new JLabel(playerId +"Average"));
+
+		panelLbl.add(new JLabel("Numbre of move"));
+		panelLbl.add(new JLabel(Integer.toString(player.getPlayingCounter())));
+		panelLbl.add(new JLabel("Average"));
 		panelLbl.add(new JLabel(Double.toString(stats.getAverageDistance())));
-		panelLbl.add(new JLabel(playerId+"Variance"));
+		panelLbl.add(new JLabel("Variance"));
 		panelLbl.add(new JLabel(Double.toString(stats.getVariance())));
-		panelLbl.add(new JLabel(playerId+"Square type"));
+		panelLbl.add(new JLabel("Square type"));
 		panelLbl.add(new JLabel(Double.toString(stats.getSquareType())));
+		
+		panel.add(new JLabel("Position " + Integer.toString(position) + "  " + player.getName() + "(" + Integer.toString(player.getId()) + ")"));
 		panel.add(panelLbl);
 		//panel.add(createGraph(stats.getVectorCountMap()));
 		return panel;
@@ -134,7 +136,7 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 		return buttonPanel;
 	}
 	
-	private JPanel createGraph(Map<Vector, Integer> vectorCountMap) {
+//	private JPanel createGraph(Map<Vector, Integer> vectorCountMap) {
 //	DefaultCategoryDataset cat = new DefaultCategoryDataset();
 //	cat.addValue(1.0, "(1,0)", "(1,0)");
 //	cat.addValue(4.0, "(1,1)", "(1,1)");
@@ -143,6 +145,6 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 //	JFrame f = new JFrame();
 //	f.add(panel);
 //	f.setVisible(true);
-		return new JPanel();
-	}
+//		return new JPanel();
+//	}
 }

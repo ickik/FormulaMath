@@ -78,4 +78,5 @@ public enum Field {
 	public int getValue() {
 		return value;
 	}
+
 }

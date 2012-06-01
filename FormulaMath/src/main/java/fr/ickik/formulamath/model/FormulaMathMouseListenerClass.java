@@ -3,6 +3,7 @@ package fr.ickik.formulamath.model;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Line2D;
 
 public class FormulaMathMouseListenerClass implements MouseListener {
 
@@ -31,7 +32,7 @@ public class FormulaMathMouseListenerClass implements MouseListener {
 		if (startPoint == null) {
 			startPoint = arg0.getPoint();
 		} else {
-			
+			Line2D line = new Line2D.Double(startPoint, arg0.getPoint());
 		}
 	}
 

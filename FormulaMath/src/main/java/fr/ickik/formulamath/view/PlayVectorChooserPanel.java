@@ -66,11 +66,15 @@ public final class PlayVectorChooserPanel {
 		int distance = (caseArrayList.size() - mapSize) / 2;
 		int xTrayPanel = player.getPosition().getX() + distance;
 		int yTrayPanel =player.getPosition().getY() + distance;
+		log.trace("Player position :{}", player.getPosition().toString());
+		log.trace("Player position on map : ( {}, {} )", xTrayPanel, yTrayPanel);
 		for (int i = 0; i < vectorList.size(); i++) {
 			Vector v = vectorList.get(i);
 			JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
 			int y = yTrayPanel - v.getY();
 			int x = xTrayPanel - v.getX();
+			log.debug("solution : {}", vectorList.get(i).toString());
+			log.trace("Player final  position on map : ( {}, {} )", x, y);
 			if (y < 0) {
 				y = 0;
 			} else if (y >= caseArrayList.size()) {
@@ -81,11 +85,10 @@ public final class PlayVectorChooserPanel {
 			} else if (x >= caseArrayList.size()) {
 				x = caseArrayList.size() - 1;
 			}
-			
+			log.trace("Correction Player final position on map : ( {}, {} )", x, y);
 			JCase c2 = caseArrayList.get(y).get(x);
 			Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
-
-			log.debug("solution : {}", vectorList.get(i).toString());
+			log.trace("Vector's line on map from ( {}, {} ) to ( {} , {} )", new Object[]{c.getX(), c.getY(), c2.getX(), c2.getY()});
 			if (isGrassIntersection(line)) {
 				log.trace("{} intersects grass", vectorList.get(i).toString());
 				vectorList.remove(i);
@@ -166,7 +169,7 @@ public final class PlayVectorChooserPanel {
 	}
 	
 	private boolean isGrassIntersection(Shape shape) {
-		log.debug("isGrassIntersection");
+		log.debug("call isGrassIntersection method");
 		return checkIntersection(shape, Field.GRASS);
 	}
 	
@@ -180,13 +183,12 @@ public final class PlayVectorChooserPanel {
 			for (JCase c : caseList) {
 				if (c.getModel() != null && c.getModel().getField() == terrain) {
 					if (shape.intersects(c.getX(), c.getY(), c.getWidth(), c.getHeight())) {
-						log.debug("intersection for shape and {} is {}", terrain, true);
+						log.debug("intersection found for shape and {} on ( {}, {} )", new Object[]{terrain, c.getX(), c.getY()});
 						return true;
 					}
 				}
 			}
 		}
-		log.debug("intersection for shape and {} is {}", terrain, false);
 		return false;
 	}
 }

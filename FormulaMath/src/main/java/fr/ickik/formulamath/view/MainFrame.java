@@ -152,6 +152,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 
 	private JSplitPane getSplitPane() {
 		JPanel trayPanel = getTrayPanel();
+		//trayPanel.getGraphics().
 		scrollPane = new JScrollPane(trayPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.getHorizontalScrollBar().setUnitIncrement(5);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(5);

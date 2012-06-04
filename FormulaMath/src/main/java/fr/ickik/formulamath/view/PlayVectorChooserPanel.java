@@ -26,7 +26,7 @@ import fr.ickik.formulamath.model.map.Field;
  * Panel creation class. It creates the panel for Human player to choose the
  * start position on the starting line.
  * @author Ickik
- * @version 0.1.001, 21 mai 2012
+ * @version 0.1.002, 4 june 2012
  * @since 0.3
  */
 public final class PlayVectorChooserPanel {
@@ -71,21 +71,11 @@ public final class PlayVectorChooserPanel {
 		for (int i = 0; i < vectorList.size(); i++) {
 			Vector v = vectorList.get(i);
 			JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
-			int y = yTrayPanel - v.getY();
-			int x = xTrayPanel - v.getX();
+			int y = getCoordinateLimit(yTrayPanel - v.getY(), mapSize);
+			int x = getCoordinateLimit(xTrayPanel + v.getX(), mapSize);
 			log.debug("solution : {}", vectorList.get(i).toString());
 			log.trace("Player final  position on map : ( {}, {} )", x, y);
-			if (y < 0) {
-				y = 0;
-			} else if (y >= caseArrayList.size()) {
-				y = caseArrayList.size() - 1;
-			}
-			if (x < 0) {
-				x = 0;
-			} else if (x >= caseArrayList.size()) {
-				x = caseArrayList.size() - 1;
-			}
-			log.trace("Correction Player final position on map : ( {}, {} )", x, y);
+
 			JCase c2 = caseArrayList.get(y).get(x);
 			Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
 			log.trace("Vector's line on map from ( {}, {} ) to ( {} , {} )", new Object[]{c.getX(), c.getY(), c2.getX(), c2.getY()});
@@ -131,19 +121,10 @@ public final class PlayVectorChooserPanel {
 				int yTrayPanel = player.getPosition().getY() + distance;
 				log.trace("Player's position in the map ({},{})", xTrayPanel, yTrayPanel);
 				JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
-				int x = xTrayPanel + vector.getX();
-				int y = yTrayPanel - vector.getY();
-				if (x < 0) {
-					x = 0;
-				} else if (x >= mapSize) {
-					x = mapSize - 1;
-				}
-				if (y < 0) {
-					y = 0;
-				} else if (y >= mapSize) {
-					y = mapSize - 1;
-				}
-				JCase c2 = caseArrayList.get(yTrayPanel - vector.getY()).get(xTrayPanel + vector.getX());
+				int x = getCoordinateLimit(xTrayPanel + vector.getX(), mapSize);
+				int y = getCoordinateLimit(yTrayPanel - vector.getY(), mapSize);
+
+				JCase c2 = caseArrayList.get(y).get(x);
 				Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
 
 				if (isEndLineIntersection(line)) {
@@ -156,6 +137,15 @@ public final class PlayVectorChooserPanel {
 				playButton.removeActionListener(this);
 			}
 		});
+	}
+	
+	private int getCoordinateLimit(int coordinate, int mapSize) {
+		if (coordinate < 0) {
+			return 0;
+		} else if (coordinate >= mapSize) {
+			return mapSize - 1;
+		}
+		return coordinate;
 	}
 	
 	private int getSelectedButton(JToggleButton[] buttonArray) {
@@ -174,7 +164,7 @@ public final class PlayVectorChooserPanel {
 	}
 	
 	private boolean isEndLineIntersection(Shape shape) {
-		log.debug("isEndLineIntersection {} {}", shape.getBounds().getLocation(), shape.getBounds().getSize());
+		log.debug("isEndLineIntersection {} {}", shape.getBounds().getLocation().toString(), shape.getBounds().getSize().toString());
 		return checkIntersection(shape, Field.FINISHING_LINE);
 	}
 	

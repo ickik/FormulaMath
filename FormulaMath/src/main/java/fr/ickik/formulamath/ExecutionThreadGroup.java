@@ -28,17 +28,19 @@ public class ExecutionThreadGroup extends ThreadGroup {
 	}
 
 	public void uncaughtException(Thread t, Throwable e) {
+		e.printStackTrace();
 		log.error(e.getMessage());
 		log.error("Cause : {}", e.getCause().getMessage());
 		JOptionPane.showMessageDialog(findActiveFrame(), e.toString(), MainFrame.getTitle() + " - Exception Occurred", JOptionPane.ERROR_MESSAGE);
-		e.printStackTrace();
 		System.exit(1);
 	}
 	
 //	private void sendMail(String errorTitle) {
 //		try {
 //			Properties prop = System.getProperties();
-//			prop.put("mail.smtp.host", "");
+//			prop.put("mail.smtps.host", "smtp.gmail.com");
+//			prop.put("mail.smtps.port", "465");
+//			prop.put("mail.smtps.auth", "true");
 //			Session session = Session.getDefaultInstance(prop,null);
 //			Message message = new MimeMessage(session);
 //			message.setFrom(new InternetAddress("formulamath@gmail.com"));

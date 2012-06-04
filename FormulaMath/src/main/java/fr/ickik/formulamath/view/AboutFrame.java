@@ -26,7 +26,7 @@ import fr.ickik.formulamath.controler.FormulaMathController;
  * This class only get an instance of the AboutServer. The about
  * frame resume the application (title, version, author, contact).
  * @author Ickik.
- * @version 0.1.004, 4 mai 2012.
+ * @version 0.1.005, 4 june 2012.
  */
 public final class AboutFrame extends AbstractFormulaMathFrame {
 
@@ -41,6 +41,7 @@ public final class AboutFrame extends AbstractFormulaMathFrame {
 	public void display() {
 		getFrame().add(createPanel(), BorderLayout.CENTER);
 		getFrame().add(createBellowPanel(), BorderLayout.SOUTH);
+		getFrame().setResizable(false);
 		displayFrame();
 		getFrame().setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 	}
@@ -56,7 +57,7 @@ public final class AboutFrame extends AbstractFormulaMathFrame {
 		}
 		panel.add(label);
 		label.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		JLabel mail = new JLabel("<html>(<a href=\"\">patrick.allgeyer</a>)</html>");
+		JLabel mail = new JLabel("<html>(<a href=\"\">formulamath@gmail.com</a>)</html>");
 		panel.add(mail);
 		mail.addMouseListener(getMouseMailAdapter());
 		mail.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -66,7 +67,6 @@ public final class AboutFrame extends AbstractFormulaMathFrame {
 	private JPanel createBellowPanel() {
 		JPanel buttonPanel = new JPanel();
 		JButton okButton = createOKButton();
-		getFrame().getRootPane().setDefaultButton(okButton);
 		BoxLayout boxLayout = new BoxLayout(buttonPanel, BoxLayout.Y_AXIS);
 		buttonPanel.setLayout(boxLayout);
 		okButton.setAlignmentX(0.5f);
@@ -79,8 +79,10 @@ public final class AboutFrame extends AbstractFormulaMathFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				try {
-					Desktop.getDesktop().mail(URI.create("mailto:patrick.allgeyer@gmail.com?subject=Formula Math " + MainFrame.VERSION + ""));
-				} catch (IOException e1) {}
+					Desktop.getDesktop().mail(URI.create("mailto:formulamath@gmail.com?subject=FormulaMath " + VERSION + ""));
+				} catch (IOException e1) {
+					displayErrorMessage(e1.getMessage());
+				}
 			}
 		};
 	}

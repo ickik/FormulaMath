@@ -5,7 +5,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Line2D;
 
-public class FormulaMathMouseListenerClass implements MouseListener {
+public class FormulaMathMouseListener implements MouseListener {
 
 	private Point startPoint;
 	
@@ -33,6 +33,7 @@ public class FormulaMathMouseListenerClass implements MouseListener {
 			startPoint = arg0.getPoint();
 		} else {
 			Line2D line = new Line2D.Double(startPoint, arg0.getPoint());
+			
 		}
 	}
 

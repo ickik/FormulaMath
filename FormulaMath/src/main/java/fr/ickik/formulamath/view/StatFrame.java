@@ -20,7 +20,7 @@ import fr.ickik.formulamath.model.Stats;
 
 /**
  * JFrame which displays all statistics about players. This frame disable the
- * calling frame the time the user close this frame. It display teh average distance
+ * calling frame the time the user close this frame. It display the average distance
  * per turn, the variance, the square type and a graphic which resume the number of
  * vector played during the game.
  * @author Ickik

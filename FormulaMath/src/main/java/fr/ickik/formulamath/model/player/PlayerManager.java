@@ -24,7 +24,7 @@ import fr.ickik.formulamath.model.map.Orientation;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.2.004, 22 mai 2012.
+ * @version 0.2.005, 4 June 2012.
  */
 public final class PlayerManager {
 
@@ -168,8 +168,8 @@ public final class PlayerManager {
 		mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
 		mapManager.getCase(endLineList.get(0).getY(), endLineList.get(0).getX()).setIdPlayer(p.getId());
 		fireUpdateCaseListener(p);
-		updateIndexPlayerGame();
 		addFinishPlayer(p, true);
+		updateIndexPlayerGame();
 		computerPlay();
 	}
 	

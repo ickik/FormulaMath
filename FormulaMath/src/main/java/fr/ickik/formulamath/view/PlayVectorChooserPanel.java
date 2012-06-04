@@ -26,7 +26,7 @@ import fr.ickik.formulamath.model.map.Field;
  * Panel creation class. It creates the panel for Human player to choose the
  * start position on the starting line.
  * @author Ickik
- * @version 0.1.002, 4 june 2012
+ * @version 0.1.002, 4 June 2012
  * @since 0.3
  */
 public final class PlayVectorChooserPanel {

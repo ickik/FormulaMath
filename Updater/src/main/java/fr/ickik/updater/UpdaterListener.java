@@ -6,7 +6,7 @@ package fr.ickik.updater;
  * @author Ickik
  * @version 0.1.000, 1 june 2012
  */
-interface UpdaterListener {
+public interface UpdaterListener {
 
 	/**
 	 * Update progress bar view with the value given in argument and display message

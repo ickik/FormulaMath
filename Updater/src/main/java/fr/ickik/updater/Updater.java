@@ -5,6 +5,8 @@ import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.ickik.updater.model.UpdateModel;
+
 /**
  * Main class which contains the main static method.
  * @author Ickik

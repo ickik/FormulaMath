@@ -1,4 +1,4 @@
-package fr.ickik.updater;
+package fr.ickik.updater.model;
 import java.awt.Desktop;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -24,6 +24,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import fr.ickik.updater.UpdaterListener;
+
 /**
  * The model which managed the update from a web server. It initializes the connection
  * and search the last release to update. It download and placed it in the right directory.
@@ -31,7 +33,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Ickik
  * @version 0.1.007, 1 june 2012
  */
-final class UpdateModel {
+public final class UpdateModel {
 
 	private final List<Version> versionList = new ArrayList<Version>();
 	private List<UpdaterListener> listenerList = new ArrayList<UpdaterListener>();

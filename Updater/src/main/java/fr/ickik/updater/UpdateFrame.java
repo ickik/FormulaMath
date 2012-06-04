@@ -6,6 +6,8 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
 
+import fr.ickik.updater.model.UpdateModel;
+
 /**
  * Frame displayed when an update is available. This frame is composed by a progress bar
  * that evolves with the download.

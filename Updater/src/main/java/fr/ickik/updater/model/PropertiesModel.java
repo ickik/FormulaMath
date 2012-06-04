@@ -1,4 +1,4 @@
-package fr.ickik.updater;
+package fr.ickik.updater.model;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,6 +11,7 @@ import java.util.BitSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
+
 
 /**
  * The game includes properties which are stored in a property file.

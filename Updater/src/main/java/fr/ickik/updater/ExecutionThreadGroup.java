@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  * @author Ickik
  * @version 0.1.000, 10 mai. 2012
  */
-final class ExecutionThreadGroup extends ThreadGroup {
+public final class ExecutionThreadGroup extends ThreadGroup {
 
 	private static final Logger log = LoggerFactory.getLogger(ExecutionThreadGroup.class);
 	

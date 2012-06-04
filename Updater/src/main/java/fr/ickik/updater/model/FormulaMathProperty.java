@@ -1,4 +1,4 @@
-package fr.ickik.updater;
+package fr.ickik.updater.model;
 
 /**
  * This enum lists all properties of the property file. It is used to store

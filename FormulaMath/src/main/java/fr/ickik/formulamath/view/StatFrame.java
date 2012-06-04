@@ -15,7 +15,6 @@ import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 
 import fr.ickik.formulamath.controler.FormulaMathController;
-import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.model.Stats;
 
 /**
@@ -24,7 +23,7 @@ import fr.ickik.formulamath.model.Stats;
  * per turn, the variance, the square type and a graphic which resume the number of
  * vector played during the game.
  * @author Ickik
- * @version 0.1.006, 1 june 2012
+ * @version 0.1.007, 4 June 2012
  */
 public final class StatFrame extends AbstractFormulaMathFrame {
 
@@ -47,9 +46,9 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 		getFrame().add(panel);
 	}
 	
-	public void display(int playerNumber, List<Player> finishPlayerList) {
+	public void display(List<Stats> statsList) {
 		statPanel.removeAll();
-		statPanel.add(displayStats(playerNumber, finishPlayerList));
+		statPanel.add(displayStats(statsList));
 		displayFrame();
 		getFrame().setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 	}
@@ -78,29 +77,26 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 		};
 	}
 	
-	private JScrollPane displayStats(int playerNumber, List<Player> finishPlayerList) {
-		JPanel statsPanel = new JPanel(new GridLayout(playerNumber, 1));
+	private JScrollPane displayStats(List<Stats> statsList) {
+		JPanel statsPanel = new JPanel(new GridLayout(statsList.size(), 1));
 //		for (int i = 0; i < playerNumber; i++) {
 //			Stats stats = new Stats(finishPlayerList.get(i));
 //			statsPanel.add(getPlayerStatsPanel(i, stats));
 //		}
 		int position = 1;
-		for (Player player : finishPlayerList) {
-			if (player != null) {
-				Stats stats = new Stats(player);
-				statsPanel.add(getPlayerStatsPanel(position, player, stats));
-				position++;
-			}
+		for (Stats stats : statsList) {
+			statsPanel.add(getPlayerStatsPanel(position, stats));
+			position++;
 		}
 		return new JScrollPane(statsPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	}
 	
-	private JPanel getPlayerStatsPanel(int position, Player player, Stats stats) {
+	private JPanel getPlayerStatsPanel(int position, Stats stats) {
 		JPanel panel = new JPanel(new GridLayout(1, 3));
 		JPanel panelLbl = new JPanel(new GridLayout(3, 2));
 
 		panelLbl.add(new JLabel("Numbre of move"));
-		panelLbl.add(new JLabel(Integer.toString(player.getPlayingCounter())));
+		panelLbl.add(new JLabel(Integer.toString(stats.getPlayer().getPlayingCounter())));
 		panelLbl.add(new JLabel("Average"));
 		panelLbl.add(new JLabel(Double.toString(stats.getAverageDistance())));
 		panelLbl.add(new JLabel("Variance"));
@@ -108,7 +104,7 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 		panelLbl.add(new JLabel("Square type"));
 		panelLbl.add(new JLabel(Double.toString(stats.getSquareType())));
 		
-		panel.add(new JLabel("Position " + Integer.toString(position) + "  " + player.getName() + "(" + Integer.toString(player.getId()) + ")"));
+		panel.add(new JLabel("Position " + Integer.toString(position) + "  " + stats.getPlayer().getName() + "(" + Integer.toString(stats.getPlayer().getId()) + ")"));
 		panel.add(panelLbl);
 		//panel.add(createGraph(stats.getVectorCountMap()));
 		return panel;

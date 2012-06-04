@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,6 +25,7 @@ import fr.ickik.formulamath.model.ChuckNorrisTimer;
 import fr.ickik.formulamath.model.FormulaMathProperty;
 import fr.ickik.formulamath.model.FormulaMathSaver;
 import fr.ickik.formulamath.model.PropertiesModel;
+import fr.ickik.formulamath.model.Stats;
 import fr.ickik.formulamath.model.map.MapDimension;
 import fr.ickik.formulamath.model.map.MapManager;
 import fr.ickik.formulamath.model.map.MapManagerConstructor;
@@ -146,7 +149,14 @@ public final class FormulaMathController {
 	
 	public void openStatFrame() {
 		mainFrame.disable();
-		statFrame.display(playerManager.getPlayerList().size(), playerManager.getFinishPositionList());
+		List<Stats> statsList = new ArrayList<Stats>(playerManager.getPlayerList().size());
+		for (Player p : playerManager.getFinishPositionList()) {
+			if (p != null) {
+				Stats stats = new Stats(p);
+				statsList.add(stats);
+			}
+		}
+		statFrame.display(statsList);
 	}
 	
 	public void closeStatFrame() {

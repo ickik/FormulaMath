@@ -10,19 +10,16 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import fr.ickik.formulamath.model.FormulaMathProperty;
-import fr.ickik.formulamath.model.PropertiesModel;
-
 /**
  * Abstract which define the default behavior of frames. This abstract class
  * contains common function for views.
  * @author Ickik
- * @version 0.1.005, 4 mai 2012
+ * @version 0.1.006, 5 June 2012
  */
 public abstract class AbstractFormulaMathFrame {
 
 	public static final String NAME = "FormulaMath";
-	public static final String VERSION = "0.3.1";
+	public static final String VERSION = "0.3.2";
 	private final JFrame frame;
 	
 	/**
@@ -41,7 +38,6 @@ public abstract class AbstractFormulaMathFrame {
 	}
 	
 	public void close() {
-		PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.VERSION);
 		frame.dispose();
 	}
 	

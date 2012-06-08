@@ -21,13 +21,8 @@
 		</encoder>
 	</appender>
 
-	<logger name="fr.ickik.formulamath" level="trace">
+	<root level="trace">
 		<appender-ref ref="FILE" />
 		<appender-ref ref="STDOUT" />
-	</logger>
-	
-	<root level="debug">
-		<!-- <appender-ref ref="FILE" />
-		<appender-ref ref="STDOUT" /> -->
 	</root>
 </configuration>

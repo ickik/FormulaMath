@@ -68,7 +68,7 @@ public final class PlayVectorChooserPanel {
 		int yTrayPanel =player.getPosition().getY() + distance;
 		log.trace("Player position :{}", player.getPosition().toString());
 		log.trace("Player position on map : ( {}, {} )", xTrayPanel, yTrayPanel);
-		for (int i = 0; i < vectorList.size(); i++) {
+		for (int i = 0; i < vectorList.size();) {
 			Vector v = vectorList.get(i);
 			JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
 			int y = getCoordinateLimit(yTrayPanel - v.getY(), mapSize);
@@ -82,6 +82,8 @@ public final class PlayVectorChooserPanel {
 			if (isGrassIntersection(line)) {
 				log.trace("{} intersects grass", vectorList.get(i).toString());
 				vectorList.remove(i);
+			} else {
+				i++;
 			}
 		}
 		if (vectorList.isEmpty()) {

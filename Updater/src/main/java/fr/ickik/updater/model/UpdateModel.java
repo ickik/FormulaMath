@@ -214,15 +214,14 @@ public final class UpdateModel {
 	}
 	
 	private String loadCurrentVersion() {
-		URL[] urlArray = null;
 		try {
-			urlArray = new URL[] {new File(APPLICATION + currentVersion + extension).toURI().toURL()};
+			URL[] urlArray = new URL[] {new File(APPLICATION + currentVersion + extension).toURI().toURL()};
 			ClassLoader classLoader = new URLClassLoader(urlArray);
 			Class<?> classe = Class.forName("fr.ickik.formulamath.view.AbstractFormulaMathFrame", false, classLoader);
 			Field field = classe.getDeclaredField("VERSION");
 			classe = null;
 			classLoader = null;
-			return (String) field.get(new String());
+			return (String) field.get(null);
 		} catch (MalformedURLException e) {
 			logger.error("loadCurrentVersion : {}", e.getMessage());
 		} catch (ClassNotFoundException e) {

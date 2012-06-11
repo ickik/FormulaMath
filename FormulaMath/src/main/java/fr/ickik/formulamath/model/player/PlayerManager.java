@@ -24,7 +24,7 @@ import fr.ickik.formulamath.model.map.Orientation;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.2.005, 4 June 2012.
+ * @version 0.2.006, 11 June 2012.
  */
 public final class PlayerManager {
 
@@ -169,7 +169,9 @@ public final class PlayerManager {
 		mapManager.getCase(endLineList.get(0).getY(), endLineList.get(0).getX()).setIdPlayer(p.getId());
 		fireUpdateCaseListener(p);
 		addFinishPlayer(p, true);
-		updateIndexPlayerGame();
+		if (!updateIndexPlayerGame()) {
+			return ;
+		}
 		computerPlay();
 	}
 	
@@ -365,7 +367,9 @@ public final class PlayerManager {
 			p.getVector().setX(vector.getX());
 			p.getVector().setY(vector.getY());
 			mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(p.getId());
-			updateIndexPlayerGame();
+			if (!updateIndexPlayerGame()) {
+				return;
+			}
 		}
 		fireDisplayPlayerMovePossibilities();
 	}
@@ -422,16 +426,17 @@ public final class PlayerManager {
 		return Math.min(nbMore, Math.min(nbLess, nbEqual));
 	}
 	
-	private void updateIndexPlayerGame() {
+	private boolean updateIndexPlayerGame() {
 		if (playerList.size() == getNumberOfFinishPlayer()) {
 			log.debug("updateIndexPlayerGame : the players have finished");
 			fireEndGameListener();
-			return ;
+			return false;
 		}
 		do {
 			indexPlayerGame++;
 			indexPlayerGame = indexPlayerGame % playerList.size();
 		} while(finishPositionList.contains(playerList.get(indexPlayerGame)));
+		return true;
 	}
 	
 	private int getNumberOfFinishPlayer() {

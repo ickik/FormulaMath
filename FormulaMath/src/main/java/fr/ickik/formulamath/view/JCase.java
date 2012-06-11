@@ -30,6 +30,7 @@ public class JCase extends JComponent {
 	private Rectangle2D shape;
 	private final CaseModel model;
 	private static final Color[] colorList = new Color[] { Color.RED, Color.BLACK, Color.BLUE, Color.YELLOW };
+	private final Dimension dimension;
 	
 	/**
 	 * Constructor of the component. The size in pixel must be parameterized and
@@ -40,7 +41,8 @@ public class JCase extends JComponent {
 	public JCase(int size, CaseModel model) {
 		this.model = model;
 		setOpaque(true);
-		setSize(new Dimension(size, size));
+		this.dimension = new Dimension(size, size);
+		setSize(dimension);
 		shape = new Rectangle2D.Double(0.0, 0.0, size, size);
 	}
 
@@ -108,6 +110,10 @@ public class JCase extends JComponent {
 		return model;
 	}
 	
+	public Rectangle2D getShape() {
+		return shape;
+	}
+	
 	@Override
 	public void setSize(Dimension d) {
 		super.setSize(d);
@@ -115,7 +121,28 @@ public class JCase extends JComponent {
 		setMaximumSize(d);
 		setPreferredSize(d);
 		shape = new Rectangle2D.Double(0.0, 0.0, d.getWidth(), d.getHeight());
+		dimension.setSize(d);
 		repaint();
 	}
+	
+	@Override
+	public void setMaximumSize(Dimension maximumSize) {}
+	
+	@Override
+	public void setMinimumSize(Dimension minimumSize) {}
 
+	@Override
+	public Dimension getMaximumSize() {
+		return getSize();
+	}
+	
+	@Override
+	public Dimension getMinimumSize() {
+		return getSize();
+	}
+	
+	@Override
+	public Dimension getSize() {
+		return dimension;
+	}
 }

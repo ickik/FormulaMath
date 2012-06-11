@@ -1,7 +1,6 @@
 package fr.ickik.formulamath.view;
 
 import java.awt.GridLayout;
-import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Line2D;
@@ -26,7 +25,7 @@ import fr.ickik.formulamath.model.map.Field;
  * Panel creation class. It creates the panel for Human player to choose the
  * start position on the starting line.
  * @author Ickik
- * @version 0.1.002, 4 June 2012
+ * @version 0.1.003, 11 June 2012
  * @since 0.3
  */
 public final class PlayVectorChooserPanel {
@@ -71,13 +70,13 @@ public final class PlayVectorChooserPanel {
 		for (int i = 0; i < vectorList.size();) {
 			Vector v = vectorList.get(i);
 			JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
-			int y = getCoordinateLimit(yTrayPanel - v.getY(), mapSize);
-			int x = getCoordinateLimit(xTrayPanel + v.getX(), mapSize);
+			int y = getCoordinateLimit(yTrayPanel - v.getY(), distance);
+			int x = getCoordinateLimit(xTrayPanel + v.getX(), distance);
 			log.debug("solution : {}", vectorList.get(i).toString());
 			log.trace("Player final  position on map : ( {}, {} )", x, y);
 
 			JCase c2 = caseArrayList.get(y).get(x);
-			Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
+			Line2D line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
 			log.trace("Vector's line on map from ( {}, {} ) to ( {} , {} )", new Object[]{c.getX(), c.getY(), c2.getX(), c2.getY()});
 			if (isGrassIntersection(line)) {
 				log.trace("{} intersects grass", vectorList.get(i).toString());
@@ -123,11 +122,14 @@ public final class PlayVectorChooserPanel {
 				int yTrayPanel = player.getPosition().getY() + distance;
 				log.trace("Player's position in the map ({},{})", xTrayPanel, yTrayPanel);
 				JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
-				int x = getCoordinateLimit(xTrayPanel + vector.getX(), mapSize);
-				int y = getCoordinateLimit(yTrayPanel - vector.getY(), mapSize);
-
+				int x = getCoordinateLimit(xTrayPanel + vector.getX(), mapSize + distance);
+				int y = getCoordinateLimit(yTrayPanel - vector.getY(), mapSize + distance);
+				log.trace("Player's new position in the map ({},{})", x, y);
+				
 				JCase c2 = caseArrayList.get(y).get(x);
-				Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
+				log.trace("Case1 ({}, {})", c.getX(), c.getY());
+				log.trace("Case1 ({}, {})", c2.getX(), c2.getY());
+				Line2D line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
 
 				if (isEndLineIntersection(line)) {
 					log.debug("End line intersection, lastPlay is called");
@@ -160,22 +162,27 @@ public final class PlayVectorChooserPanel {
 		return -1;
 	}
 	
-	private boolean isGrassIntersection(Shape shape) {
+	private boolean isGrassIntersection(Line2D shape) {
 		log.debug("call isGrassIntersection method");
 		return checkIntersection(shape, Field.GRASS);
 	}
 	
-	private boolean isEndLineIntersection(Shape shape) {
+	private boolean isEndLineIntersection(Line2D shape) {
 		log.debug("isEndLineIntersection {} {}", shape.getBounds().getLocation().toString(), shape.getBounds().getSize().toString());
 		return checkIntersection(shape, Field.FINISHING_LINE);
 	}
 	
-	private boolean checkIntersection(Shape shape, Field terrain) {
+	private boolean checkIntersection(Line2D shape, Field terrain) {
 		for (List<JCase> caseList : caseArrayList) {
 			for (JCase c : caseList) {
 				if (c.getModel() != null && c.getModel().getField() == terrain) {
-					if (shape.intersects(c.getX(), c.getY(), c.getWidth(), c.getHeight())) {
-						log.debug("intersection found for shape and {} on ( {}, {} )", new Object[]{terrain, c.getX(), c.getY()});
+					//log.debug("Case ({}, {}) size ({}, {}) verify ({}, {}) size ({}, {})", new Object[]{c.getX(), c.getY(), c.getWidth(), c.getHeight(), shape.getBounds2D().getX(), shape.getBounds2D().getY(),shape.getBounds2D().getWidth(), shape.getBounds2D().getHeight() });
+					//log.trace("shape.intersectsLine() = {}", shape.intersectsLine(c.getX(), c.getY(), c.getX() + c.getWidth(), c.getY() + c.getHeight()));
+					//log.trace("shape.intersectsLine2() = {}", shape.intersectsLine(c.getX() + c.getWidth(), c.getY(), c.getX(), c.getY() + c.getHeight()));
+					boolean result1 =shape.intersectsLine(c.getX(), c.getY(), c.getX() + c.getWidth(), c.getY() + c.getHeight());
+					boolean result2 = shape.intersectsLine(c.getX() + c.getWidth(), c.getY(), c.getX(), c.getY() + c.getHeight());
+					if (result1 || result2) {
+						log.info("intersection found for shape and {} on ( {}, {} )", new Object[]{terrain, c.getX(), c.getY()});
 						return true;
 					}
 				}

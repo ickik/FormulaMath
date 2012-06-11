@@ -62,16 +62,16 @@ public final class PlayVectorChooserPanel {
 		this.caseArrayList = caseArrayList;
 		ButtonGroup group = new ButtonGroup();
 
-		int distance = (caseArrayList.size() - mapSize) / 2;
-		int xTrayPanel = player.getPosition().getX() + distance;
-		int yTrayPanel =player.getPosition().getY() + distance;
+		int marge = MainFrame.MAP_MARGIN / 2;
+		int xTrayPanel = player.getPosition().getX() + marge;
+		int yTrayPanel = player.getPosition().getY() + marge;
 		log.trace("Player position :{}", player.getPosition().toString());
 		log.trace("Player position on map : ( {}, {} )", xTrayPanel, yTrayPanel);
 		for (int i = 0; i < vectorList.size();) {
 			Vector v = vectorList.get(i);
 			JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
-			int y = getCoordinateLimit(yTrayPanel - v.getY(), distance);
-			int x = getCoordinateLimit(xTrayPanel + v.getX(), distance);
+			int y = getCoordinateLimit(yTrayPanel - v.getY(), mapSize);
+			int x = getCoordinateLimit(xTrayPanel + v.getX(), mapSize);
 			log.debug("solution : {}", vectorList.get(i).toString());
 			log.trace("Player final  position on map : ( {}, {} )", x, y);
 
@@ -117,13 +117,13 @@ public final class PlayVectorChooserPanel {
 					button.setEnabled(false);
 				}
 				log.trace("checkbox disabled!");//peut etre mettre le test de fin de ligne dans le model
-				int distance = (caseArrayList.size() - mapSize) / 2;
-				int xTrayPanel = player.getPosition().getX() + distance;
-				int yTrayPanel = player.getPosition().getY() + distance;
+				int marge = MainFrame.MAP_MARGIN / 2;
+				int xTrayPanel = player.getPosition().getX() + marge;
+				int yTrayPanel = player.getPosition().getY() + marge;
 				log.trace("Player's position in the map ({},{})", xTrayPanel, yTrayPanel);
 				JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
-				int x = getCoordinateLimit(xTrayPanel + vector.getX(), mapSize + distance);
-				int y = getCoordinateLimit(yTrayPanel - vector.getY(), mapSize + distance);
+				int x = getCoordinateLimit(xTrayPanel + vector.getX(), mapSize);
+				int y = getCoordinateLimit(yTrayPanel - vector.getY(), mapSize);
 				log.trace("Player's new position in the map ({},{})", x, y);
 				
 				JCase c2 = caseArrayList.get(y).get(x);
@@ -145,9 +145,9 @@ public final class PlayVectorChooserPanel {
 	
 	private int getCoordinateLimit(int coordinate, int mapSize) {
 		if (coordinate < 0) {
-			return 0;
+			return MainFrame.MAP_MARGIN / 2;
 		} else if (coordinate >= mapSize) {
-			return mapSize - 1;
+			return mapSize + (MainFrame.MAP_MARGIN / 2) - 1;
 		}
 		return coordinate;
 	}

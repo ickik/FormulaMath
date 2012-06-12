@@ -109,11 +109,7 @@ public class JCase extends JComponent {
 	public CaseModel getModel() {
 		return model;
 	}
-	
-	public Rectangle2D getShape() {
-		return shape;
-	}
-	
+
 	@Override
 	public void setSize(Dimension d) {
 		super.setSize(d);

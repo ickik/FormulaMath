@@ -24,7 +24,7 @@ import fr.ickik.formulamath.model.map.Orientation;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.2.006, 11 June 2012.
+ * @version 0.2.007, 12 June 2012.
  */
 public final class PlayerManager {
 
@@ -134,18 +134,9 @@ public final class PlayerManager {
 		log.debug("Vector to play : {}", vector.toString());
 		mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
 		p.incrementPlayingCounter();
-		int x = p.getPosition().getX() + vector.getX();
-		int y = p.getPosition().getY() - vector.getY();
-		if (x < 0) {
-			x = 0;
-		} else if (x >= mapManager.getMapSize()) {
-			x = mapManager.getMapSize() - 1;
-		}
-		if (y < 0) {
-			x = 0;
-		} else if (y >= mapManager.getMapSize()) {
-			y = mapManager.getMapSize() - 1;
-		}
+		int x = getCoordinateLimit(p.getPosition().getX() + vector.getX());
+		int y = getCoordinateLimit(p.getPosition().getY() - vector.getY());
+		
 		p.getPosition().setX(x);
 		p.getPosition().setY(y);
 		p.getVector().setX(vector.getX());
@@ -154,6 +145,15 @@ public final class PlayerManager {
 		fireUpdateCaseListener(p);
 		updateIndexPlayerGame();
 		computerPlay();
+	}
+	
+	private int getCoordinateLimit(int coordinate) {
+		if (coordinate < 0) {
+			return 0;
+		} else if (coordinate >= mapManager.getMapSize()) {
+			return mapManager.getMapSize() - 1;
+		}
+		return coordinate;
 	}
 	
 	/**
@@ -356,7 +356,6 @@ public final class PlayerManager {
 						CaseModel model = mapManager.getCase(p.getPosition().getY() - j, p.getPosition().getX() + i);
 						if (model.getField() == Field.FINISHING_LINE) {
 							lastPlay(new Vector(i, j));
-							//fireEndGameListener();
 							return;
 						}
 					}
@@ -366,6 +365,7 @@ public final class PlayerManager {
 			p.getPosition().setY(p.getPosition().getY() - vector.getY());
 			p.getVector().setX(vector.getX());
 			p.getVector().setY(vector.getY());
+			p.incrementPlayingCounter();
 			mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(p.getId());
 			if (!updateIndexPlayerGame()) {
 				return;
@@ -587,6 +587,7 @@ public final class PlayerManager {
 					p.getPosition().setY(p.getPosition().getY() - vector.getY());
 					p.getVector().setX(vector.getX());
 					p.getVector().setY(vector.getY());
+					p.incrementPlayingCounter();
 					mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(p.getId());
 					updateIndexPlayerGame();
 					log.debug("AI new position {}", p.getPosition().toString());

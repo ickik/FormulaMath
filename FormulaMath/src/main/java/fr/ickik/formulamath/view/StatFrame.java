@@ -93,7 +93,7 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 	
 	private JPanel getPlayerStatsPanel(int position, Stats stats) {
 		JPanel panel = new JPanel(new GridLayout(1, 3));
-		JPanel panelLbl = new JPanel(new GridLayout(3, 2));
+		JPanel panelLbl = new JPanel(new GridLayout(4, 2));
 
 		panelLbl.add(new JLabel("Numbre of move"));
 		panelLbl.add(new JLabel(Integer.toString(stats.getPlayer().getPlayingCounter())));
@@ -104,7 +104,7 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 		panelLbl.add(new JLabel("Square type"));
 		panelLbl.add(new JLabel(Double.toString(stats.getSquareType())));
 		
-		panel.add(new JLabel("Position " + Integer.toString(position) + "  " + stats.getPlayer().getName() + "(" + Integer.toString(stats.getPlayer().getId()) + ")"));
+		panel.add(new JLabel("Position " + Integer.toString(position) + "  " + stats.getPlayer().getName() + " (" + Integer.toString(stats.getPlayer().getId()) + ")"));
 		panel.add(panelLbl);
 		//panel.add(createGraph(stats.getVectorCountMap()));
 		return panel;

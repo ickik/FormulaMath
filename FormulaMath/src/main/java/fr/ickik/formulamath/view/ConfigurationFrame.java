@@ -117,19 +117,30 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 				log.trace("number of player selected : {}", numberOfPlayerSelected);
 				
 				for (int i = 0; i < numberOfPlayerSelected; i++) {//Si aucun joueur n'est selectionné, par defaut il est CPU
-					PlayerType type;
-					if (togglePlayerTypeList.get(i).isSelected()) {
-						type = PlayerType.HUMAN;
-						PropertiesModel.getSingleton().put(typePropertyArray[i], Boolean.TRUE.toString());
-					} else {
-						PropertiesModel.getSingleton().put(typePropertyArray[i], Boolean.FALSE.toString());
-						type = PlayerType.COMPUTER;
-					}
-					PropertiesModel.getSingleton().put(namePropertyArray[i], nameTextFieldList.get(i).getText());
-					controller.addPlayer(type, nameTextFieldList.get(i).getText());
+					PlayerType type = getPlayerType(i);
+					String name =  getName(i);
+					controller.addPlayer(type, name);
 				}
 				controller.closeConfigurationFrame();
-			}};
+			}
+		};
+	}
+	
+	private PlayerType getPlayerType(int index) {
+		if (togglePlayerTypeList.get(index).isSelected()) {
+			PropertiesModel.getSingleton().put(typePropertyArray[index], Boolean.TRUE.toString());
+			return PlayerType.HUMAN;
+		}
+		PropertiesModel.getSingleton().put(typePropertyArray[index], Boolean.FALSE.toString());
+		return PlayerType.COMPUTER;
+	}
+	
+	private String getName(int index) {
+		String name =  nameTextFieldList.get(index).getText();
+		if (name != null | !name.isEmpty()) {
+			PropertiesModel.getSingleton().put(namePropertyArray[index], name);
+		}
+		return name;
 	}
 	
 	private boolean isHumanPlayer() {

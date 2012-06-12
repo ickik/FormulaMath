@@ -25,6 +25,8 @@ import org.slf4j.LoggerFactory;
 
 import fr.ickik.formulamath.FormulaMathException;
 import fr.ickik.formulamath.controler.FormulaMathController;
+import fr.ickik.formulamath.model.FormulaMathProperty;
+import fr.ickik.formulamath.model.PropertiesModel;
 import fr.ickik.formulamath.model.map.MapDimension;
 import fr.ickik.formulamath.model.player.PlayerManager;
 import fr.ickik.formulamath.model.player.PlayerType;
@@ -34,7 +36,7 @@ import fr.ickik.formulamath.model.player.PlayerType;
  * The user can choose between Human and Computer players;
  * give a name to every player.
  * @author Ickik.
- * @version 0.2.004, 5 June 2012
+ * @version 0.2.005, 12 June 2012
  */
 public class ConfigurationFrame extends AbstractFormulaMathFrame {
 
@@ -44,6 +46,10 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 	private final Logger log = LoggerFactory.getLogger(ConfigurationFrame.class);
 	private int numberOfPlayerSelected = 1;
 	private int dimensionMapItem = 1;
+	private final FormulaMathProperty[] namePropertyArray = {FormulaMathProperty.PLAYER1_NAME, FormulaMathProperty.PLAYER2_NAME, 
+			FormulaMathProperty.PLAYER3_NAME, FormulaMathProperty.PLAYER4_NAME};
+	private final FormulaMathProperty[] typePropertyArray = {FormulaMathProperty.PLAYER1_TYPE, FormulaMathProperty.PLAYER2_TYPE, 
+			FormulaMathProperty.PLAYER3_TYPE, FormulaMathProperty.PLAYER4_TYPE};
 	//private int computerLevel = 1;
 	private final FormulaMathController controller;
 
@@ -114,9 +120,12 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 					PlayerType type;
 					if (togglePlayerTypeList.get(i).isSelected()) {
 						type = PlayerType.HUMAN;
+						PropertiesModel.getSingleton().put(typePropertyArray[i], Boolean.TRUE.toString());
 					} else {
+						PropertiesModel.getSingleton().put(typePropertyArray[i], Boolean.FALSE.toString());
 						type = PlayerType.COMPUTER;
 					}
+					PropertiesModel.getSingleton().put(namePropertyArray[i], nameTextFieldList.get(i).getText());
 					controller.addPlayer(type, nameTextFieldList.get(i).getText());
 				}
 				controller.closeConfigurationFrame();
@@ -242,6 +251,7 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 		JPanel panel = new JPanel();
 		GridLayout gridLayout = new GridLayout(PlayerManager.NUMBER_OF_PLAYER_MAX, 3);
 		panel.setLayout(gridLayout);
+		
 		for (int i = 0; i < PlayerManager.NUMBER_OF_PLAYER_MAX; i++) {
 			JToggleButton button = toggleButtonFactory();
 			togglePlayerTypeList.add(button);
@@ -249,15 +259,14 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 			JLabel lbl = new JLabel("Name : ");
 			panel.add(lbl);
 			labelList.add(lbl);
-			JTextField name = new JTextField();
+			JTextField name = new JTextField(PropertiesModel.getSingleton().getProperty(namePropertyArray[i]));
 			nameTextFieldList.add(name);
 			panel.add(name);
+			button.setSelected(Boolean.parseBoolean(PropertiesModel.getSingleton().getProperty(typePropertyArray[i])));
 			if (i != 0) {
 				button.setEnabled(false);
 				lbl.setEnabled(false);
 				name.setEnabled(false);
-			} else {
-				button.setSelected(true);
 			}
 		}
 		return panel;

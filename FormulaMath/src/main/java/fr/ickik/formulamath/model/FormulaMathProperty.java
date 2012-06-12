@@ -6,7 +6,7 @@ import fr.ickik.formulamath.view.AbstractFormulaMathFrame;
  * This enum lists all properties of the property file. It is used to store
  * player's data.
  * @author Ickik.
- * @version 0.1.006, 1 june 2012.
+ * @version 0.1.007, 12 June 2012.
  */
 public enum FormulaMathProperty {
 
@@ -70,6 +70,103 @@ public enum FormulaMathProperty {
 			return "01/01/12";
 		}
 		
+	},
+	
+	
+	PLAYER1_NAME {
+		@Override
+		public String toString() {
+			return "player1.name";
+		}
+
+		@Override
+		public String getDefaultValue() {
+			return "John";
+		}
+	},
+	
+	PLAYER2_NAME {
+		@Override
+		public String toString() {
+			return "player2.name";
+		}
+
+		@Override
+		public String getDefaultValue() {
+			return "Dick";
+		}
+	},
+	
+	PLAYER3_NAME {
+		@Override
+		public String toString() {
+			return "player3.name";
+		}
+
+		@Override
+		public String getDefaultValue() {
+			return "Malcolm";
+		}
+	},
+	
+	PLAYER4_NAME {
+		@Override
+		public String toString() {
+			return "player4.name";
+		}
+
+		@Override
+		public String getDefaultValue() {
+			return "Todd";
+		}
+	},
+	
+	PLAYER1_TYPE {
+		@Override
+		public String toString() {
+			return "player1.type.human";
+		}
+
+		@Override
+		public String getDefaultValue() {
+			return Boolean.TRUE.toString();
+		}
+	},
+	
+	PLAYER2_TYPE {
+		@Override
+		public String toString() {
+			return "player2.type.human";
+		}
+
+		@Override
+		public String getDefaultValue() {
+			return Boolean.FALSE.toString();
+		}
+	},
+	
+	PLAYER3_TYPE {
+		@Override
+		public String toString() {
+			return "player3.type.human";
+		}
+
+		@Override
+		public String getDefaultValue() {
+			return Boolean.FALSE.toString();
+		}
+	},
+	
+	PLAYER4_TYPE {
+		@Override
+		public String toString() {
+			return "player4.type.human";
+		}
+
+		@Override
+		public String getDefaultValue() {
+			return Boolean.FALSE.toString();
+		}
 	},
 	
 	/**

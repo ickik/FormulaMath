@@ -1,6 +1,9 @@
 package fr.ickik.formulamath.view;
 
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.util.Arrays;
 import java.util.List;
@@ -14,7 +17,7 @@ import javax.swing.SwingUtilities;
  * Abstract which define the default behavior of frames. This abstract class
  * contains common function for views.
  * @author Ickik
- * @version 0.1.006, 5 June 2012
+ * @version 0.1.007, 12 June 2012
  */
 public abstract class AbstractFormulaMathFrame {
 
@@ -75,11 +78,18 @@ public abstract class AbstractFormulaMathFrame {
 	 * Centered the JFrame in the screen.
 	 */
 	private void centeredFrame() {
-		double w = frame.getWidth();
-		double h = frame.getHeight();
-		double l = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-		double l2 = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-		frame.setLocation((int) (l / 2 - w / 2), (int)(l2 / 2 - h / 2));
+		if (frame.getExtendedState() != JFrame.MAXIMIZED_BOTH) {
+			GraphicsConfiguration gconf = GraphicsEnvironment.getLocalGraphicsEnvironment()
+					.getDefaultScreenDevice().getDefaultConfiguration();
+	
+			Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(gconf);
+			int w = frame.getWidth();
+			int h = frame.getHeight();
+			double l = Toolkit.getDefaultToolkit().getScreenSize().getWidth() - insets.left - insets.right - 2;
+			double l2 = Toolkit.getDefaultToolkit().getScreenSize().getHeight() - insets.top - insets.bottom - 2;
+			frame.setSize(w, h);
+			frame.setLocation((int) (l / 2 - w / 2), (int)(l2 / 2 - h / 2));
+		}
 	}
 	
 	public void disable() {

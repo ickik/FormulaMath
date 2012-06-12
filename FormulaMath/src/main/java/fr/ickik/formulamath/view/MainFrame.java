@@ -118,6 +118,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		mainFrame.add(getSplitPane(), BorderLayout.CENTER);
 		mainFrame.setJMenuBar(getMenuBar());
+		
 		mainFrame.addWindowListener(new WindowListener() {
 			
 			@Override

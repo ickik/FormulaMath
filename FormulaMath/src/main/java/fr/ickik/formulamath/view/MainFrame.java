@@ -214,6 +214,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	private JPanel getDirectionalPanel() {
 		JPanel panel = new JPanel(new GridLayout(3, 3));
 		JButton up = new JButton("↑");//, new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/up.png")));
+		//up.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/up_pressed.png")));
 		up.addActionListener(new ActionListener() {
 			
 			@Override
@@ -223,6 +224,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			}
 		});
 		JButton down = new JButton("↓");//, new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/down.png")));
+//		down.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/down_pressed.png")));
 		down.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -231,6 +233,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			}
 		});
 		JButton left = new JButton("←");//, new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/left.png")));
+//		left.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/left_pressed.png")));
 		left.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -239,6 +242,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			}
 		});
 		JButton right = new JButton("→");//, new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/right.png")));
+//		right.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/right_pressed.png")));
 		right.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {

@@ -72,7 +72,7 @@ public final class FirstMovePanel {
 					return;
 				}
 				log.trace("values entered in the both textfield are correct");
-				int distance = (caseArrayList.size() - mapSize) / 2;
+				int distance = MainFrame.MAP_MARGIN / 2;
 				int xMoving = getValue(xField);
 				int yMoving = getValue(yField);
 				log.debug("Vector ({}, {})", xMoving, yMoving);

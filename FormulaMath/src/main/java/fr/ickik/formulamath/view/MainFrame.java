@@ -274,28 +274,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				model.setValue(model.getValue() + value);
 			}
 		};
-		button.addMouseListener(new MouseListener() {
-			
-			final Timer timer = new Timer(500, listener);
-			@Override
-			public void mouseReleased(MouseEvent arg0) {
-				timer.stop();
-			}
-			
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-				timer.start();
-			}
-			
-			@Override
-			public void mouseExited(MouseEvent arg0) {}
-			
-			@Override
-			public void mouseEntered(MouseEvent arg0) {}
-			
-			@Override
-			public void mouseClicked(MouseEvent arg0) {}
-		});
+		button.addMouseListener(getDirectionMouseListener(listener));
 		return listener;
 	}
 	
@@ -308,7 +287,12 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				vModel.setValue(vModel.getValue() + value);
 			}
 		};
-		button.addMouseListener(new MouseListener() {
+		button.addMouseListener(getDirectionMouseListener(listener));
+		return listener;
+	}
+	
+	private MouseListener getDirectionMouseListener(final ActionListener listener) {
+		return new MouseListener() {
 			
 			final Timer timer = new Timer(500, listener);
 			@Override
@@ -329,8 +313,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			
 			@Override
 			public void mouseClicked(MouseEvent arg0) {}
-		});
-		return listener;
+		};
 	}
 	
 	private JButton disabledButtonFactory() {

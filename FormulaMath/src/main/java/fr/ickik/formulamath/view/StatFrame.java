@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
 
 import fr.ickik.formulamath.controler.FormulaMathController;
@@ -88,7 +89,7 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 			statsPanel.add(getPlayerStatsPanel(position, stats));
 			position++;
 		}
-		return new JScrollPane(statsPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		return new JScrollPane(statsPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	}
 	
 	private JPanel getPlayerStatsPanel(int position, Stats stats) {

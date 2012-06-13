@@ -67,6 +67,45 @@ public final class MapManager {
 		return Field.GRASS;
 	}
 	
+	private void landscapeInitialization() {
+		int x = getRandomNumber(mapSize);
+		int y = getRandomNumber(mapSize);
+		CaseModel model = carte.get(y).get(x);
+		Field field = getRandomField();
+		model.setField(field);
+		/*if (f == Field.SAND) {
+			
+		} else if (f == Field.WATER) {
+			
+		}*/
+		partLandscapeInitialization(x, y, field);
+	}
+	
+	private void partLandscapeInitialization(int x, int y, Field field) {
+		for (int i = -1; i <= 1; i++) {
+			for (int j = -1; j <= 1; j++) {
+				if (i != 0 && j != 0) {
+					if (isModelAvailalble(x + i, y + j)) {
+						CaseModel model = carte.get(y + j).get(x + i);
+						if (model.getField() == Field.GRASS) {
+							model.setField(field);
+							partLandscapeInitialization(x + i, y + j, field);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	private boolean isModelAvailalble(int x, int y) {
+		if (x >= 0 || x < mapSize) {
+			if (y >= 0 || y < mapSize) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * Reinitializes of variable to play again.
 	 */

@@ -5,7 +5,7 @@ import java.awt.Color;
 /**
  * Type of field displayed in the map.
  * @author Ickik.
- * @version 0.1.002, 24 apr 2012.
+ * @version 0.1.003, 13 June 2012.
  */
 public enum Field {
 
@@ -37,6 +37,16 @@ public enum Field {
 		@Override
 		public Color getColor() {
 			return new Color(255, 255, 100);
+		}
+	},
+	
+	/**
+	 * Water like sea or loch.
+	 */
+	WATER(3) {
+		@Override
+		public Color getColor() {
+			return Color.BLUE;
 		}
 	},
 

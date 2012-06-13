@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import fr.ickik.formulamath.FormulaMathException;
 import fr.ickik.formulamath.controler.FormulaMathController;
 import fr.ickik.formulamath.model.FormulaMathProperty;
+import fr.ickik.formulamath.model.JTextFieldLimit;
 import fr.ickik.formulamath.model.PropertiesModel;
 import fr.ickik.formulamath.model.map.MapDimension;
 import fr.ickik.formulamath.model.player.PlayerManager;

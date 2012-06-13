@@ -24,7 +24,7 @@ import fr.ickik.formulamath.model.map.Orientation;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.2.007, 12 June 2012.
+ * @version 0.2.008, 13 June 2012.
  */
 public final class PlayerManager {
 
@@ -58,7 +58,7 @@ public final class PlayerManager {
 	 */
 	public void addPlayer(Player player) {
 		if (player == null) {
-			log.warn("Trying to add nul player in the player list");
+			log.warn("Trying to add null player in the player list");
 			return;
 		}
 		playerList.add(player);
@@ -166,7 +166,11 @@ public final class PlayerManager {
 		Player p = getCurrentPlayer();
 		p.incrementPlayingCounter();
 		mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
-		mapManager.getCase(endLineList.get(0).getY(), endLineList.get(0).getX()).setIdPlayer(p.getId());
+		Position endLinePosition = getIntersectionPosition(vector);
+		log.debug("End position found : {}", endLinePosition);
+		int index = endLineList.indexOf(endLinePosition);
+		log.debug("Index in the list : {}", Integer.toString(index));
+		mapManager.getCase(endLineList.get(index).getY(), endLineList.get(index).getX()).setIdPlayer(p.getId());
 		fireUpdateCaseListener(p);
 		addFinishPlayer(p, true);
 		if (!updateIndexPlayerGame()) {
@@ -174,6 +178,54 @@ public final class PlayerManager {
 		}
 		computerPlay();
 	}
+	
+	private Position getIntersectionPosition(Vector vector) {
+		Position f1 = mapManager.getFinishingLinePositionList().get(0);
+		Position f2 = mapManager.getFinishingLinePositionList().get(mapManager.getFinishingLinePositionList().size() - 1);
+		Vector f1f2 = new Vector(f2.getX() - f1.getX(), f2.getY() - f1.getY());
+		Player p = getCurrentPlayer();
+		Position p1 = p.getPosition();
+		int divider = vector.getX() * f1f2.getY() - vector.getY() * f1f2.getX();
+		int m = - (vector.getX() * p1.getY() + vector.getX() * f1.getY() + vector.getY() * p1.getX() - vector.getY() * f1.getX()) / divider;
+		int k = - (p1.getX() * f1f2.getY() - f1.getX() * f1f2.getY() - f1f2.getX() * p1.getY() + f1f2.getX() * f1.getY()) / divider;
+		if (m > 0 && m < 1 && k > 0 && k < 1) {
+			return new Position(f1.getX() + m * f1f2.getX(), f1.getY() + m * f1f2.getX());
+		}
+		return null;
+	}
+	
+	/*
+	 * Je vous propose une solution paramétrique :
+Soit le segment [AB], et le segment [CD].
+Je note I le vecteur AB, et J le vecteur CD
+
+Soit k le parametre du point d'intersection du segment CD sur la droite AB. on sera sur le segment si 0<k<1
+Soit m le parametre du point d'intersection du segment AB sur la droite CD, on sera sur le segment si 0<m<1
+
+Soit P le point d'intersction
+P = A + k*I; // equation (1)
+P = C + m*J;
+
+D'ou :
+A + k*I = C + m*J
+
+On décompose les points et vecteurs, on a :
+Ax + k*Ix = Cx + m*Jx
+Ay + k*Iy = Cy + m*Jy
+
+2 équations, 2 inconnues, en résolvant, on trouve :
+
+m = -(-Ix*Ay+Ix*Cy+Iy*Ax-Iy*Cx)/(Ix*Jy-Iy*Jx)
+k = -(Ax*Jy-Cx*Jy-Jx*Ay+Jx*Cy)/(Ix*Jy-Iy*Jx)
+
+(Notez que les dénominateurs sont les meme)
+Attention, si Ix*Jy-Iy*Jx = 0 , alors les droites sont paralleles, pas d'intersection.
+Sinon, on trouve m et k
+
+On vérifie que 0<m<1 et 0<k<1 --> sinon, cela veut dire que les droites s'intersectent, mais pas au niveau du segment.
+
+Ensuite, pour retrouver P, on réinjecte m ou k dans une des 2 équations (1)
+*/
 	
 	private void addFinishPlayer(Player p, boolean isWinning) {
 		int begin, end;

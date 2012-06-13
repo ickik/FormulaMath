@@ -176,9 +176,6 @@ public final class PlayVectorChooserPanel {
 		for (List<JCase> caseList : caseArrayList) {
 			for (JCase c : caseList) {
 				if (c.getModel() != null && c.getModel().getField() == terrain) {
-					//log.debug("Case ({}, {}) size ({}, {}) verify ({}, {}) size ({}, {})", new Object[]{c.getX(), c.getY(), c.getWidth(), c.getHeight(), shape.getBounds2D().getX(), shape.getBounds2D().getY(),shape.getBounds2D().getWidth(), shape.getBounds2D().getHeight() });
-					//log.trace("shape.intersectsLine() = {}", shape.intersectsLine(c.getX(), c.getY(), c.getX() + c.getWidth(), c.getY() + c.getHeight()));
-					//log.trace("shape.intersectsLine2() = {}", shape.intersectsLine(c.getX() + c.getWidth(), c.getY(), c.getX(), c.getY() + c.getHeight()));
 					boolean result1 =shape.intersectsLine(c.getX(), c.getY(), c.getX() + c.getWidth(), c.getY() + c.getHeight());
 					boolean result2 = shape.intersectsLine(c.getX() + c.getWidth(), c.getY(), c.getX(), c.getY() + c.getHeight());
 					if (result1 || result2) {

@@ -36,7 +36,7 @@ import fr.ickik.formulamath.model.player.PlayerType;
  * The user can choose between Human and Computer players;
  * give a name to every player.
  * @author Ickik.
- * @version 0.2.005, 12 June 2012
+ * @version 0.2.006, 13 June 2012
  */
 public class ConfigurationFrame extends AbstractFormulaMathFrame {
 
@@ -116,7 +116,7 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 				controller.initManager(MapDimension.values()[dimensionMapItem].getValue());
 				log.trace("number of player selected : {}", numberOfPlayerSelected);
 				
-				for (int i = 0; i < numberOfPlayerSelected; i++) {//Si aucun joueur n'est selectionné, par defaut il est CPU
+				for (int i = 0; i < numberOfPlayerSelected; i++) {
 					PlayerType type = getPlayerType(i);
 					String name =  getName(i);
 					controller.addPlayer(type, name);
@@ -271,6 +271,7 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 			panel.add(lbl);
 			labelList.add(lbl);
 			JTextField name = new JTextField(PropertiesModel.getSingleton().getProperty(namePropertyArray[i]));
+			name.setDocument(new JTextFieldLimit(20));
 			nameTextFieldList.add(name);
 			panel.add(name);
 			button.setSelected(Boolean.parseBoolean(PropertiesModel.getSingleton().getProperty(typePropertyArray[i])));

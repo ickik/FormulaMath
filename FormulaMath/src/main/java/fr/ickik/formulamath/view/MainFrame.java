@@ -16,6 +16,7 @@ import java.util.List;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
@@ -46,7 +47,7 @@ import fr.ickik.formulamath.model.CaseModel;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.2.003, 21 mai 2012.
+ * @version 0.2.004, 13 June 2012.
  */
 public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
@@ -214,7 +215,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 
 	private JPanel getDirectionalPanel() {
 		JPanel panel = new JPanel(new GridLayout(3, 3));
-		JButton up = new JButton("↑");//, new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/up.png")));
+		JButton up = new JButton(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/up.png")));
 		//up.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/up_pressed.png")));
 		up.addActionListener(new ActionListener() {
 			
@@ -224,7 +225,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				scrollPane.getVerticalScrollBar().getModel().setValue(scrollPane.getVerticalScrollBar().getModel().getValue() - 40);
 			}
 		});
-		JButton down = new JButton("↓");//, new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/down.png")));
+		JButton down = new JButton(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/down.png")));
 //		down.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/down_pressed.png")));
 		down.addActionListener(new ActionListener() {
 			@Override
@@ -233,7 +234,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				scrollPane.getVerticalScrollBar().getModel().setValue(scrollPane.getVerticalScrollBar().getModel().getValue() + 40);
 			}
 		});
-		JButton left = new JButton("←");//, new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/left.png")));
+		JButton left = new JButton(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/left.png")));
 //		left.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/left_pressed.png")));
 		left.addActionListener(new ActionListener() {
 			@Override
@@ -242,7 +243,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				scrollPane.getHorizontalScrollBar().getModel().setValue(scrollPane.getHorizontalScrollBar().getModel().getValue() - 40);
 			}
 		});
-		JButton right = new JButton("→");//, new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/right.png")));
+		JButton right = new JButton(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/right.png")));
 //		right.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/right_pressed.png")));
 		right.addActionListener(new ActionListener() {
 			@Override
@@ -251,7 +252,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				scrollPane.getHorizontalScrollBar().getModel().setValue(scrollPane.getHorizontalScrollBar().getModel().getValue() + 40);
 			}
 		});
-		JButton centered = new JButton("☼");
+		JButton centered = new JButton(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/center.png")));
 		centered.addActionListener(getPlayerFocusListener());
 		panel.add(disabledButtonFactory());
 		panel.add(up);

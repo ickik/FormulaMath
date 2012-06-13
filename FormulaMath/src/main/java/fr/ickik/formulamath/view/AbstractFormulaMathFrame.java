@@ -17,12 +17,12 @@ import javax.swing.SwingUtilities;
  * Abstract which define the default behavior of frames. This abstract class
  * contains common function for views.
  * @author Ickik
- * @version 0.1.007, 12 June 2012
+ * @version 0.1.008, 13 June 2012
  */
 public abstract class AbstractFormulaMathFrame {
 
 	public static final String NAME = "FormulaMath";
-	public static final String VERSION = "0.3.2";
+	public static final String VERSION = "0.3.4";
 	private final JFrame frame;
 	
 	/**
@@ -78,18 +78,18 @@ public abstract class AbstractFormulaMathFrame {
 	 * Centered the JFrame in the screen.
 	 */
 	private void centeredFrame() {
-		if (frame.getExtendedState() != JFrame.MAXIMIZED_BOTH) {
+		//if (frame.getExtendedState() != JFrame.MAXIMIZED_BOTH) {
 			GraphicsConfiguration gconf = GraphicsEnvironment.getLocalGraphicsEnvironment()
 					.getDefaultScreenDevice().getDefaultConfiguration();
 	
 			Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(gconf);
 			int w = frame.getWidth();
 			int h = frame.getHeight();
-			double l = Toolkit.getDefaultToolkit().getScreenSize().getWidth() - insets.left - insets.right - 2;
-			double l2 = Toolkit.getDefaultToolkit().getScreenSize().getHeight() - insets.top - insets.bottom - 2;
+			double l = Toolkit.getDefaultToolkit().getScreenSize().getWidth() - insets.left - insets.right - 5;
+			double l2 = Toolkit.getDefaultToolkit().getScreenSize().getHeight() - insets.top - insets.bottom - 5;
 			frame.setSize(w, h);
 			frame.setLocation((int) (l / 2 - w / 2), (int)(l2 / 2 - h / 2));
-		}
+		//}
 	}
 	
 	public void disable() {

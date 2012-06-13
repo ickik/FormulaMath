@@ -17,7 +17,7 @@ import fr.ickik.formulamath.model.CaseModel;
 /**
  * Contains and handles the map of the application. The map is a everytime a square.
  * @author Ickik.
- * @version 0.1.007, 15 mai 2012.
+ * @version 0.1.008, 13 June 2012.
  */
 public final class MapManager {
 
@@ -39,20 +39,37 @@ public final class MapManager {
 		log.trace("Constructor MapManager");
 	}
 
+	/**
+	 * Initializes the map with the size given in argument and with default values.
+	 * The map is every time a square so the size defines the dimension of all sides.
+	 * @param size the size of the map.
+	 */
 	public void init(int size) {
 		log.debug("Init begin");
+		log.debug("Size of the map : {}", size);
 		this.mapSize = size;
 		carte = new ArrayList<List<CaseModel>>(size);
 		for (int i = 0; i < mapSize; i++) {
 			List<CaseModel> list = new ArrayList<CaseModel>(mapSize);
 			for (int j = 0; j < mapSize; j++) {
-				list.add(new CaseModel());
+				list.add(new CaseModel(getRandomField()));
 			}
 			carte.add(list);
 		}
 		log.debug("Map initialized");
 	}
 	
+	private Field getRandomField() {
+		int value = getRandomNumber(20);
+		if (value % 10 == 0) {
+			return Field.SAND;
+		}
+		return Field.GRASS;
+	}
+	
+	/**
+	 * Reinitializes of variable to play again.
+	 */
 	public void reinitialization() {
 		log.debug("Reinitialization of map");
 		startingPositionList.clear();
@@ -770,15 +787,7 @@ public final class MapManager {
 		for (int i = 0; i < mapSize; i++) {
 			StringBuilder str = new StringBuilder();
 			for (CaseModel c : carte.get(i)) {
-				if (c.getField() == Field.GRASS) {
-					str.append(0);
-				} else if (c.getField() == Field.STARTING_LINE) {
-					str.append(5);
-				} else if (c.getField() == Field.FINISHING_LINE) {
-					str.append(9);
-				} else {
-					str.append(1);
-				}
+				str.append(c.getField().getValue());
 			}
 			display.append(str);
 			display.append("\n");
@@ -786,6 +795,10 @@ public final class MapManager {
 		return display.toString();
 	}
 
+	/**
+	 * Return the size of the map.
+	 * @return the size of the map.
+	 */
 	public int getMapSize() {
 		return mapSize;
 	}
@@ -815,18 +828,35 @@ public final class MapManager {
 		return carte.get(h).get(w);
 	}
 	
+	/**
+	 * Return a list of list (2 dimension) that represents all case of the map.
+	 * Every case contains a model and the list is a super model of these.
+	 * @return 2 dimension list which contains the model of the map.
+	 */
 	public List<List<CaseModel>> getMap() {
 		return carte;
 	}
 
+	/**
+	 * Return the list of positions on starting lane.
+	 * @return the list of positions on starting lane.
+	 */
 	public List<Position> getStartingPositionList() {
 		return startingPositionList;
 	}
 	
+	/**
+	 * Return the list of positions on finishing lane.
+	 * @return the list of positions on finishing lane.
+	 */
 	public List<Position> getFinishingLinePositionList() {
 		return finishingLinePositionList;
 	}
 	
+	/**
+	 * Return the list of position of ideal way to run the race.
+	 * @return the list of position of ideal way to run the race.
+	 */
 	public List<RoadDirectionInformation> getRoadDirectionInformationList() {
 		return roadList;
 	}

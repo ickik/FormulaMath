@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -96,9 +97,10 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 					controller.saveProperties();
 				} catch (FormulaMathException e1) {
 					log.error(e1.getMessage());
+				} finally {
+					close();
+					System.exit(0);
 				}
-				close();
-				System.exit(0);
 			}
 		});
 		panel.add(okButton);
@@ -268,11 +270,10 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 			JToggleButton button = toggleButtonFactory();
 			togglePlayerTypeList.add(button);
 			panel.add(button);
-			JLabel lbl = new JLabel("Name : ");
+			JLabel lbl = new JLabel("Name : ", SwingConstants.CENTER);
 			panel.add(lbl);
 			labelList.add(lbl);
-			JTextField name = new JTextField(PropertiesModel.getSingleton().getProperty(namePropertyArray[i]));
-			name.setDocument(new JTextFieldLimit(20));
+			JTextField name = new JTextField(new JTextFieldLimit(20), PropertiesModel.getSingleton().getProperty(namePropertyArray[i]), 0);
 			nameTextFieldList.add(name);
 			panel.add(name);
 			button.setSelected(Boolean.parseBoolean(PropertiesModel.getSingleton().getProperty(typePropertyArray[i])));

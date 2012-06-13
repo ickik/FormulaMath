@@ -2,6 +2,7 @@ package fr.ickik.formulamath.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -21,12 +22,14 @@ import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.UIManager;
@@ -116,7 +119,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	}
 
 	private void createMainFrame() {
-		mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		mainFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		mainFrame.add(getSplitPane(), BorderLayout.CENTER);
 		mainFrame.setJMenuBar(getMenuBar());
 		
@@ -155,7 +158,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	private JSplitPane getSplitPane() {
 		JPanel trayPanel = getTrayPanel();
 		//trayPanel.getGraphics().
-		scrollPane = new JScrollPane(trayPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane = new JScrollPane(trayPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.getHorizontalScrollBar().setUnitIncrement(5);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(5);
 		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, getMenuPanel());
@@ -177,6 +180,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 
 	private JPanel getMenuPanel() {
 		final JPanel panel = new JPanel(new GridLayout(4, 1));
+		//panel.add(new JLabel(""));
 		panel.add(gameMenuPanel);
 		panel.add(playButton);
 		panel.add(getDirectionalPanel());

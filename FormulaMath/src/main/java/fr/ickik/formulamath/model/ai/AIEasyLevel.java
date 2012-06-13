@@ -74,7 +74,7 @@ public class AIEasyLevel implements AILevel {
 			case WEST:
 				vector = new Vector(-1, 0);
 				break;
-			};
+			}
 		}
 		return vector;
 	}

@@ -12,7 +12,7 @@ import fr.ickik.formulamath.model.player.PlayerType;
  * the name, the type of the player ({@link PlayerType}), a {@link Color},
  * a position and the last move.
  * @author Patrick Allgeyer.
- * @version 0.1.002, 15 mai 2012.
+ * @version 0.1.003, 13 June 2012.
  */
 public class Player {
 
@@ -92,7 +92,7 @@ public class Player {
 	 * The counter indicates the number of turn the player needs to finish the road.
 	 */
 	public void incrementPlayingCounter() {
-		movingList.add(movingVector);
+		movingList.add(new Vector(movingVector.getX(), movingVector.getY()));
 		playingCounter++;
 	}
 	

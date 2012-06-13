@@ -2,19 +2,18 @@ package fr.ickik.formulamath;
 
 import java.awt.Frame;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.ickik.formulamath.view.MainFrame;
+import fr.ickik.formulamath.view.AbstractFormulaMathFrame;
 
 /**
  * This class extends the thread group class to redefine the behavior when an
  * exception is thrown.
  * @author Ickik
- * @version 0.1.001, 10 mai. 2012
+ * @version 0.1.002, 13 June 2012
  */
 public class ExecutionThreadGroup extends ThreadGroup {
 
@@ -31,7 +30,7 @@ public class ExecutionThreadGroup extends ThreadGroup {
 		e.printStackTrace();
 		log.error(e.getMessage());
 		log.error("Cause : {}", e.getCause().getMessage());
-		JOptionPane.showMessageDialog(findActiveFrame(), e.toString(), MainFrame.getTitle() + " - Exception Occurred", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(findActiveFrame(), e.toString(), AbstractFormulaMathFrame.getTitle() + " - Exception Occurred", JOptionPane.ERROR_MESSAGE);
 		System.exit(1);
 	}
 	
@@ -78,7 +77,7 @@ public class ExecutionThreadGroup extends ThreadGroup {
 //	}
 	
 	private Frame findActiveFrame() {
-		Frame[] frames = JFrame.getFrames();
+		Frame[] frames = Frame.getFrames();
 		for (Frame frame : frames) {
 			if (frame.isVisible() || frame.isActive()) {
 				return frame;

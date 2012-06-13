@@ -12,6 +12,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 
 /**
  * Abstract which define the default behavior of frames. This abstract class
@@ -46,7 +47,7 @@ public abstract class AbstractFormulaMathFrame {
 	
 	void displayFrame() {
 		frame.pack();
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		frame.setIconImages(getIconList());
 		centeredFrame();
 		frame.setVisible(true);

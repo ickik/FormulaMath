@@ -1,9 +1,13 @@
 package fr.ickik.formulamath.view;
 
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.Line2D;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ButtonGroup;
@@ -25,7 +29,7 @@ import fr.ickik.formulamath.model.map.Field;
  * Panel creation class. It creates the panel for Human player to choose the
  * start position on the starting line.
  * @author Ickik
- * @version 0.1.003, 11 June 2012
+ * @version 0.1.004, 14 June 2012
  * @since 0.3
  */
 public final class PlayVectorChooserPanel {
@@ -67,6 +71,7 @@ public final class PlayVectorChooserPanel {
 		int yTrayPanel = player.getPosition().getY() + marge;
 		log.trace("Player position :{}", player.getPosition().toString());
 		log.trace("Player position on map : ( {}, {} )", xTrayPanel, yTrayPanel);
+		final List<JCase> solutionCaseList = new ArrayList<JCase>();
 		for (int i = 0; i < vectorList.size();) {
 			Vector v = vectorList.get(i);
 			JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
@@ -75,7 +80,7 @@ public final class PlayVectorChooserPanel {
 			log.debug("solution : {}", vectorList.get(i).toString());
 			log.trace("Player final  position on map : ( {}, {} )", x, y);
 
-			JCase c2 = caseArrayList.get(y).get(x);
+			final JCase c2 = caseArrayList.get(y).get(x);
 			Line2D line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
 			log.trace("Vector's line on map from ( {}, {} ) to ( {} , {} )", new Object[]{c.getX(), c.getY(), c2.getX(), c2.getY()});
 			if (isGrassIntersection(line)) {
@@ -83,6 +88,8 @@ public final class PlayVectorChooserPanel {
 				vectorList.remove(i);
 			} else {
 				i++;
+				solutionCaseList.add(c2);
+				c2.addMouseListener(getSolutionMouseListener(c2));
 			}
 		}
 		if (vectorList.isEmpty()) {
@@ -116,6 +123,10 @@ public final class PlayVectorChooserPanel {
 				for (JToggleButton button : solution) {
 					button.setEnabled(false);
 				}
+				for (JCase jCase : solutionCaseList) {
+					MouseListener[] mouseListenerArray = jCase.getMouseListeners();
+					jCase.removeMouseListener(mouseListenerArray[0]);
+				}
 				log.trace("checkbox disabled!");//peut etre mettre le test de fin de ligne dans le model
 				int marge = MainFrame.MAP_MARGIN / 2;
 				int xTrayPanel = player.getPosition().getX() + marge;
@@ -141,6 +152,31 @@ public final class PlayVectorChooserPanel {
 				playButton.removeActionListener(this);
 			}
 		});
+	}
+	
+	private MouseListener getSolutionMouseListener(final JCase jCase) {
+		return new MouseListener() {
+			private Color previousColor;
+			@Override
+			public void mouseReleased(MouseEvent e) {}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				previousColor = jCase.getForeground();
+				jCase.setForeground(Color.GRAY);
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				jCase.setForeground(previousColor);
+			}
+		};
 	}
 	
 	private int getCoordinateLimit(int coordinate, int mapSize) {

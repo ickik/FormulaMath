@@ -24,7 +24,7 @@ import fr.ickik.formulamath.model.map.Orientation;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.2.009, 14 June 2012.
+ * @version 0.2.010, 19 June 2012.
  */
 public final class PlayerManager {
 
@@ -179,6 +179,26 @@ public final class PlayerManager {
 		computerPlay();
 	}
 	
+	/**
+	 * Check teh intersection between 2 segments to return a Position if it exists or null.
+	 * The intersection is calculated by following these instructions :<br>
+	 *  - k is the parameter of the intersection point from CD on AB, if k is between 0 and 1 the point in on CD<br>
+	 *  - m is the parameter of the intersection point from AB on CD, if m is between 0 and 1 the point in on AB<br><br>
+	 * I is the AB vector and J the CD vector. <br>
+	 * P is the intersection Position like P=A+k*I or P=C+m*J <=> A + k*I = C + m*J <br>
+	 * It could be decomposed in :<br>
+	 *  - Ax + k*Ix = Cx + m*Jx <br>
+	 *  - Ay + k*Iy = Cy + m*Jy <br><br>
+	 * After resolving :
+	 *  - m = -(-Ix*Ay+Ix*Cy+Iy*Ax-Iy*Cx)/(Ix*Jy-Iy*Jx)<br>
+	 *  - k = -(Ax*Jy-Cx*Jy-Jx*Ay+Jx*Cy)/(Ix*Jy-Iy*Jx)<br><br>
+	 *  If the denominator Ix*Jy-Iy*Jx = 0 the the both vectors are parallel else inject m or k in one
+	 *  the equation to find intersection.<br><br>
+	 *  <b>PS : </b> note that if m and k are higher than 1 or less than 0, the insection is on
+	 *  the "droites" and not in the vector.
+	 * @param vector the played vector, the next move.
+	 * @return the intersection Position or null.
+	 */
 	private Position getIntersectionPosition(Vector vector) {
 		//variable private pour le vecteur, afin de ne pas recalculer a chaque fois.
 		Position f1 = mapManager.getFinishingLinePositionList().get(0);
@@ -198,39 +218,6 @@ public final class PlayerManager {
 		}
 		return null;
 	}
-	
-	/*
-	 * Je vous propose une solution paramétrique :
-Soit le segment [AB], et le segment [CD].
-Je note I le vecteur AB, et J le vecteur CD
-
-Soit k le parametre du point d'intersection du segment CD sur la droite AB. on sera sur le segment si 0<k<1
-Soit m le parametre du point d'intersection du segment AB sur la droite CD, on sera sur le segment si 0<m<1
-
-Soit P le point d'intersction
-P = A + k*I; // equation (1)
-P = C + m*J;
-
-D'ou :
-A + k*I = C + m*J
-
-On décompose les points et vecteurs, on a :
-Ax + k*Ix = Cx + m*Jx
-Ay + k*Iy = Cy + m*Jy
-
-2 équations, 2 inconnues, en résolvant, on trouve :
-
-m = -(-Ix*Ay+Ix*Cy+Iy*Ax-Iy*Cx)/(Ix*Jy-Iy*Jx)
-k = -(Ax*Jy-Cx*Jy-Jx*Ay+Jx*Cy)/(Ix*Jy-Iy*Jx)
-
-(Notez que les dénominateurs sont les meme)
-Attention, si Ix*Jy-Iy*Jx = 0 , alors les droites sont paralleles, pas d'intersection.
-Sinon, on trouve m et k
-
-On vérifie que 0<m<1 et 0<k<1 --> sinon, cela veut dire que les droites s'intersectent, mais pas au niveau du segment.
-
-Ensuite, pour retrouver P, on réinjecte m ou k dans une des 2 équations (1)
-*/
 	
 	private void addFinishPlayer(Player p, boolean isWinning) {
 		int begin, end;
@@ -380,6 +367,7 @@ Ensuite, pour retrouver P, on réinjecte m ou k dans une des 2 équations (1)
 						return;
 					}
 				} else {
+					log.debug("Normal way, orientation {}", r.getOrientation().toString());
 					switch (r.getOrientation()) {
 					case NORTH:
 						int d = getNextPlay(len, p.getVector().getY());
@@ -574,9 +562,12 @@ Ensuite, pour retrouver P, on réinjecte m ou k dans une des 2 équations (1)
 	
 	public void initFirstMove() {
 		log.debug("initAIFirstMove");
+		log.trace("currentPlayer : {}", getCurrentPlayer().toString());
 		int index = getPlayerList().indexOf(getCurrentPlayer());
+		log.trace("current player index={}", index);
 		List<Player> playerList = new ArrayList<Player>();
-		if (index >= getPlayerList().size()) {
+		log.trace("number of player : {}", getPlayerList().size());
+		if (index < getPlayerList().size()) {
 			playerList.addAll(getPlayerList().subList(index, getPlayerList().size()));
 		}
 		if (!playerList.isEmpty()) {
@@ -660,10 +651,13 @@ Ensuite, pour retrouver P, on réinjecte m ou k dans une des 2 équations (1)
 				}
 			}
 		}
+		log.debug("Call computerPLayer(); before endding initFirstMove");
 		computerPlay();
+		log.debug("End of initFirstMove");
 	}
 	
 	public void firstMove(Vector vector) {
+		log.debug("First move {} for player {}", vector.toString(), getCurrentPlayer().toString());
 		mapManager.getCase(getCurrentPlayer().getPosition().getY(), getCurrentPlayer().getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
 		getCurrentPlayer().getPosition().setX(getCurrentPlayer().getPosition().getX() + vector.getX());
 		getCurrentPlayer().getPosition().setY(getCurrentPlayer().getPosition().getY() - vector.getY());
@@ -676,8 +670,10 @@ Ensuite, pour retrouver P, on réinjecte m ou k dans une des 2 équations (1)
 		List<Player> playerList = getPlayerList().subList(getPlayerList().indexOf(getCurrentPlayer()), getPlayerList().size());
 		updateIndexPlayerGame();
 		if (playerList.isEmpty()) {
+			log.trace("Call computer play, player list is empty");
 			computerPlay();
 		} else {
+			log.trace("Call init first move, player list is not empty, {} player(s) must choose the first move", playerList.size());
 			initFirstMove();
 		}
 	}

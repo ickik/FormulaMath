@@ -41,6 +41,8 @@ import fr.ickik.formulamath.FormulaMathException;
 import fr.ickik.formulamath.controler.ChuckNorrisListener;
 import fr.ickik.formulamath.controler.FormulaMathController;
 import fr.ickik.formulamath.controler.UpdateCaseListener;
+import fr.ickik.formulamath.entity.InformationMessage;
+import fr.ickik.formulamath.entity.MessageType;
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Position;
 import fr.ickik.formulamath.entity.Vector;
@@ -49,13 +51,14 @@ import fr.ickik.formulamath.model.CaseModel;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.2.004, 13 June 2012.
+ * @version 0.2.005, 19 June 2012.
  */
 public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
 	private final JFrame mainFrame;
 	private final JPanel gameMenuPanel;
 	private final JButton playButton;
+	private final InformationPanel informationLabel;
 	private int caseSize = 15;
 	private final StartPositionChooserPanel startPositionChooserPanel;
 	private final PlayVectorChooserPanel playVectorChooserPanel;
@@ -68,7 +71,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	private final FormulaMathController controller;
 	public static final int MAP_MARGIN = 20;
 	private final String theme;
-	
+
 	/**
 	 * Constructor of the JFrame, it initializes all panels and the map panel.
 	 * @param mapSize the size of the map model.
@@ -81,6 +84,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		mainFrame = getFrame();
 		gameMenuPanel = new JPanel();
 		playButton = new JButton("Play");
+		informationLabel = new InformationPanel();
 		startPositionChooserPanel = new StartPositionChooserPanel(gameMenuPanel, playButton, controller);
 		firstMovePanel = new FirstMovePanel(gameMenuPanel, playButton, controller, mainFrame);
 		playVectorChooserPanel = new PlayVectorChooserPanel(gameMenuPanel, playButton, controller);
@@ -89,6 +93,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	
 	public void display(List<List<CaseModel>> carte) {
 		initMap(carte);
+		RoundWaiter.getSingleton().stop();
 		createMainFrame();
 		controller.chooseStartPosition();
 	}
@@ -119,6 +124,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 
 	private void createMainFrame() {
 		mainFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
+		//mainFrame.setMinimumSize(new Dimension(150,150));
 		mainFrame.add(getSplitPane(), BorderLayout.CENTER);
 		mainFrame.setJMenuBar(getMenuBar());
 		
@@ -156,12 +162,12 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 
 	private JSplitPane getSplitPane() {
 		JPanel trayPanel = getTrayPanel();
-		//trayPanel.getGraphics().
 		scrollPane = new JScrollPane(trayPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.getHorizontalScrollBar().setUnitIncrement(5);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(5);
 		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, getMenuPanel());
-		split.setDividerLocation(new Double(Toolkit.getDefaultToolkit().getScreenSize().getWidth() * 0.9).intValue());
+		//JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, getMenuPanel());
+		split.setDividerLocation(new Double(Toolkit.getDefaultToolkit().getScreenSize().getWidth() * 0.8).intValue());
 		return split;
 	}
 
@@ -178,13 +184,27 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	}
 
 	private JPanel getMenuPanel() {
+		JPanel menuPanel = new JPanel(new BorderLayout());
+		menuPanel.add(informationLabel, BorderLayout.NORTH);
 		final JPanel panel = new JPanel(new GridLayout(4, 1));
-		//panel.add(new JLabel(""));
 		panel.add(gameMenuPanel);
 		panel.add(playButton);
 		panel.add(getDirectionalPanel());
 		panel.add(getZoomPanel());
-		return panel;
+		menuPanel.add(panel, BorderLayout.CENTER);
+		return menuPanel;
+	}
+	
+	private JPanel getMenuPanel2() {
+		JPanel menuPanel = new JPanel(new BorderLayout());
+		menuPanel.add(informationLabel, BorderLayout.NORTH);
+		final JPanel panel = new JPanel(new GridLayout(4, 1));
+		panel.add(gameMenuPanel);
+		panel.add(playButton);
+		panel.add(getDirectionalPanel());
+		panel.add(getZoomPanel());
+		menuPanel.add(panel, BorderLayout.CENTER);
+		return menuPanel;
 	}
 
 	private JPanel getZoomPanel() {
@@ -486,13 +506,15 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	@Override
 	public void displayPlayerStartingPossibilities(Player player, List<Position> startingPositionList, int mapSize) {
 		startPositionChooserPanel.construct(startingPositionList, mapSize);
-		displayMessage("Player " + player.getName() + " (" + player.getId() + ") must choose the start position");
+		informationLabel.pushMessage(new InformationMessage(MessageType.PLAYER, "Player " + player.getName() + " (" + player.getId() + ") must choose the start position"));
+		//displayMessage("Player " + player.getName() + " (" + player.getId() + ") must choose the start position");
 	}
 
 	@Override
 	public void displayPlayerFirstMove(Player player, int mapSize) {
 		firstMovePanel.construct(caseArrayList, player.getPosition(), mapSize);
-		displayMessage("Player " + player.getName() + " (" + player.getId() + ") must choose the first move");
+		informationLabel.pushMessage(new InformationMessage(MessageType.PLAYER, "Player " + player.getName() + " (" + player.getId() + ") must choose the first move"));
+		//displayMessage("Player " + player.getName() + " (" + player.getId() + ") must choose the first move");
 	}
 	
 	@Override
@@ -505,7 +527,8 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			controller.play(null);
 			return;
 		}
-		displayMessage("Player " + player.getName() + " (" + player.getId() + ") must choose the next move");
+		informationLabel.pushMessage(new InformationMessage(MessageType.PLAYER, "Player " + player.getName() + " (" + player.getId() + ") must choose the next move"));
+		//displayMessage("Player " + player.getName() + " (" + player.getId() + ") must choose the next move");
 	}
 
 	@Override

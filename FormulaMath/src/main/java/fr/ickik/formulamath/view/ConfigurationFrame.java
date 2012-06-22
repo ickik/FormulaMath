@@ -38,7 +38,7 @@ import fr.ickik.formulamath.model.player.PlayerType;
  * The user can choose between Human and Computer players;
  * give a name to every player.
  * @author Ickik.
- * @version 0.2.006, 13 June 2012
+ * @version 0.2.007, 19 June 2012
  */
 public class ConfigurationFrame extends AbstractFormulaMathFrame {
 
@@ -110,12 +110,13 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 	
 	private ActionListener getOKActionListener() {
 		return new ActionListener() {
-
+			
 			public void actionPerformed(ActionEvent arg0) {
 				if (!isHumanPlayer()) {
 					displayErrorMessage("No human player selected");
 					return;
 				}
+				RoundWaiter.getSingleton().start();
 				controller.initManager(MapDimension.values()[dimensionMapItem].getValue());
 				log.trace("number of player selected : {}", numberOfPlayerSelected);
 				

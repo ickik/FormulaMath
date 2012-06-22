@@ -24,6 +24,7 @@ import fr.ickik.formulamath.entity.Vector;
 import fr.ickik.formulamath.model.ChuckNorrisTimer;
 import fr.ickik.formulamath.model.FormulaMathProperty;
 import fr.ickik.formulamath.model.FormulaMathSaver;
+import fr.ickik.formulamath.model.InformationModel;
 import fr.ickik.formulamath.model.PropertiesModel;
 import fr.ickik.formulamath.model.Stats;
 import fr.ickik.formulamath.model.map.MapDimension;
@@ -40,7 +41,7 @@ import fr.ickik.formulamath.view.StatFrame;
  * Controller of the application in MVC design pattern. It receive event from the view to
  * transmit them to the appropriate model if needed.
  * @author Ickik
- * @version 0.1.007, 16 mai 2012
+ * @version 0.1.008, 22 June 2012
  * @since 0.2
  */
 public final class FormulaMathController {
@@ -66,10 +67,12 @@ public final class FormulaMathController {
 	public FormulaMathController(PlayerManager playerManager, MapManager mapManager) {
 		//propertiesCorrection();
 		this.playerManager = playerManager;
+		InformationModel informationModel = new InformationModel();
+		this.playerManager.setInformationMessageModel(informationModel);
 		this.mapManager = mapManager;
 		setLookAndFeel(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.THEME));
 		configurationFrame = new ConfigurationFrame(this);
-		mainFrame = new MainFrame(mapManager.getMapSize(), this, PropertiesModel.getSingleton().getProperty(FormulaMathProperty.THEME));
+		mainFrame = new MainFrame(mapManager.getMapSize(), this, PropertiesModel.getSingleton().getProperty(FormulaMathProperty.THEME), informationModel);
 		this.playerManager.addUpdateCaseListener(mainFrame);
 		aboutFrame = new AboutFrame(this, ChuckNorrisTimer.getInstance().isRunning());
 		statFrame = new StatFrame(this);

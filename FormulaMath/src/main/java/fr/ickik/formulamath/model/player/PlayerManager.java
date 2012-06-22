@@ -10,13 +10,15 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.ickik.formulamath.FormulaMathException;
 import fr.ickik.formulamath.controler.UpdateCaseListener;
+import fr.ickik.formulamath.entity.InformationMessage;
+import fr.ickik.formulamath.entity.MessageType;
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Position;
 import fr.ickik.formulamath.entity.RoadDirectionInformation;
 import fr.ickik.formulamath.entity.Vector;
 import fr.ickik.formulamath.model.CaseModel;
+import fr.ickik.formulamath.model.InformationModel;
 import fr.ickik.formulamath.model.map.Field;
 import fr.ickik.formulamath.model.map.MapManager;
 import fr.ickik.formulamath.model.map.Orientation;
@@ -24,15 +26,15 @@ import fr.ickik.formulamath.model.map.Orientation;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.2.010, 19 June 2012.
+ * @version 0.2.011, 22 June 2012.
  */
 public final class PlayerManager {
 
 	private final List<Player> playerList;
 	private final List<Player> finishPositionList;
 	private int indexPlayerGame = 0;
-	private MapManager mapManager;
-	private boolean fireUpdateCaseListener;
+	private final MapManager mapManager;
+	private InformationModel informationModel;
 	private final List<UpdateCaseListener> updateCaseListenerList = new ArrayList<UpdateCaseListener>();
 	//private AILevel computerLevel;
 	
@@ -244,6 +246,7 @@ public final class PlayerManager {
 	 * Iterates all AI players and set new available position.
 	 */
 	public void computerPlay() {
+		informationModel.addMessage(new InformationMessage(MessageType.STATS, "Round " + Integer.toString(getCurrentPlayer().getPlayingCounter() + 1)));
 		while (getCurrentPlayer().getType() == PlayerType.COMPUTER && !finishPositionList.contains(getCurrentPlayer())) {
 			Player p = getCurrentPlayer();
 			log.debug("AI Player {} is under playing", p.toString());
@@ -534,14 +537,16 @@ public final class PlayerManager {
 	}
 	
 	private void fireDisplayPlayerPossibilities(Player player, List<Position> list) {
+		informationModel.pushMessage(new InformationMessage(MessageType.PLAYER, "Player " + player.getName() + " (" + player.getId() + ") must choose the start position"));
 		for(UpdateCaseListener l : updateCaseListenerList) {
 			l.displayPlayerStartingPossibilities(player, list, mapManager.getMapSize());
 		}
 	}
 	
-	private void fireDisplayPlayerFirstMovePossibilities(Player p) {
+	private void fireDisplayPlayerFirstMovePossibilities(Player player) {
+		informationModel.pushMessage(new InformationMessage(MessageType.PLAYER, "Player " + player.getName() + " (" + player.getId() + ") must choose the first move"));
 		for(UpdateCaseListener l : updateCaseListenerList) {
-			l.displayPlayerFirstMove(p, mapManager.getMapSize());
+			l.displayPlayerFirstMove(player, mapManager.getMapSize());
 		}
 	}
 	
@@ -555,6 +560,7 @@ public final class PlayerManager {
 			computerPlay();
 			return;
 		}
+		informationModel.pushMessage(new InformationMessage(MessageType.PLAYER, "Player " + getCurrentPlayer().getName() + " (" + getCurrentPlayer().getId() + ") must choose the next move"));
 		for(UpdateCaseListener l : updateCaseListenerList) {
 			l.displayPlayerMovePossibilities(getCurrentPlayer(), list, mapManager.getMapSize());
 		}
@@ -564,6 +570,7 @@ public final class PlayerManager {
 		log.debug("initAIFirstMove");
 		log.trace("currentPlayer : {}", getCurrentPlayer().toString());
 		int index = getPlayerList().indexOf(getCurrentPlayer());
+		informationModel.addMessage(new InformationMessage(MessageType.STATS, "Round " + Integer.toString(getCurrentPlayer().getPlayingCounter() + 1)));
 		log.trace("current player index={}", index);
 		List<Player> playerList = new ArrayList<Player>();
 		log.trace("number of player : {}", getPlayerList().size());
@@ -748,14 +755,14 @@ public final class PlayerManager {
 		updateCaseListenerList.add(updateCaseListener);
 	}
 
-	public void removeUpdateCaseListener(UpdateCaseListener updateCaseListener)
+	/*public void removeUpdateCaseListener(UpdateCaseListener updateCaseListener)
 			throws FormulaMathException {
 		if (fireUpdateCaseListener) {
 			throw new FormulaMathException();
 		} else {
 			updateCaseListenerList.remove(updateCaseListener);
 		}
-	}
+	}*/
 	
 	private void fireUpdateCaseListener(Player p) {
 		for (UpdateCaseListener u : updateCaseListenerList) {
@@ -783,6 +790,10 @@ public final class PlayerManager {
 		finishPositionList.clear();
 		playerRoadPosition.clear();
 		indexPlayerGame = 0;
+	}
+
+	public void setInformationMessageModel(InformationModel informationModel) {
+		this.informationModel = informationModel;
 	}
 
 //	public void setComputerLevel(AILevel computerLevel) {

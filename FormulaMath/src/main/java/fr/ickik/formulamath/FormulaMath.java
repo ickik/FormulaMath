@@ -9,7 +9,7 @@ import fr.ickik.formulamath.model.player.PlayerManager;
 /**
  * Main class which contains the main static method.
  * @author Ickik
- * @version 0.1.002, 15 mai 2012
+ * @version 0.1.003, 22 June 2012
  */
 public class FormulaMath {
 

@@ -41,12 +41,11 @@ import fr.ickik.formulamath.FormulaMathException;
 import fr.ickik.formulamath.controler.ChuckNorrisListener;
 import fr.ickik.formulamath.controler.FormulaMathController;
 import fr.ickik.formulamath.controler.UpdateCaseListener;
-import fr.ickik.formulamath.entity.InformationMessage;
-import fr.ickik.formulamath.entity.MessageType;
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Position;
 import fr.ickik.formulamath.entity.Vector;
 import fr.ickik.formulamath.model.CaseModel;
+import fr.ickik.formulamath.model.InformationModel;
 
 /**
  * This class create the main frame of the application.
@@ -78,13 +77,15 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	 * @param controller the controller of the application.
 	 * @param theme the theme of the JFrame. The theme is depending the OS.
 	 */
-	public MainFrame(int mapSize, FormulaMathController controller, String theme) {
+	public MainFrame(int mapSize, FormulaMathController controller, String theme, InformationModel informationModel) {
 		this.controller = controller;
 		this.theme = theme;
 		mainFrame = getFrame();
 		gameMenuPanel = new JPanel();
 		playButton = new JButton("Play");
 		informationLabel = new InformationPanel();
+		informationLabel.setInformationModel(informationModel);
+		informationModel.addInformationMessageListener(informationLabel);
 		startPositionChooserPanel = new StartPositionChooserPanel(gameMenuPanel, playButton, controller);
 		firstMovePanel = new FirstMovePanel(gameMenuPanel, playButton, controller, mainFrame);
 		playVectorChooserPanel = new PlayVectorChooserPanel(gameMenuPanel, playButton, controller);
@@ -93,7 +94,6 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	
 	public void display(List<List<CaseModel>> carte) {
 		initMap(carte);
-		RoundWaiter.getSingleton().stop();
 		createMainFrame();
 		controller.chooseStartPosition();
 	}
@@ -506,14 +506,12 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	@Override
 	public void displayPlayerStartingPossibilities(Player player, List<Position> startingPositionList, int mapSize) {
 		startPositionChooserPanel.construct(startingPositionList, mapSize);
-		informationLabel.pushMessage(new InformationMessage(MessageType.PLAYER, "Player " + player.getName() + " (" + player.getId() + ") must choose the start position"));
 		//displayMessage("Player " + player.getName() + " (" + player.getId() + ") must choose the start position");
 	}
 
 	@Override
 	public void displayPlayerFirstMove(Player player, int mapSize) {
 		firstMovePanel.construct(caseArrayList, player.getPosition(), mapSize);
-		informationLabel.pushMessage(new InformationMessage(MessageType.PLAYER, "Player " + player.getName() + " (" + player.getId() + ") must choose the first move"));
 		//displayMessage("Player " + player.getName() + " (" + player.getId() + ") must choose the first move");
 	}
 	
@@ -527,7 +525,6 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			controller.play(null);
 			return;
 		}
-		informationLabel.pushMessage(new InformationMessage(MessageType.PLAYER, "Player " + player.getName() + " (" + player.getId() + ") must choose the next move"));
 		//displayMessage("Player " + player.getName() + " (" + player.getId() + ") must choose the next move");
 	}
 

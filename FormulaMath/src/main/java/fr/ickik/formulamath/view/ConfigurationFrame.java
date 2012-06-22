@@ -116,7 +116,6 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 					displayErrorMessage("No human player selected");
 					return;
 				}
-				RoundWaiter.getSingleton().start();
 				controller.initManager(MapDimension.values()[dimensionMapItem].getValue());
 				log.trace("number of player selected : {}", numberOfPlayerSelected);
 				

@@ -29,7 +29,7 @@ import fr.ickik.formulamath.model.map.Field;
  * Panel creation class. It creates the panel for Human player to choose the
  * start position on the starting line.
  * @author Ickik
- * @version 0.1.004, 14 June 2012
+ * @version 0.1.005, 25 June 2012
  * @since 0.3
  */
 public final class PlayVectorChooserPanel {
@@ -156,7 +156,7 @@ public final class PlayVectorChooserPanel {
 	
 	private MouseListener getSolutionMouseListener(final JCase jCase) {
 		return new MouseListener() {
-			private Color previousColor;
+
 			@Override
 			public void mouseReleased(MouseEvent e) {}
 			
@@ -164,18 +164,19 @@ public final class PlayVectorChooserPanel {
 			public void mousePressed(MouseEvent e) {}
 			
 			@Override
-			public void mouseExited(MouseEvent e) {}
+			public void mouseExited(MouseEvent e) {
+				jCase.getModel().setBackgroundColor(null);
+				jCase.repaint();
+			}
 			
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				previousColor = jCase.getForeground();
-				jCase.setForeground(Color.GRAY);
+				jCase.getModel().setBackgroundColor(Color.WHITE);
+				jCase.repaint();
 			}
 			
 			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				jCase.setForeground(previousColor);
-			}
+			public void mouseClicked(MouseEvent arg0) {}
 		};
 	}
 	

@@ -87,10 +87,14 @@ public class JCase extends JComponent {
 	
 	private void updateBackGroundColor() {
 		if (model != null) {
-			if (model.getIdPlayer() == MapManager.EMPTY_PLAYER) {
-				setBackground(model.getField().getColor());
+			if (model.getBackgroundColor() == null) {
+				if (model.getIdPlayer() == MapManager.EMPTY_PLAYER) {
+					setBackground(model.getField().getColor());
+				} else {
+					setBackground(colorList[model.getIdPlayer() - 1]);
+				}
 			} else {
-				setBackground(colorList[model.getIdPlayer() - 1]);
+				setBackground(model.getBackgroundColor());
 			}
 		} else {
 			setBackground(Color.WHITE);
@@ -141,4 +145,5 @@ public class JCase extends JComponent {
 	public Dimension getSize() {
 		return dimension;
 	}
+	
 }

@@ -18,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.ickik.formulamath.FormulaMathException;
+import fr.ickik.formulamath.entity.InformationMessage;
+import fr.ickik.formulamath.entity.MessageType;
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Position;
 import fr.ickik.formulamath.entity.Vector;
@@ -41,7 +43,7 @@ import fr.ickik.formulamath.view.StatFrame;
  * Controller of the application in MVC design pattern. It receive event from the view to
  * transmit them to the appropriate model if needed.
  * @author Ickik
- * @version 0.1.008, 22 June 2012
+ * @version 0.1.009, 25 June 2012
  * @since 0.2
  */
 public final class FormulaMathController {
@@ -52,6 +54,7 @@ public final class FormulaMathController {
 	private final MainFrame mainFrame;
 	private final AboutFrame aboutFrame;
 	private final StatFrame statFrame;
+	private final InformationModel informationModel;
 	private ExecutorCompletionService<MapManager> completion;
 	
 	private static final Logger log = LoggerFactory.getLogger(FormulaMathController.class);
@@ -67,7 +70,7 @@ public final class FormulaMathController {
 	public FormulaMathController(PlayerManager playerManager, MapManager mapManager) {
 		//propertiesCorrection();
 		this.playerManager = playerManager;
-		InformationModel informationModel = new InformationModel();
+		informationModel = new InformationModel();
 		this.playerManager.setInformationMessageModel(informationModel);
 		this.mapManager = mapManager;
 		setLookAndFeel(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.THEME));
@@ -168,6 +171,7 @@ public final class FormulaMathController {
 	}
 	
 	public void modelReinitialization() {
+		informationModel.addMessage(new InformationMessage(MessageType.INFORMATION, "Reinitialisation"));
 		playerManager.reinitialization();
 		mapManager.reinitialization();
 		closeStatFrame();
@@ -190,6 +194,7 @@ public final class FormulaMathController {
 	public void saveProperties() throws FormulaMathException {
 		try {
 			log.debug("Saving properties...");
+			informationModel.stop();
 			PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.VERSION);
 			PropertiesModel.getSingleton().save();
 		} catch (IOException e) {

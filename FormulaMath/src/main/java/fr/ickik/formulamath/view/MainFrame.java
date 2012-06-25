@@ -124,7 +124,6 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 
 	private void createMainFrame() {
 		mainFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
-		//mainFrame.setMinimumSize(new Dimension(150,150));
 		mainFrame.add(getSplitPane(), BorderLayout.CENTER);
 		mainFrame.setJMenuBar(getMenuBar());
 		
@@ -158,6 +157,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			public void windowActivated(WindowEvent arg0) {}
 		});
 		displayFrame();
+		mainFrame.setMinimumSize(new Dimension(150,150));
 	}
 
 	private JSplitPane getSplitPane() {

@@ -676,7 +676,7 @@ public final class PlayerManager {
 		fireUpdateCaseListener(getCurrentPlayer());
 		List<Player> playerList = getPlayerList().subList(getPlayerList().indexOf(getCurrentPlayer()), getPlayerList().size());
 		updateIndexPlayerGame();
-		if (playerList.isEmpty()) {
+		if (getPlayerList().size() == 1 || playerList.isEmpty()) {
 			log.trace("Call computer play, player list is empty");
 			computerPlay();
 		} else {

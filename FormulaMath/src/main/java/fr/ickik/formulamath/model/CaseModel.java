@@ -1,5 +1,7 @@
 package fr.ickik.formulamath.model;
 
+import java.awt.Color;
+
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.model.map.Field;
 import fr.ickik.formulamath.model.map.MapManager;
@@ -9,12 +11,13 @@ import fr.ickik.formulamath.view.JCase;
  * Model of the {@link JCase} component. It stores the type of the field and
  * the id of the player if one is this case.
  * @author Ickik.
- * @version 0.1.004, 13 June 2012.
+ * @version 0.1.005, 25 June 2012.
  */
 public class CaseModel {
 
 	private Field field;
 	private int idPlayer = MapManager.EMPTY_PLAYER;
+	private Color backgroundColor;
 
 	/**
 	 * Constructor of the model. It initializes the model with the default
@@ -74,5 +77,13 @@ public class CaseModel {
 			str = "Player ID : " + Integer.toString(idPlayer) + " - ";
 		}
 		return str.concat(getField().toString());
+	}
+
+	public Color getBackgroundColor() {
+		return backgroundColor;
+	}
+
+	public void setBackgroundColor(Color backgroundColor) {
+		this.backgroundColor = backgroundColor;
 	}
 }

@@ -10,7 +10,7 @@ import fr.ickik.formulamath.controler.InformationMessageListener;
 import fr.ickik.formulamath.entity.InformationMessage;
 
 /**
- * 
+ * Model of the panel that displays information periodically.
  * @author Ickik
  * @version 0.1.001, 25 June 2012
  * @since 0.3.5
@@ -21,18 +21,14 @@ public final class InformationModel {
 	private final int delay = 4000;
 	private final LinkedList<InformationMessage> messageDeque = new LinkedList<InformationMessage>();
 	private final List<InformationMessageListener> informationMessageListenerList = new ArrayList<InformationMessageListener>();
-	private String informationMessage;
-	private TimerTask task;
+	private final int sleepTime = 30;
 	
-	public InformationModel() {
-		timer = new Timer();
-		
-	}
+	public InformationModel() {}
 	
 	public void addInformationMessageListener(InformationMessageListener listener) {
-		if (task == null) {
-			task = getTimerTask();
-			timer.schedule(task, 1000, delay);
+		if (timer == null) {
+			timer = new Timer();
+			timer.schedule(getTimerTask(), 1000, delay);
 		}
 		informationMessageListenerList.add(listener);
 	}
@@ -40,94 +36,55 @@ public final class InformationModel {
 	private TimerTask getTimerTask() {
 		return new TimerTask() {
 			
+			private String informationMessage = "";
 			@Override
 			public void run() {
-				final Timer t2 = new Timer();
-				t2.schedule(new TimerTask() {
-					int index=1;
-					@Override
-					public void run() {
-						if (messageDeque.isEmpty()) {
-							t2.purge();
-							return;
-						}
-						String msg = messageDeque.removeFirst().getMessage();
-						fireMessageListener(msg.substring(0, index++));
-						
-						informationMessage = msg;
+				try {
+					if (informationMessage.length() > 0) {
+						shiftingOldMessage(informationMessage);
 					}
-				}, 0, 20);
-				final Timer t = new Timer();
-				t.schedule(new TimerTask() {
-					@Override
-					public void run() {
-						if (informationMessage != null) {
-							String message = informationMessage;
-							int len = message.length();
-							if (len == 1) {
-								fireMessageListener("");
-								t2.purge();
-								t.purge();
-								return;
-							}
-							informationMessage = message.substring(1);
-							fireMessageListener(informationMessage);
-						}
+					if (messageDeque.isEmpty()) {
+						informationMessage = "";
+						return ;
 					}
-				}, 0, 20);
+					informationMessage = displayNewMessage();
+					fireMessageListener(informationMessage);
+				} catch (InterruptedException e) {}
 			}
 		};
 	}
 	
-	/*private ActionListener getTimerActionListener() {
-		return new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				final Timer t2 = new Timer(20, null);
-				t2.addActionListener(new ActionListener() {
-					int index=1;
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						String msg = messageDeque.removeFirst().getMessage();
-						fireMessageListener(msg.substring(0, index++));
-						t2.stop();
-						informationMessage = msg;
-					}
-				});
-				final Timer t = new Timer(20, null);
-				t.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						if (informationMessage != null) {
-							String message = informationMessage;
-							int len = message.length();
-							if (len == 1) {
-								fireMessageListener("");
-								t2.start();
-								t.stop();
-								return;
-							}
-							informationMessage = message.substring(1);
-							fireMessageListener(informationMessage);
-						}
-					}
-				});
-				t.start();
+	private void shiftingOldMessage(String message) throws InterruptedException {
+		String msg = message;
+		boolean isShift = false;
+		while (!isShift) {
+			if (msg.length() == 1) {
+				fireMessageListener("");
+				isShift = true;
 			}
-		};
-	}*/
+			msg = msg.substring(1);
+			fireMessageListener(msg);
+			Thread.sleep(sleepTime);
+		}
+	}
+	
+	private String displayNewMessage() throws InterruptedException {
+		String msg = messageDeque.removeFirst().getMessage();
+		boolean end = false;
+		int index = 1;
+		while (!end) {
+			fireMessageListener(msg.substring(0, index++));
+			Thread.sleep(sleepTime);
+			if (msg.length() == index) {
+				end = true;
+			}
+		}
+		return msg;
+	}
 	
 	public void stop() {
 		timer.purge();
 		timer.cancel();
-		/*if (timer.isRunning()) {
-			timer.stop();
-			for (ActionListener al : timer.getActionListeners()) {
-				timer.removeActionListener(al);
-			}
-			timer = null;
-		}*/
 		timer = null;
 	}
 	

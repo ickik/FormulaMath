@@ -88,7 +88,7 @@ public abstract class AbstractFormulaMathFrame {
 			int h = frame.getHeight();
 			double l = Toolkit.getDefaultToolkit().getScreenSize().getWidth() - insets.left - insets.right - 5;
 			double l2 = Toolkit.getDefaultToolkit().getScreenSize().getHeight() - insets.top - insets.bottom - 5;
-			frame.setSize(w, h);
+			//frame.setSize(w, h);
 			frame.setLocation((int) (l / 2 - w / 2), (int)(l2 / 2 - h / 2));
 		//}
 	}

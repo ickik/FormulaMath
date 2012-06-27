@@ -157,7 +157,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			public void windowActivated(WindowEvent arg0) {}
 		});
 		displayFrame();
-		mainFrame.setMinimumSize(new Dimension(150,150));
+		//mainFrame.setMinimumSize(new Dimension(150,150));
 	}
 
 	private JSplitPane getSplitPane() {

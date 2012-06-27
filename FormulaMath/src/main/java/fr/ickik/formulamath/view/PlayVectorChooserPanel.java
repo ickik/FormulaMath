@@ -181,9 +181,9 @@ public final class PlayVectorChooserPanel {
 	}
 	
 	private int getCoordinateLimit(int coordinate, int mapSize) {
-		if (coordinate < 0) {
+		if (coordinate < MainFrame.MAP_MARGIN / 2) {
 			return MainFrame.MAP_MARGIN / 2;
-		} else if (coordinate >= mapSize) {
+		} else if (coordinate >= mapSize + (MainFrame.MAP_MARGIN / 2)) {
 			return mapSize + (MainFrame.MAP_MARGIN / 2) - 1;
 		}
 		return coordinate;

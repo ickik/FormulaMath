@@ -23,6 +23,7 @@ public final class InformationPanel extends JLabel implements InformationMessage
 	public InformationPanel() {
 		super();
 		setBorder(BorderFactory.createTitledBorder("Information Panel"));
+		setText(" ");
 	}
 
 	/**

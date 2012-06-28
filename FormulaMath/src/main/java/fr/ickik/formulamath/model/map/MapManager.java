@@ -15,9 +15,14 @@ import fr.ickik.formulamath.entity.RoadDirectionList;
 import fr.ickik.formulamath.model.CaseModel;
 
 /**
- * Contains and handles the map of the application. The map is a everytime a square.
+ * Contains and handles the map of the application. The map is a everytime a square.<br>
+ * This class creates and generates a random map. The map is at first time
+ * initialized with full grass field and then it adds the road and next the design.
+ * <br><br>
+ * <b>Warning : </b>Correction of random generator, it starts at 0 but creation is not available and
+ * finish the construction. A part of generated maps contains not completed road.
  * @author Ickik.
- * @version 0.1.008, 13 June 2012.
+ * @version 0.1.009, 28 June 2012.
  */
 public final class MapManager {
 
@@ -442,6 +447,7 @@ public final class MapManager {
 				case MIDDLE:
 					log.debug("{} => {} entering", coteDepart.name(), direction.name());
 					int len = getRandomNumber(mapSize - positionDepart.getX() - 1);
+					log.trace("Random length with max length {} : {}", mapSize - positionDepart.getX() - 1, len);
 					if (len > mapSize / 2) {
 						len = getRandomNumber(mapSize / 2);
 					}
@@ -847,11 +853,16 @@ public final class MapManager {
 		return r.nextInt(max - min) + min;
 	}
 
+	/**
+	 * Return a random number in range 1 to max argument exclusive.
+	 * @param max the maximum exclusive.
+	 * @return a random number.
+	 */
 	private int getRandomNumber(int max) {
 		if (max == 0) {
 			return 0;
 		}
-		return getRandomNumber(0, max);
+		return getRandomNumber(1, max);
 	}
 
 	/**

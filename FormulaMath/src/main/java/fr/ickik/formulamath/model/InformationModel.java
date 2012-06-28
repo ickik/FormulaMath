@@ -12,7 +12,7 @@ import fr.ickik.formulamath.entity.InformationMessage;
 /**
  * Model of the panel that displays information periodically.
  * @author Ickik
- * @version 0.1.001, 25 June 2012
+ * @version 0.1.002, 28 June 2012
  * @since 0.3.5
  */
 public final class InformationModel {
@@ -36,15 +36,16 @@ public final class InformationModel {
 	private TimerTask getTimerTask() {
 		return new TimerTask() {
 			
-			private String informationMessage = "";
+			private String informationMessage = " ";
 			@Override
 			public void run() {
 				try {
-					if (informationMessage.length() > 0) {
+					if (informationMessage.length() > 1) {
 						shiftingOldMessage(informationMessage);
 					}
 					if (messageDeque.isEmpty()) {
-						informationMessage = "";
+						informationMessage = " ";
+						fireMessageListener(informationMessage);
 						return ;
 					}
 					informationMessage = displayNewMessage();
@@ -59,7 +60,7 @@ public final class InformationModel {
 		boolean isShift = false;
 		while (!isShift) {
 			if (msg.length() == 1) {
-				fireMessageListener("");
+				fireMessageListener(" ");
 				isShift = true;
 			}
 			msg = msg.substring(1);

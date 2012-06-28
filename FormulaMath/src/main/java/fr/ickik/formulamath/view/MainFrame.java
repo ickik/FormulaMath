@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoundedRangeModel;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -22,6 +23,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -45,12 +47,13 @@ import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Position;
 import fr.ickik.formulamath.entity.Vector;
 import fr.ickik.formulamath.model.CaseModel;
+import fr.ickik.formulamath.model.FormulaMathMouseListener;
 import fr.ickik.formulamath.model.InformationModel;
 
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.2.005, 19 June 2012.
+ * @version 0.2.006, 28 June 2012.
  */
 public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
@@ -62,6 +65,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	private final StartPositionChooserPanel startPositionChooserPanel;
 	private final PlayVectorChooserPanel playVectorChooserPanel;
 	private final FirstMovePanel firstMovePanel;
+	private final FormulaMathMouseListener listener;
 	private static final Logger log = LoggerFactory.getLogger(MainFrame.class);
 	private JScrollPane scrollPane;
 	private List<List<JCase>> caseArrayList;
@@ -83,6 +87,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		mainFrame = getFrame();
 		gameMenuPanel = new JPanel();
 		playButton = new JButton("Play");
+		listener = new FormulaMathMouseListener(caseSize);
 		informationLabel = new InformationPanel();
 		informationLabel.setInformationModel(informationModel);
 		informationModel.addInformationMessageListener(informationLabel);
@@ -157,6 +162,9 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			public void windowActivated(WindowEvent arg0) {}
 		});
 		displayFrame();
+		/*FormulaMathMouseListener listener = new FormulaMathMouseListener((Graphics2D) scrollPane.getGraphics(), descriptionLabel);
+		scrollPane.addMouseListener(listener);
+		scrollPane.addMouseMotionListener(listener);*/
 		//mainFrame.setMinimumSize(new Dimension(150,150));
 	}
 
@@ -165,6 +173,9 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		scrollPane = new JScrollPane(trayPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.getHorizontalScrollBar().setUnitIncrement(5);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(5);
+		scrollPane.addMouseListener(listener);
+		scrollPane.addMouseMotionListener(listener);
+		listener.setScrollPane(scrollPane);
 		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, getMenuPanel());
 		//JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, getMenuPanel());
 		split.setDividerLocation(new Double(Toolkit.getDefaultToolkit().getScreenSize().getWidth() * 0.8).intValue());
@@ -186,6 +197,10 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	private JPanel getMenuPanel() {
 		JPanel menuPanel = new JPanel(new BorderLayout());
 		menuPanel.add(informationLabel, BorderLayout.NORTH);
+		JLabel descriptionLabel = new JLabel(" ");
+		listener.setDescriptionLabel(descriptionLabel);
+		descriptionLabel.setBorder(BorderFactory.createTitledBorder("Map information"));
+		menuPanel.add(descriptionLabel, BorderLayout.SOUTH);
 		final JPanel panel = new JPanel(new GridLayout(4, 1));
 		panel.add(gameMenuPanel);
 		panel.add(playButton);
@@ -195,18 +210,6 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		return menuPanel;
 	}
 	
-	private JPanel getMenuPanel2() {
-		JPanel menuPanel = new JPanel(new BorderLayout());
-		menuPanel.add(informationLabel, BorderLayout.NORTH);
-		final JPanel panel = new JPanel(new GridLayout(4, 1));
-		panel.add(gameMenuPanel);
-		panel.add(playButton);
-		panel.add(getDirectionalPanel());
-		panel.add(getZoomPanel());
-		menuPanel.add(panel, BorderLayout.CENTER);
-		return menuPanel;
-	}
-
 	private JPanel getZoomPanel() {
 		JPanel zoomPanel = new JPanel(new GridLayout(1, 2));
 		JButton zoom = new JButton("+");
@@ -215,6 +218,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			public void actionPerformed(ActionEvent arg0) {
 				if (caseSize < MAX_ZOOM_SIZE) {
 					caseSize++;
+					listener.setCaseSize(caseSize);
 					log.trace("Zoom : {}", caseSize);
 					repaintTrayPanel();
 				}
@@ -226,6 +230,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			public void actionPerformed(ActionEvent e) {
 				if (caseSize > MIN_ZOOM_SIZE) {
 					caseSize--;
+					listener.setCaseSize(caseSize);
 					log.trace("Dezoom : {}", caseSize);
 					repaintTrayPanel();
 				}

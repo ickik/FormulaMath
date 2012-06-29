@@ -53,7 +53,7 @@ import fr.ickik.formulamath.model.InformationModel;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.2.006, 28 June 2012.
+ * @version 0.2.007, 29 June 2012.
  */
 public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
@@ -162,9 +162,6 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			public void windowActivated(WindowEvent arg0) {}
 		});
 		displayFrame();
-		/*FormulaMathMouseListener listener = new FormulaMathMouseListener((Graphics2D) scrollPane.getGraphics(), descriptionLabel);
-		scrollPane.addMouseListener(listener);
-		scrollPane.addMouseMotionListener(listener);*/
 		//mainFrame.setMinimumSize(new Dimension(150,150));
 	}
 
@@ -263,6 +260,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				scrollPane.getVerticalScrollBar().getModel().setValue(scrollPane.getVerticalScrollBar().getModel().getValue() + 20);
 			}
 		});
+		//down.addActionListener(getDirectionButtonActionListener(down, scrollPane.getVerticalScrollBar().getModel(), 40));
 		JButton left = new JButton(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/left.png")));
 		left.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/left_pressed.png")));
 		left.addActionListener(new ActionListener() {
@@ -272,6 +270,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				scrollPane.getHorizontalScrollBar().getModel().setValue(scrollPane.getHorizontalScrollBar().getModel().getValue() - 40);
 			}
 		});
+		//left.addActionListener(getDirectionButtonActionListener(left, scrollPane.getHorizontalScrollBar().getModel(), -40));
 		JButton right = new JButton(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/right.png")));
 		right.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/right_pressed.png")));
 		right.addActionListener(new ActionListener() {
@@ -281,6 +280,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				scrollPane.getHorizontalScrollBar().getModel().setValue(scrollPane.getHorizontalScrollBar().getModel().getValue() + 40);
 			}
 		});
+		//right.addActionListener(getDirectionButtonActionListener(right, scrollPane.getHorizontalScrollBar().getModel(), 40));
 		JButton centered = new JButton(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/center.png")));
 		centered.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/center_pressed.png")));
 		centered.addActionListener(getPlayerFocusListener());
@@ -370,7 +370,8 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				c.setSize(d);
 			}
 		}
-		mainFrame.validate();
+//		mainFrame.validate();
+		scrollPane.validate();
 	}
 	
 	private JMenuBar getMenuBar() {
@@ -513,13 +514,11 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	@Override
 	public void displayPlayerStartingPossibilities(Player player, List<Position> startingPositionList, int mapSize) {
 		startPositionChooserPanel.construct(startingPositionList, mapSize);
-		//displayMessage("Player " + player.getName() + " (" + player.getId() + ") must choose the start position");
 	}
 
 	@Override
 	public void displayPlayerFirstMove(Player player, int mapSize) {
 		firstMovePanel.construct(caseArrayList, player.getPosition(), mapSize);
-		//displayMessage("Player " + player.getName() + " (" + player.getId() + ") must choose the first move");
 	}
 	
 	@Override
@@ -532,7 +531,6 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			controller.play(null);
 			return;
 		}
-		//displayMessage("Player " + player.getName() + " (" + player.getId() + ") must choose the next move");
 	}
 
 	@Override

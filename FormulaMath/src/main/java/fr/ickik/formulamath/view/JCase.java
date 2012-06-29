@@ -122,7 +122,7 @@ public class JCase extends JComponent {
 		setPreferredSize(d);
 		shape = new Rectangle2D.Double(0.0, 0.0, d.getWidth(), d.getHeight());
 		dimension.setSize(d);
-		repaint();
+		//repaint();
 	}
 	
 	@Override

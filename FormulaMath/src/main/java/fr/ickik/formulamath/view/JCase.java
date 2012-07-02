@@ -51,16 +51,14 @@ public class JCase extends JComponent {
 		super.paint(g);
 		if (isOpaque()) {
 			Graphics2D g2 = (Graphics2D) g;
-			if (model != null && model.getIdPlayer() == 0) {
-				if (model.getField() == Field.FINISHING_LINE) {
-					drawEndLine(g2);
-					g2.setColor(Color.BLACK);
-					g2.draw(shape);
-					return ;
-				}
+			if (model != null && model.getIdPlayer() == 0 && model.getField() == Field.FINISHING_LINE) {
+				drawEndLine(g2);
+				g2.setColor(Color.BLACK);
+				g2.draw(shape);
+				return ;
 			}
-			updateBackGroundColor();
-			g2.setColor(getBackground());
+			Color color = updateBackGroundColor();
+			g2.setColor(color);
 			g2.fill(shape);
 			g2.setColor(Color.BLACK);
 			g2.draw(shape);
@@ -85,7 +83,20 @@ public class JCase extends JComponent {
 		}
 	}
 	
-	private void updateBackGroundColor() {
+	private Color updateBackGroundColor() {
+		if (model != null) {
+			if (model.getBackgroundColor() == null) {
+				if (model.getIdPlayer() == MapManager.EMPTY_PLAYER) {
+					return model.getField().getColor();
+				}
+				return colorList[model.getIdPlayer() - 1];
+			}
+			return model.getBackgroundColor();
+		}
+		return Color.WHITE;
+	}
+	
+	/*private void updateBackGroundColor() {
 		if (model != null) {
 			if (model.getBackgroundColor() == null) {
 				if (model.getIdPlayer() == MapManager.EMPTY_PLAYER) {
@@ -99,7 +110,7 @@ public class JCase extends JComponent {
 		} else {
 			setBackground(Color.WHITE);
 		}
-	}
+	}*/
 	
 	@Override
 	public void paintComponents(Graphics g) {

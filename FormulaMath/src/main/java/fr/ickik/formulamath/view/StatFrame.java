@@ -24,7 +24,7 @@ import fr.ickik.formulamath.model.Stats;
  * per turn, the variance, the square type and a graphic which resume the number of
  * vector played during the game.
  * @author Ickik
- * @version 0.1.007, 4 June 2012
+ * @version 0.1.008, 29 June 2012
  */
 public final class StatFrame extends AbstractFormulaMathFrame {
 
@@ -112,13 +112,21 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 	}
 	
 	private JPanel createButton() {
-		JPanel buttonPanel = new JPanel(new GridLayout(1, 1));
+		JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
 		JButton replay = new JButton("Replay");
 		replay.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				controller.modelReinitialization();
+			}
+		});
+		JButton replayMap = new JButton("Replay same map");
+		replayMap.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				controller.modelReinitializationMap();
 			}
 		});
 		JButton button = new JButton("Close");
@@ -129,6 +137,8 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 				controller.closeStatFrame();
 			}
 		});
+		buttonPanel.add(replay);
+		//buttonPanel.add(replayMap);
 		buttonPanel.add(button);
 		return buttonPanel;
 	}

@@ -791,6 +791,13 @@ public final class PlayerManager {
 		playerRoadPosition.clear();
 		indexPlayerGame = 0;
 	}
+	
+	public void mapReinitialization() {
+		playerList.clear();
+		finishPositionList.clear();
+		playerRoadPosition.clear();
+		indexPlayerGame = 0;
+	}
 
 	public void setInformationMessageModel(InformationModel informationModel) {
 		this.informationModel = informationModel;

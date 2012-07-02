@@ -49,6 +49,7 @@ import fr.ickik.formulamath.entity.Vector;
 import fr.ickik.formulamath.model.CaseModel;
 import fr.ickik.formulamath.model.FormulaMathMouseListener;
 import fr.ickik.formulamath.model.InformationModel;
+import fr.ickik.formulamath.model.map.MapDimension;
 
 /**
  * This class create the main frame of the application.
@@ -104,11 +105,16 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	}
 	
 	private void initMap(List<List<CaseModel>> carte) {
+		long begin  = System.currentTimeMillis();
 		int sideSize = carte.size() + MAP_MARGIN;
 		int x = 0;
 		int y = 0;
 		int endOfMapIndex = sideSize - (MAP_MARGIN / 2);
 		int marge = MAP_MARGIN / 2;
+		if (carte.size() < MapDimension.MEDIUM.getValue()) {
+			caseSize*=2;
+			listener.setCaseSize(caseSize);
+		}
 		for (int i = 0; i < sideSize; i++) {
 			x = 0;
 			List<JCase> caseList = new ArrayList<JCase>(sideSize);
@@ -125,9 +131,11 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				y++;
 			}
 		}
+		log.debug("Duration of map initialization : {}ms", (System.currentTimeMillis() - begin));
 	}
 
 	private void createMainFrame() {
+		log.trace("Begin createMainFrame()");
 		mainFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		mainFrame.add(getSplitPane(), BorderLayout.CENTER);
 		mainFrame.setJMenuBar(getMenuBar());
@@ -162,11 +170,27 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			public void windowActivated(WindowEvent arg0) {}
 		});
 		displayFrame();
-		//mainFrame.setMinimumSize(new Dimension(150,150));
+		mainFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
+		log.trace("End createMainFrame()");
 	}
 
 	private JSplitPane getSplitPane() {
 		JPanel trayPanel = getTrayPanel();
+		/*final JPanel trayPanel = new JPanel();
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				GridLayout gridLayout = new GridLayout(caseArrayList.size(), caseArrayList.size());
+				trayPanel.setLayout(gridLayout);
+				trayPanel.setOpaque(true);
+				for (List<JCase> list : caseArrayList) {
+					for (JCase c : list) {
+						trayPanel.add(c);
+					}
+				}
+			}
+		}).start();*/
 		scrollPane = new JScrollPane(trayPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.getHorizontalScrollBar().setUnitIncrement(5);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(5);
@@ -174,12 +198,13 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		scrollPane.addMouseMotionListener(listener);
 		listener.setScrollPane(scrollPane);
 		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, getMenuPanel());
-		//JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, getMenuPanel());
 		split.setDividerLocation(new Double(Toolkit.getDefaultToolkit().getScreenSize().getWidth() * 0.8).intValue());
 		return split;
 	}
 
 	private JPanel getTrayPanel() {
+		log.debug("getTrayPanel");
+		long begin = System.currentTimeMillis();
 		GridLayout gridLayout = new GridLayout(caseArrayList.size(), caseArrayList.size());
 		JPanel tray = new JPanel(gridLayout);
 		tray.setOpaque(true);
@@ -188,6 +213,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				tray.add(c);
 			}
 		}
+		log.debug("Duration of tray panel construction : {}ms", (System.currentTimeMillis() - begin));
 		return tray;
 	}
 
@@ -225,7 +251,12 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		dezoom.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				if (caseSize > MIN_ZOOM_SIZE) {
+				if (caseArrayList.size() >= MapDimension.MEDIUM.getValue() && caseSize > MIN_ZOOM_SIZE) {
+					caseSize--;
+					listener.setCaseSize(caseSize);
+					log.trace("Dezoom : {}", caseSize);
+					repaintTrayPanel();
+				} else if (caseSize * caseArrayList.size() > scrollPane.getWidth()) {
 					caseSize--;
 					listener.setCaseSize(caseSize);
 					log.trace("Dezoom : {}", caseSize);

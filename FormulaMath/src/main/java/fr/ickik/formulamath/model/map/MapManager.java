@@ -121,6 +121,14 @@ public final class MapManager {
 		roadList.clear();
 		log.debug("End of Map Reinitialization");
 	}
+	
+	public void mapReinitialization() {
+		log.debug("Reinitialization of map");
+		//startingPositionList.clear();
+		//finishingLinePositionList.clear();
+		roadList.clear();
+		log.debug("End of Map Reinitialization");
+	}
 
 	private void initStartPosition(Position p, Position p2) {
 		int minX = Math.min(p.getX(), p2.getX());

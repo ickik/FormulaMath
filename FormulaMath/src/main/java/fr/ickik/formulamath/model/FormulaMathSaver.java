@@ -15,7 +15,7 @@ import fr.ickik.formulamath.model.map.MapManager;
 /**
  * This model saves and load map to permit the player to replay maps.
  * @author Ickik
- * @version 0.1.000, 4 mai 2012
+ * @version 0.1.001, 29 June 2012
  * @since 0.2
  */
 public final class FormulaMathSaver {
@@ -55,6 +55,47 @@ public final class FormulaMathSaver {
 		return true;
 	}
 	
+	public boolean saveMap2(MapManager manager, File destinationFile) throws IOException {
+		int size = manager.getMapSize();
+		StringBuilder str = new StringBuilder();
+		str.append(size).append("x").append(size).append("\n");
+		int index = 0;
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				CaseModel model = manager.getCase(i, j);
+				if (model != null) {
+					byte b = 0;
+					if (index % 2 == 0) {
+						b = getByteFromField(model.getField());
+					} else {
+						b = getByteFromField(model.getField(), b);
+						str.append(b);
+						b = 0;
+					}
+					index++;
+				}
+			}
+			str.append("\n");
+		}
+		str.append("\n");
+		ByteBuffer buffer = ByteBuffer.wrap(str.toString().getBytes());
+		FileOutputStream outputStream = new FileOutputStream(destinationFile);
+		FileChannel channel = outputStream.getChannel();
+		channel.write(buffer);
+		channel.close();
+		outputStream.close();
+		return true;
+	}
+	
+	private byte getByteFromField(Field field) {
+		return (byte) (field.getValue() & 0xFF00);
+	}
+	
+	private byte getByteFromField(Field field, byte b) {
+		byte tmpByte = (byte) (field.getValue() & 0x00FF);
+		return (byte) (b & tmpByte);
+	}
+	
 	public MapManager loadMap(File file) throws IOException {
 		FileInputStream inputStream = new FileInputStream(file);
 		FileChannel channel = inputStream.getChannel();
@@ -75,6 +116,35 @@ public final class FormulaMathSaver {
 			String line = array[i];
 			for(int j = 0; j < size; j++) {
 				manager.getCase(i, j).setField(valueFieldMap.get(line.charAt(j)));
+			}
+		}
+		return manager;
+	}
+	
+	public MapManager loadMap2(File file) throws IOException {
+		FileInputStream inputStream = new FileInputStream(file);
+		FileChannel channel = inputStream.getChannel();
+		ByteBuffer buffer =  ByteBuffer.allocate(BUFFER_SIZE);
+		StringBuilder str = new StringBuilder();
+		while (channel.read(buffer) > 0) {
+			buffer.flip();
+			str.append(buffer.asCharBuffer());
+			buffer.clear();
+		}
+		channel.close();
+		inputStream.close();
+		String[] array = str.toString().split("\n");
+		int size = Integer.parseInt(array[0].split("x")[0]);
+		MapManager manager = new MapManager();
+		manager.init(size);
+		for (int i = 1; i < size; i++) {
+			String line = array[i];
+			for(int j = 0; j < size; j+=2) {
+				//manager.getCase(i, j).setField(valueFieldMap.get(line.charAt(j)));
+				manager.getCase(i, j).setField(valueFieldMap.get(line.charAt(j) & 0xFF00));
+				if (j != size - 1) {
+					manager.getCase(i, j+1).setField(valueFieldMap.get(line.charAt(j) & 0x00FF));
+				}
 			}
 		}
 		return manager;

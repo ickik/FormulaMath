@@ -173,6 +173,15 @@ public final class FormulaMathController {
 	public void modelReinitialization() {
 		informationModel.addMessage(new InformationMessage(MessageType.INFORMATION, "Reinitialisation"));
 		playerManager.reinitialization();
+		mapManager.mapReinitialization();
+		closeStatFrame();
+		//mainFrame.close();
+		//openConfigurationFrame();
+	}
+	
+	public void modelReinitializationMap() {
+		informationModel.addMessage(new InformationMessage(MessageType.INFORMATION, "Reinitialisation"));
+		playerManager.mapReinitialization();
 		mapManager.reinitialization();
 		closeStatFrame();
 		mainFrame.close();

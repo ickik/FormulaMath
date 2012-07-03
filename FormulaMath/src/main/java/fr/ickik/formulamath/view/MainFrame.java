@@ -54,7 +54,7 @@ import fr.ickik.formulamath.model.map.MapDimension;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.2.007, 29 June 2012.
+ * @version 0.2.008, 03 July 2012.
  */
 public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
@@ -557,11 +557,6 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		log.debug("displayPlayerMovePossibilities for {}", player.toString());
 		log.debug("Vector Possibilities size : {}", Integer.toString(vectorList.size()));
 		playVectorChooserPanel.construct(player, vectorList, mapSize, caseArrayList);
-		if (vectorList.isEmpty()) {
-			displayMessage("No possibilities to play, you lose!");
-			controller.play(null);
-			return;
-		}
 	}
 
 	@Override

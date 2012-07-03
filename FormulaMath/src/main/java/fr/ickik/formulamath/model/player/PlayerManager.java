@@ -26,7 +26,7 @@ import fr.ickik.formulamath.model.map.Orientation;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.2.012, 02 July 2012.
+ * @version 0.2.013, 03 July 2012.
  */
 public final class PlayerManager {
 
@@ -164,15 +164,12 @@ public final class PlayerManager {
 	 */
 	public void lastPlay(Vector vector) {
 		log.debug("LastPlay {}", vector);
-		List<Position> endLineList = mapManager.getFinishingLinePositionList();
 		Player p = getCurrentPlayer();
 		p.incrementPlayingCounter();
 		mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
 		Position endLinePosition = getIntersectionPosition(vector);
 		log.debug("End position found : {}", endLinePosition);
-		int index = endLineList.indexOf(endLinePosition);
-		log.debug("Index in the list : {}", Integer.toString(index));
-		mapManager.getCase(endLineList.get(index).getY(), endLineList.get(index).getX()).setIdPlayer(p.getId());
+		mapManager.getCase(endLinePosition.getY(), endLinePosition.getX()).setIdPlayer(p.getId());
 		fireUpdateCaseListener(p);
 		addFinishPlayer(p, true);
 		if (!updateIndexPlayerGame()) {
@@ -182,7 +179,7 @@ public final class PlayerManager {
 	}
 	
 	/**
-	 * Check teh intersection between 2 segments to return a Position if it exists or null.
+	 * Check the intersection between 2 segments to return a Position if it exists or null.
 	 * The intersection is calculated by following these instructions :<br>
 	 *  - k is the parameter of the intersection point from CD on AB, if k is between 0 and 1 the point in on CD<br>
 	 *  - m is the parameter of the intersection point from AB on CD, if m is between 0 and 1 the point in on AB<br><br>
@@ -201,24 +198,29 @@ public final class PlayerManager {
 	 * @param vector the played vector, the next move.
 	 * @return the intersection Position or null.
 	 */
-	private Position getIntersectionPosition(Vector vector) {
-		//variable private pour le vecteur, afin de ne pas recalculer a chaque fois???
+	private Position getIntersectionPosition(Vector v) {
 		Position f1 = mapManager.getFinishingLinePositionList().get(0);
 		Position f2 = mapManager.getFinishingLinePositionList().get(mapManager.getFinishingLinePositionList().size() - 1);
 		Vector f1f2 = new Vector(f2.getX() - f1.getX(), f2.getY() - f1.getY());
+		Vector vector = new Vector(v.getX(), - v.getY());
 		log.trace("Position F1 {}, F2 {}, Vector f1f2 {}", new Object[]{f1,f2,f1f2});
 		Player p = getCurrentPlayer();
 		Position p1 = p.getPosition();
-		int divider = vector.getX() * f1f2.getY() - vector.getY() * f1f2.getX();
+		double divider = vector.getX() * f1f2.getY() - vector.getY() * f1f2.getX();
 		log.trace("Divider {}", divider);
+		log.trace("Player's position : {}", p1);
 		if (divider == 0) {
 			return null;
 		}
-		int m = - (vector.getX() * p1.getY() + vector.getX() * f1.getY() + vector.getY() * p1.getX() - vector.getY() * f1.getX()) / divider;
-		int k = - (p1.getX() * f1f2.getY() - f1.getX() * f1f2.getY() - f1f2.getX() * p1.getY() + f1f2.getX() * f1.getY()) / divider;
-		log.trace("Coefficient of Vector played:{} ; end line Vector:{}", k,m);
+		double val =(-vector.getX() * p1.getY() + vector.getX() * f1.getY() + vector.getY() * p1.getX() - vector.getY() * f1.getX());
+		log.trace("Dividende m : {}", val);
+		double m = - val / divider;
+		double val2 = (p1.getX() * f1f2.getY() - f1.getX() * f1f2.getY() - f1f2.getX() * p1.getY() + f1f2.getX() * f1.getY());
+		log.trace("Dividende k : {}", val2);
+		double k = - val2 / divider;
+		log.trace("Coefficient of Vector played:{} ; end line Vector:{}", Double.toString(k), Double.toString(m));
 		if (m >= 0 && m <= 1 && k >= 0 && k <= 1) {
-			return new Position(f1.getX() + m * f1f2.getX(), f1.getY() + m * f1f2.getX());
+			return new Position((int) (f1.getX() + m * f1f2.getX()), (int) (f1.getY() + m * f1f2.getY()));
 		}
 		return null;
 	}

@@ -96,7 +96,7 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 		JPanel panel = new JPanel(new GridLayout(1, 3));
 		JPanel panelLbl = new JPanel(new GridLayout(4, 2));
 
-		panelLbl.add(new JLabel("Numbre of move"));
+		panelLbl.add(new JLabel("Numbre of round : "));
 		panelLbl.add(new JLabel(Integer.toString(stats.getPlayer().getPlayingCounter())));
 		panelLbl.add(new JLabel("Average"));
 		panelLbl.add(new JLabel(getRoundValue((stats.getAverageDistance())) + " case/turn"));

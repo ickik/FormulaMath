@@ -557,11 +557,11 @@ public final class PlayerManager {
 	private void fireDisplayPlayerMovePossibilities() {
 		log.trace("Display moving possibilities for {}", getCurrentPlayer().toString());
 		List<Vector> list = getVectorsPossibilities(getCurrentPlayer());
-		if (list.isEmpty()) {
-			log.debug("No possibilities to play the player lose");
+		if (list.isEmpty() && finishPositionList.contains(getCurrentPlayer())) {
+			/*log.debug("No possibilities to play the player lose");
 			addFinishPlayer(getCurrentPlayer(), false);
 			updateIndexPlayerGame();
-			computerPlay();
+			computerPlay();*/
 			return;
 		}
 		informationModel.pushMessage(new InformationMessage(MessageType.PLAYER, "Player " + getCurrentPlayer().getName() + " (" + getCurrentPlayer().getId() + ") must choose the next move"));

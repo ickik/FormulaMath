@@ -99,16 +99,24 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 		panelLbl.add(new JLabel("Numbre of move"));
 		panelLbl.add(new JLabel(Integer.toString(stats.getPlayer().getPlayingCounter())));
 		panelLbl.add(new JLabel("Average"));
-		panelLbl.add(new JLabel(Double.toString(stats.getAverageDistance())));
+		panelLbl.add(new JLabel(getRoundValue((stats.getAverageDistance())) + " case/turn"));
 		panelLbl.add(new JLabel("Variance"));
-		panelLbl.add(new JLabel(Double.toString(stats.getVariance())));
+		panelLbl.add(new JLabel(getRoundValue(stats.getVariance())));
 		panelLbl.add(new JLabel("Square type"));
-		panelLbl.add(new JLabel(Double.toString(stats.getSquareType())));
+		panelLbl.add(new JLabel(getRoundValue(stats.getSquareType())));
 		
 		panel.add(new JLabel("Position " + Integer.toString(position) + "  " + stats.getPlayer().getName() + " (" + Integer.toString(stats.getPlayer().getId()) + ")"));
 		panel.add(panelLbl);
 		//panel.add(createGraph(stats.getVectorCountMap()));
 		return panel;
+	}
+	
+	private String getRoundValue(double value) {
+		double val = value;
+		val *= 100.0;
+		val = Math.floor(val+0.5);
+		val /= 100.0;
+		return Double.toString(val);
 	}
 	
 	private JPanel createButton() {

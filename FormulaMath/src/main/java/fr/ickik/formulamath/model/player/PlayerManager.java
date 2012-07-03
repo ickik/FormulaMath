@@ -26,7 +26,7 @@ import fr.ickik.formulamath.model.map.Orientation;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.2.011, 22 June 2012.
+ * @version 0.2.012, 02 July 2012.
  */
 public final class PlayerManager {
 
@@ -202,20 +202,22 @@ public final class PlayerManager {
 	 * @return the intersection Position or null.
 	 */
 	private Position getIntersectionPosition(Vector vector) {
-		//variable private pour le vecteur, afin de ne pas recalculer a chaque fois.
+		//variable private pour le vecteur, afin de ne pas recalculer a chaque fois???
 		Position f1 = mapManager.getFinishingLinePositionList().get(0);
 		Position f2 = mapManager.getFinishingLinePositionList().get(mapManager.getFinishingLinePositionList().size() - 1);
 		Vector f1f2 = new Vector(f2.getX() - f1.getX(), f2.getY() - f1.getY());
+		log.trace("Position F1 {}, F2 {}, Vector f1f2 {}", new Object[]{f1,f2,f1f2});
 		Player p = getCurrentPlayer();
 		Position p1 = p.getPosition();
 		int divider = vector.getX() * f1f2.getY() - vector.getY() * f1f2.getX();
+		log.trace("Divider {}", divider);
 		if (divider == 0) {
 			return null;
 		}
 		int m = - (vector.getX() * p1.getY() + vector.getX() * f1.getY() + vector.getY() * p1.getX() - vector.getY() * f1.getX()) / divider;
 		int k = - (p1.getX() * f1f2.getY() - f1.getX() * f1f2.getY() - f1f2.getX() * p1.getY() + f1f2.getX() * f1.getY()) / divider;
 		log.trace("Coefficient of Vector played:{} ; end line Vector:{}", k,m);
-		if (m > 0 && m <= 1 && k > 0 && k <= 1) {
+		if (m >= 0 && m <= 1 && k >= 0 && k <= 1) {
 			return new Position(f1.getX() + m * f1f2.getX(), f1.getY() + m * f1f2.getX());
 		}
 		return null;

@@ -30,7 +30,7 @@ import fr.ickik.formulamath.model.map.Field;
 /**
  * This class create a JPanel which is displayed to give a the first move on map for a human player.
  * @author Ickik
- * @version 0.1.000, 14 mai 2012
+ * @version 0.1.001, 03 July 2012
  * @since 0.3
  */
 public final class FirstMovePanel {
@@ -82,12 +82,15 @@ public final class FirstMovePanel {
 				JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
 				log.debug("Test futur position on grid ({}, {})", (xTrayPanel + xMoving), (yTrayPanel - yMoving));
 				JCase c2 = caseArrayList.get(yTrayPanel - yMoving).get(xTrayPanel + xMoving);
-				log.debug("Futur position is occuped : {}", c2.getModel().isOccuped());
-				if (c2.getModel().isOccuped()) {
-					log.warn("Player {} on this case", c2.getModel().getIdPlayer());
-					displayMessage("Player on it");
-					return;
+				if (c2.getModel() != null) {
+					log.debug("Futur position is occuped : {}", c2.getModel().isOccuped());
+					if (c2.getModel().isOccuped()) {
+						log.warn("Player {} on this case", c2.getModel().getIdPlayer());
+						displayMessage("Player on it");
+						return;
+					}
 				}
+				
 				Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
 				if (isGrassIntersection(line)) {
 					log.warn("The move intersect grass field");

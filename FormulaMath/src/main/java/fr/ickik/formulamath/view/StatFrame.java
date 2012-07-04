@@ -8,6 +8,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,7 +25,7 @@ import fr.ickik.formulamath.model.Stats;
  * per turn, the variance, the square type and a graphic which resume the number of
  * vector played during the game.
  * @author Ickik
- * @version 0.1.008, 29 June 2012
+ * @version 0.1.009, 4 July 2012
  */
 public final class StatFrame extends AbstractFormulaMathFrame {
 
@@ -108,6 +109,7 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 		panel.add(new JLabel("Position " + Integer.toString(position) + "  " + stats.getPlayer().getName() + " (" + Integer.toString(stats.getPlayer().getId()) + ")"));
 		panel.add(panelLbl);
 		//panel.add(createGraph(stats.getVectorCountMap()));
+		panel.setBorder(BorderFactory.createRaisedBevelBorder());
 		return panel;
 	}
 	

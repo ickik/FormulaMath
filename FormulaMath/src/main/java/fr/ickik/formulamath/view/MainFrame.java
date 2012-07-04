@@ -54,7 +54,7 @@ import fr.ickik.formulamath.model.map.MapDimension;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.2.008, 03 July 2012.
+ * @version 0.2.009, 04 July 2012.
  */
 public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
@@ -70,7 +70,6 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	private static final Logger log = LoggerFactory.getLogger(MainFrame.class);
 	private JScrollPane scrollPane;
 	private List<List<JCase>> caseArrayList;
-	private static final int MIN_ZOOM_SIZE = 10;
 	private static final int MAX_ZOOM_SIZE = 50;
 	private final FormulaMathController controller;
 	public static final int MAP_MARGIN = 20;
@@ -251,12 +250,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		dezoom.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				if (caseArrayList.size() >= MapDimension.MEDIUM.getValue() && caseSize > MIN_ZOOM_SIZE) {
-					caseSize--;
-					listener.setCaseSize(caseSize);
-					log.trace("Dezoom : {}", caseSize);
-					repaintTrayPanel();
-				} else if (caseSize * caseArrayList.size() > scrollPane.getWidth()) {
+				if (caseSize * caseArrayList.size() > scrollPane.getWidth()) {
 					caseSize--;
 					listener.setCaseSize(caseSize);
 					log.trace("Dezoom : {}", caseSize);

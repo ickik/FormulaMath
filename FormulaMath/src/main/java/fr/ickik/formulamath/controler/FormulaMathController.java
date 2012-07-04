@@ -202,8 +202,9 @@ public final class FormulaMathController {
 	
 	public void saveProperties() throws FormulaMathException {
 		try {
-			log.debug("Saving properties...");
+			log.trace("Information model stopping...");
 			informationModel.stop();
+			log.debug("Saving properties...");
 			PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.VERSION);
 			PropertiesModel.getSingleton().save();
 		} catch (IOException e) {

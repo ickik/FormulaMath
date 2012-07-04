@@ -129,8 +129,9 @@ public final class PlayerManager {
 		if (vector == null) {
 			log.debug("Vector is null");
 			addFinishPlayer(p, false);
-			updateIndexPlayerGame();
-			computerPlay();
+			if (updateIndexPlayerGame()) {
+				computerPlay();
+			}
 			return ;
 		}
 		log.debug("Vector to play : {}", vector.toString());

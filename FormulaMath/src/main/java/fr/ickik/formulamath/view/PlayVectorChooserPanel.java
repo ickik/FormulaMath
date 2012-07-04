@@ -89,7 +89,6 @@ public final class PlayVectorChooserPanel {
 			} else {
 				i++;
 				solutionCaseList.add(c2);
-				c2.addMouseListener(getSolutionMouseListener(c2));
 			}
 		}
 		if (vectorList.isEmpty()) {
@@ -106,6 +105,7 @@ public final class PlayVectorChooserPanel {
 			box.setSelected(false);
 			group.add(box);
 			solution[i] = box;
+			solutionCaseList.get(i).addMouseListener(getSolutionMouseListener(solutionCaseList.get(i)));
 			panel.add(box);
 		}
 		panel.validate();
@@ -172,6 +172,39 @@ public final class PlayVectorChooserPanel {
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				jCase.getModel().setBackgroundColor(Color.WHITE);
+				jCase.repaint();
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent arg0) {}
+		};
+	}
+	
+	private void iniMouseListener(final JCase jCase, final JRadioButton radioButton) {
+		jCase.addMouseListener(getSolutionMouseListener(jCase, radioButton));
+		radioButton.addMouseListener(getSolutionMouseListener(jCase, radioButton));
+	}
+	
+	private MouseListener getSolutionMouseListener(final JCase jCase, final JRadioButton radioButton) {
+		return new MouseListener() {
+			private final Color color = radioButton.getBackground();
+			@Override
+			public void mouseReleased(MouseEvent e) {}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				jCase.getModel().setBackgroundColor(null);
+				radioButton.setBackground(color);
+				jCase.repaint();
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				jCase.getModel().setBackgroundColor(Color.WHITE);
+				radioButton.setForeground(Color.RED);
 				jCase.repaint();
 			}
 			

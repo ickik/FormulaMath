@@ -25,7 +25,7 @@ import fr.ickik.formulamath.model.Stats;
  * per turn, the variance, the square type and a graphic which resume the number of
  * vector played during the game.
  * @author Ickik
- * @version 0.1.009, 4 July 2012
+ * @version 0.1.010, 5 July 2012
  */
 public final class StatFrame extends AbstractFormulaMathFrame {
 
@@ -81,14 +81,8 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 	
 	private JScrollPane displayStats(List<Stats> statsList) {
 		JPanel statsPanel = new JPanel(new GridLayout(statsList.size(), 1));
-//		for (int i = 0; i < playerNumber; i++) {
-//			Stats stats = new Stats(finishPlayerList.get(i));
-//			statsPanel.add(getPlayerStatsPanel(i, stats));
-//		}
-		int position = 1;
-		for (Stats stats : statsList) {
-			statsPanel.add(getPlayerStatsPanel(position, stats));
-			position++;
+		for (int i = 0; i < statsList.size(); i++) {
+			statsPanel.add(getPlayerStatsPanel(i, statsList.get(i)));
 		}
 		return new JScrollPane(statsPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	}
@@ -103,7 +97,7 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 		panelLbl.add(new JLabel(getRoundValue((stats.getAverageDistance())) + " case/turn"));
 		panelLbl.add(new JLabel("Variance"));
 		panelLbl.add(new JLabel(getRoundValue(stats.getVariance())));
-		panelLbl.add(new JLabel("Square type"));
+		panelLbl.add(new JLabel("Standard deviation"));
 		panelLbl.add(new JLabel(getRoundValue(stats.getSquareType())));
 		
 		panel.add(new JLabel("Position " + Integer.toString(position) + "  " + stats.getPlayer().getName() + " (" + Integer.toString(stats.getPlayer().getId()) + ")"));

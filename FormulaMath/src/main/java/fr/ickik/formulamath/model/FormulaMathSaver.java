@@ -15,7 +15,7 @@ import fr.ickik.formulamath.model.map.MapManager;
 /**
  * This model saves and load map to permit the player to replay maps.
  * @author Ickik
- * @version 0.1.001, 29 June 2012
+ * @version 0.1.002, 5 July 2012
  * @since 0.2
  */
 public final class FormulaMathSaver {
@@ -59,20 +59,22 @@ public final class FormulaMathSaver {
 		int size = manager.getMapSize();
 		StringBuilder str = new StringBuilder();
 		str.append(size).append("x").append(size).append("\n");
-		int index = 0;
+		byte b = 0;
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
 				CaseModel model = manager.getCase(i, j);
 				if (model != null) {
-					byte b = 0;
-					if (index % 2 == 0) {
+					if (j % 2 == 0) {
 						b = getByteFromField(model.getField());
+						if (j == size -1) {
+							str.append(b);
+							b=0;
+						}
 					} else {
 						b = getByteFromField(model.getField(), b);
 						str.append(b);
-						b = 0;
+						b=0;
 					}
-					index++;
 				}
 			}
 			str.append("\n");
@@ -88,12 +90,13 @@ public final class FormulaMathSaver {
 	}
 	
 	private byte getByteFromField(Field field) {
-		return (byte) (field.getValue() & 0xFF00);
+		byte b = (byte) (field.getValue() & 0x000F);
+		return (byte) Integer.rotateLeft(b, 4);
 	}
 	
 	private byte getByteFromField(Field field, byte b) {
-		byte tmpByte = (byte) (field.getValue() & 0x00FF);
-		return (byte) (b & tmpByte);
+		byte tmpByte = (byte) (field.getValue() & 0x000F);
+		return (byte) (b | tmpByte);
 	}
 	
 	public MapManager loadMap(File file) throws IOException {
@@ -140,10 +143,9 @@ public final class FormulaMathSaver {
 		for (int i = 1; i < size; i++) {
 			String line = array[i];
 			for(int j = 0; j < size; j+=2) {
-				//manager.getCase(i, j).setField(valueFieldMap.get(line.charAt(j)));
-				manager.getCase(i, j).setField(valueFieldMap.get(line.charAt(j) & 0xFF00));
+				manager.getCase(i, j).setField(valueFieldMap.get(Integer.rotateRight(line.charAt(j) & 0x00F0, 4)));
 				if (j != size - 1) {
-					manager.getCase(i, j+1).setField(valueFieldMap.get(line.charAt(j) & 0x00FF));
+					manager.getCase(i, j+1).setField(valueFieldMap.get(line.charAt(j) & 0x000F));
 				}
 			}
 		}

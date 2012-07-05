@@ -54,7 +54,7 @@ import fr.ickik.formulamath.model.map.MapDimension;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.2.009, 04 July 2012.
+ * @version 0.2.010, 05 July 2012.
  */
 public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
@@ -420,7 +420,9 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				int result = fileChooser.showSaveDialog(mainFrame);
 				if (result == JFileChooser.APPROVE_OPTION) {
 					try {
-						controller.saveMap(fileChooser.getSelectedFile());
+						if (!controller.saveMap(fileChooser.getSelectedFile())) {
+							displayErrorMessage("An error was encounter during file saving");
+						}
 					} catch (IOException e) {
 						log.error("The map could not be saved : {}", e.getMessage());
 						displayErrorMessage("The map could not be saved");
@@ -443,6 +445,12 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 					} catch (IOException e) {
 						log.error("The map could not be loaded : {}", e.getMessage());
 						displayErrorMessage("The map could not be loaded");
+						try {
+							controller.saveProperties();
+						} catch (FormulaMathException ex) {
+						} finally {
+							System.exit(1);
+						}
 					}
 				}
 			}

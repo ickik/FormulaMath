@@ -180,7 +180,7 @@ public final class PlayVectorChooserPanel {
 		};
 	}
 	
-	private void iniMouseListener(final JCase jCase, final JRadioButton radioButton) {
+	private void initMouseListener(final JCase jCase, final JRadioButton radioButton) {
 		jCase.addMouseListener(getSolutionMouseListener(jCase, radioButton));
 		radioButton.addMouseListener(getSolutionMouseListener(jCase, radioButton));
 	}

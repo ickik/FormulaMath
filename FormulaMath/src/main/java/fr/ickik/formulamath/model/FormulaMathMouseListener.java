@@ -2,7 +2,6 @@ package fr.ickik.formulamath.model;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -11,10 +10,10 @@ import javax.swing.event.MouseInputListener;
 /**
  * Implementation of the MouseListener.
  * @author Ickik
- * @version 0.1.001, 28 June 2012
+ * @version 0.1.002, 5 July 2012
  * @since 0.3.6
  */
-public class FormulaMathMouseListener implements MouseListener, MouseInputListener {
+public class FormulaMathMouseListener implements MouseInputListener {
 
 	private Point startPoint;
 	private JScrollPane scrollPanel;
@@ -27,15 +26,18 @@ public class FormulaMathMouseListener implements MouseListener, MouseInputListen
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		if (startPoint == null) {
-			startPoint = arg0.getPoint();
-			scrollPanel.getGraphics().drawLine(arg0.getX() - 10, arg0.getY() - 10, arg0.getX() + 10, arg0.getY() + 10);
-			scrollPanel.getGraphics().drawLine(arg0.getX() - 10, arg0.getY() + 10, arg0.getX() + 10, arg0.getY() - 10);
-		} else {
-			scrollPanel.getGraphics().drawLine(arg0.getX() - 10, arg0.getY() - 10, arg0.getX() + 10, arg0.getY() + 10);
-			scrollPanel.getGraphics().drawLine(arg0.getX() - 10, arg0.getY() + 10, arg0.getX() + 10, arg0.getY() - 10);
-			descriptionLabel.setText("Vector (" + getHorizontalCaseNumber(startPoint, arg0.getPoint()) + ", " + getVerticalCaseNumber(startPoint, arg0.getPoint()) + ") - Distance : " + Double.toString(getDistance(startPoint, arg0.getPoint())) + " px");
-			startPoint = null;scrollPanel.repaint();
+		if (arg0.getButton() == MouseEvent.BUTTON1) {
+			if (startPoint == null) {
+				startPoint = arg0.getPoint();
+				scrollPanel.getGraphics().drawLine(arg0.getX() - 10, arg0.getY() - 10, arg0.getX() + 10, arg0.getY() + 10);
+				scrollPanel.getGraphics().drawLine(arg0.getX() - 10, arg0.getY() + 10, arg0.getX() + 10, arg0.getY() - 10);
+			} else {
+				scrollPanel.getGraphics().drawLine(arg0.getX() - 10, arg0.getY() - 10, arg0.getX() + 10, arg0.getY() + 10);
+				scrollPanel.getGraphics().drawLine(arg0.getX() - 10, arg0.getY() + 10, arg0.getX() + 10, arg0.getY() - 10);
+				descriptionLabel.setText("Vector (" + getHorizontalCaseNumber(startPoint, arg0.getPoint()) + ", " + getVerticalCaseNumber(startPoint, arg0.getPoint()) + ") - Distance : " + Double.toString(getDistance(startPoint, arg0.getPoint())) + " px");
+				startPoint = null;
+				scrollPanel.repaint();
+			}
 		}
 	}
 	
@@ -58,12 +60,10 @@ public class FormulaMathMouseListener implements MouseListener, MouseInputListen
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent arg0) {
-	}
+	public void mouseEntered(MouseEvent arg0) {}
 
 	@Override
-	public void mouseExited(MouseEvent arg0) {
-	}
+	public void mouseExited(MouseEvent arg0) {}
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
@@ -78,11 +78,24 @@ public class FormulaMathMouseListener implements MouseListener, MouseInputListen
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		//startPoint = null;
+	//	startPoint = null;
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
+		/*if (arg0.getButton() == MouseEvent.BUTTON1) {
+			if (startPoint == null) {
+				startPoint = arg0.getPoint();
+			} else {
+				int horizontalValue= scrollPanel.getHorizontalScrollBar().getModel().getValue();
+				int verticalValue= scrollPanel.getVerticalScrollBar().getModel().getValue();
+				int hDiff = (int) (arg0.getX() - startPoint.getX());
+				int vDiff = (int) (arg0.getY() - startPoint.getY());
+				scrollPanel.getHorizontalScrollBar().getModel().setValue(horizontalValue + hDiff);
+				scrollPanel.getVerticalScrollBar().getModel().setValue(verticalValue + vDiff);
+				startPoint = arg0.getPoint();
+			}
+		}*/
 	}
 
 	@Override

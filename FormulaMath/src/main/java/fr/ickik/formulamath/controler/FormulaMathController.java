@@ -213,24 +213,15 @@ public final class FormulaMathController {
 		}
 	}
 	
-	public void saveMap(File saveFile) throws IOException {
-		/*try {
-			FormulaMathSaver.getInstance().saveMap(mapManager, saveFile);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		FormulaMathSaver.getInstance().saveMap(mapManager, saveFile);
+	public boolean saveMap(File saveFile) throws IOException {
+		return FormulaMathSaver.getInstance().saveMap2(mapManager, saveFile);
 	}
 	
 	public void loadMap(File loadFile) throws IOException {
-		/*try {
-			FormulaMathSaver.getInstance().loadMap(loadFile);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		FormulaMathSaver.getInstance().loadMap(loadFile);
+		//mapManager.mapReinitialization();
+		FormulaMathSaver.getInstance().loadMap2(loadFile);
+		
+		mainFrame.display(mapManager.getMap());
 	}
 	
 	public void setLookAndFeel(String className) {

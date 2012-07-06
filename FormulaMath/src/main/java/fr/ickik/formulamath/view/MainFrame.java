@@ -20,6 +20,7 @@ import javax.swing.BoundedRangeModel;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -54,7 +55,7 @@ import fr.ickik.formulamath.model.map.MapDimension;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.2.010, 05 July 2012.
+ * @version 0.2.011, 06 July 2012.
  */
 public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
@@ -175,21 +176,6 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 
 	private JSplitPane getSplitPane() {
 		JPanel trayPanel = getTrayPanel();
-		/*final JPanel trayPanel = new JPanel();
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				GridLayout gridLayout = new GridLayout(caseArrayList.size(), caseArrayList.size());
-				trayPanel.setLayout(gridLayout);
-				trayPanel.setOpaque(true);
-				for (List<JCase> list : caseArrayList) {
-					for (JCase c : list) {
-						trayPanel.add(c);
-					}
-				}
-			}
-		}).start();*/
 		scrollPane = new JScrollPane(trayPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.getHorizontalScrollBar().setUnitIncrement(5);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(5);
@@ -222,7 +208,26 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		JLabel descriptionLabel = new JLabel(" ");
 		listener.setDescriptionLabel(descriptionLabel);
 		descriptionLabel.setBorder(BorderFactory.createTitledBorder("Map information"));
-		menuPanel.add(descriptionLabel, BorderLayout.SOUTH);
+		final JCheckBox gridVisible = new JCheckBox("Grid visible", true);
+		gridVisible.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				boolean isSelected = gridVisible.isSelected();
+				for(List<JCase> list : caseArrayList) {
+					for (JCase cas : list) {
+						if (cas.getModel() != null) {
+							cas.getModel().setPaintBorder(isSelected);
+						}
+					}
+				}
+				scrollPane.repaint();
+			}
+		});
+		JPanel info = new JPanel(new GridLayout(2, 1));
+		info.add(descriptionLabel);
+		info.add(gridVisible);
+		menuPanel.add(info, BorderLayout.SOUTH);
 		final JPanel panel = new JPanel(new GridLayout(4, 1));
 		panel.add(gameMenuPanel);
 		panel.add(playButton);
@@ -267,48 +272,24 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		JPanel panel = new JPanel(new GridLayout(3, 3));
 		JButton up = new JButton(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/up.png")));
 		up.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/up_pressed.png")));
-		up.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				log.trace("Up move");
-				scrollPane.getVerticalScrollBar().getModel().setValue(scrollPane.getVerticalScrollBar().getModel().getValue() - 40);
-			}
-		});
-		//up.addActionListener(getDirectionButtonActionListener(up, scrollPane.getVerticalScrollBar().getModel(), -40));
+		up.addActionListener(getDirectionButtonActionListener(up, scrollPane.getVerticalScrollBar().getModel(), -40));
+		
 		JButton down = new JButton(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/down.png")));
 		down.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/down_pressed.png")));
-		down.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				log.trace("Down move");
-				scrollPane.getVerticalScrollBar().getModel().setValue(scrollPane.getVerticalScrollBar().getModel().getValue() + 20);
-			}
-		});
-		//down.addActionListener(getDirectionButtonActionListener(down, scrollPane.getVerticalScrollBar().getModel(), 40));
+		down.addActionListener(getDirectionButtonActionListener(down, scrollPane.getVerticalScrollBar().getModel(), 40));
+		
 		JButton left = new JButton(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/left.png")));
 		left.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/left_pressed.png")));
-		left.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				log.trace("Left move");
-				scrollPane.getHorizontalScrollBar().getModel().setValue(scrollPane.getHorizontalScrollBar().getModel().getValue() - 40);
-			}
-		});
-		//left.addActionListener(getDirectionButtonActionListener(left, scrollPane.getHorizontalScrollBar().getModel(), -40));
+		left.addActionListener(getDirectionButtonActionListener(left, scrollPane.getHorizontalScrollBar().getModel(), -40));
+		
 		JButton right = new JButton(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/right.png")));
 		right.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/right_pressed.png")));
-		right.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				log.trace("Right move");
-				scrollPane.getHorizontalScrollBar().getModel().setValue(scrollPane.getHorizontalScrollBar().getModel().getValue() + 40);
-			}
-		});
-		//right.addActionListener(getDirectionButtonActionListener(right, scrollPane.getHorizontalScrollBar().getModel(), 40));
+		right.addActionListener(getDirectionButtonActionListener(right, scrollPane.getHorizontalScrollBar().getModel(), 40));
+		
 		JButton centered = new JButton(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/center.png")));
 		centered.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/center_pressed.png")));
 		centered.addActionListener(getPlayerFocusListener());
+		
 		panel.add(disabledButtonFactory());
 		panel.add(up);
 		panel.add(disabledButtonFactory());

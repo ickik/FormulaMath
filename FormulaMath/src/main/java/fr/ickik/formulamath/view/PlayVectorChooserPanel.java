@@ -29,7 +29,7 @@ import fr.ickik.formulamath.model.map.Field;
  * Panel creation class. It creates the panel for Human player to choose the
  * start position on the starting line.
  * @author Ickik
- * @version 0.1.005, 25 June 2012
+ * @version 0.1.006, 5 July 2012
  * @since 0.3
  */
 public final class PlayVectorChooserPanel {
@@ -105,7 +105,7 @@ public final class PlayVectorChooserPanel {
 			box.setSelected(false);
 			group.add(box);
 			solution[i] = box;
-			solutionCaseList.get(i).addMouseListener(getSolutionMouseListener(solutionCaseList.get(i)));
+			initMouseListener(solutionCaseList.get(i), box);
 			panel.add(box);
 		}
 		panel.validate();
@@ -154,32 +154,6 @@ public final class PlayVectorChooserPanel {
 		});
 	}
 	
-	private MouseListener getSolutionMouseListener(final JCase jCase) {
-		return new MouseListener() {
-
-			@Override
-			public void mouseReleased(MouseEvent e) {}
-			
-			@Override
-			public void mousePressed(MouseEvent e) {}
-			
-			@Override
-			public void mouseExited(MouseEvent e) {
-				jCase.getModel().setBackgroundColor(null);
-				jCase.repaint();
-			}
-			
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				jCase.getModel().setBackgroundColor(Color.WHITE);
-				jCase.repaint();
-			}
-			
-			@Override
-			public void mouseClicked(MouseEvent arg0) {}
-		};
-	}
-	
 	private void initMouseListener(final JCase jCase, final JRadioButton radioButton) {
 		jCase.addMouseListener(getSolutionMouseListener(jCase, radioButton));
 		radioButton.addMouseListener(getSolutionMouseListener(jCase, radioButton));
@@ -187,7 +161,7 @@ public final class PlayVectorChooserPanel {
 	
 	private MouseListener getSolutionMouseListener(final JCase jCase, final JRadioButton radioButton) {
 		return new MouseListener() {
-			private final Color color = radioButton.getBackground();
+			private final Color color = radioButton.getForeground();
 			@Override
 			public void mouseReleased(MouseEvent e) {}
 			
@@ -197,7 +171,7 @@ public final class PlayVectorChooserPanel {
 			@Override
 			public void mouseExited(MouseEvent e) {
 				jCase.getModel().setBackgroundColor(null);
-				radioButton.setBackground(color);
+				radioButton.setForeground(color);
 				jCase.repaint();
 			}
 			

@@ -22,7 +22,7 @@ import fr.ickik.formulamath.model.CaseModel;
  * <b>Warning : </b>Correction of random generator, it starts at 0 but creation is not available and
  * finish the construction. A part of generated maps contains not completed road.
  * @author Ickik.
- * @version 0.1.009, 28 June 2012.
+ * @version 0.1.010, 6 July 2012.
  */
 public final class MapManager {
 
@@ -61,48 +61,49 @@ public final class MapManager {
 			}
 			carte.add(list);
 		}
+		landscapeInitialization();
 		log.debug("Map initialized");
 	}
 	
 	private Field getRandomField() {
 		int value = getRandomNumber(20);
-		if (value % 10 == 0) {
+		switch (value % 10) {
+		case 0:
 			return Field.SAND;
+		//case 1:
+		//	return Field.WATER;
+		default:
+			return Field.GRASS;
 		}
-		return Field.GRASS;
 	}
 	
 	private void landscapeInitialization() {
-		int x = getRandomNumber(mapSize);
-		int y = getRandomNumber(mapSize);
-		CaseModel model = carte.get(y).get(x);
-		Field field = getRandomField();
-		model.setField(field);
-		/*if (f == Field.SAND) {
-			
-		} else if (f == Field.WATER) {
-			
-		}*/
-		partLandscapeInitialization(x, y, field);
+		int nb = getRandomNumber(mapSize / 25);
+		for (int i = 0; i < nb; i++) {
+			int x = getRandomNumber(mapSize);
+			int y = getRandomNumber(mapSize);
+			CaseModel model = carte.get(y).get(x);
+			Field field = getRandomField();
+			field = Field.WATER;
+			model.setField(field);
+			partLandscapeInitialization(x, y, field, getRandomNumber(2, 10), getRandomNumber(2, 10));
+		}
 	}
 	
-	private void partLandscapeInitialization(int x, int y, Field field) {
-		for (int i = -1; i <= 1; i++) {
-			for (int j = -1; j <= 1; j++) {
-				if (i != 0 && j != 0) {
-					if (isModelAvailalble(x + i, y + j)) {
-						CaseModel model = carte.get(y + j).get(x + i);
-						if (model.getField() == Field.GRASS) {
-							model.setField(field);
-							partLandscapeInitialization(x + i, y + j, field);
-						}
+	private void partLandscapeInitialization(int x, int y, Field field, int width, int height) {
+		for (int i = x; i < x + width; i++) {
+			for (int j = y; j < y + height; j++) {
+				if (isModelAvailable(i, j)) {
+					if (getRandomNumber(3) == 1) {
+						CaseModel model = carte.get(j).get(i);
+						model.setField(field);
 					}
 				}
 			}
 		}
 	}
 	
-	private boolean isModelAvailalble(int x, int y) {
+	private boolean isModelAvailable(int x, int y) {
 		if (x >= 0 || x < mapSize) {
 			if (y >= 0 || y < mapSize) {
 				return true;

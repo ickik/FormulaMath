@@ -18,7 +18,7 @@ import fr.ickik.formulamath.model.map.MapManager;
  * has the same size. A case is a shape (Rectangle) draw on the screen. The model
  * of the case defines the color of the case background.
  * @author Ickik.
- * @version 0.1.003, 15 mai 2012.
+ * @version 0.1.004, 6 July 2012.
  */
 public class JCase extends JComponent {
 
@@ -60,8 +60,10 @@ public class JCase extends JComponent {
 			Color color = updateBackGroundColor();
 			g2.setColor(color);
 			g2.fill(shape);
-			g2.setColor(Color.BLACK);
-			g2.draw(shape);
+			if (model.isPaintBorder()) {
+				g2.setColor(Color.BLACK);
+				g2.draw(shape);
+			}
 		}
 	}
 	
@@ -95,22 +97,6 @@ public class JCase extends JComponent {
 		}
 		return Color.WHITE;
 	}
-	
-	/*private void updateBackGroundColor() {
-		if (model != null) {
-			if (model.getBackgroundColor() == null) {
-				if (model.getIdPlayer() == MapManager.EMPTY_PLAYER) {
-					setBackground(model.getField().getColor());
-				} else {
-					setBackground(colorList[model.getIdPlayer() - 1]);
-				}
-			} else {
-				setBackground(model.getBackgroundColor());
-			}
-		} else {
-			setBackground(Color.WHITE);
-		}
-	}*/
 	
 	@Override
 	public void paintComponents(Graphics g) {

@@ -11,13 +11,14 @@ import fr.ickik.formulamath.view.JCase;
  * Model of the {@link JCase} component. It stores the type of the field and
  * the id of the player if one is this case.
  * @author Ickik.
- * @version 0.1.005, 25 June 2012.
+ * @version 0.1.006, 6 July 2012.
  */
 public class CaseModel {
 
 	private Field field;
 	private int idPlayer = MapManager.EMPTY_PLAYER;
 	private Color backgroundColor;
+	private boolean paintBorder = true;
 
 	/**
 	 * Constructor of the model. It initializes the model with the default
@@ -79,11 +80,35 @@ public class CaseModel {
 		return str.concat(getField().toString());
 	}
 
+	/**
+	 * Return the background Color for the component.
+	 * @return the background color.
+	 */
 	public Color getBackgroundColor() {
 		return backgroundColor;
 	}
 
+	/**
+	 * Set the background Color
+	 * @param backgroundColor the new background Color.
+	 */
 	public void setBackgroundColor(Color backgroundColor) {
 		this.backgroundColor = backgroundColor;
+	}
+
+	/**
+	 * Return if the border of the component must be painted.
+	 * @return true if the border must be painted.
+	 */
+	public boolean isPaintBorder() {
+		return paintBorder;
+	}
+
+	/**
+	 * Set if the border must be painted.
+	 * @param paintBorder set true of the border should be painted or false otherwise.
+	 */
+	public void setPaintBorder(boolean paintBorder) {
+		this.paintBorder = paintBorder;
 	}
 }

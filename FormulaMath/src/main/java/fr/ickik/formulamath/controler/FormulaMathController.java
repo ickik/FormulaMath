@@ -7,9 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -29,9 +26,7 @@ import fr.ickik.formulamath.model.FormulaMathSaver;
 import fr.ickik.formulamath.model.InformationModel;
 import fr.ickik.formulamath.model.PropertiesModel;
 import fr.ickik.formulamath.model.Stats;
-import fr.ickik.formulamath.model.map.MapDimension;
 import fr.ickik.formulamath.model.map.MapManager;
-import fr.ickik.formulamath.model.map.MapManagerConstructor;
 import fr.ickik.formulamath.model.player.PlayerManager;
 import fr.ickik.formulamath.model.player.PlayerType;
 import fr.ickik.formulamath.view.AboutFrame;
@@ -43,7 +38,7 @@ import fr.ickik.formulamath.view.StatFrame;
  * Controller of the application in MVC design pattern. It receive event from the view to
  * transmit them to the appropriate model if needed.
  * @author Ickik
- * @version 0.1.009, 25 June 2012
+ * @version 0.1.010, 6 July 2012
  * @since 0.2
  */
 public final class FormulaMathController {
@@ -55,7 +50,6 @@ public final class FormulaMathController {
 	private final AboutFrame aboutFrame;
 	private final StatFrame statFrame;
 	private final InformationModel informationModel;
-	private ExecutorCompletionService<MapManager> completion;
 	
 	private static final Logger log = LoggerFactory.getLogger(FormulaMathController.class);
 	
@@ -94,10 +88,12 @@ public final class FormulaMathController {
 //	public void initManager(int size, int level) {
 	public void initManager(int size) {
 		log.debug("initialization of the map manager with a dimension of {} case", size);
-		ExecutorService executor = Executors.newSingleThreadExecutor();
+		/*ExecutorService executor = Executors.newSingleThreadExecutor();
 		completion = new ExecutorCompletionService<MapManager>(executor);
 		completion.submit(new MapManagerConstructor(mapManager, size));
-		executor.shutdown();
+		executor.shutdown();*/
+		mapManager.init(size);
+		mapManager.constructRoad();
 	}
 	
 	/**
@@ -122,16 +118,6 @@ public final class FormulaMathController {
 	public void closeConfigurationFrame() {
 		log.debug("Close configuration frame");
 		configurationFrame.close();
-		
-		try {
-			log.trace("Wait completion service");
-			completion.take();
-		} catch (InterruptedException e) {
-			log.warn("ExecutorService has been interrupted (or crashed) : {}", e.getMessage());
-			log.warn("Creation of default medium size map");
-			mapManager.init(MapDimension.MEDIUM.getValue());
-			mapManager.constructRoad();
-		}
 		log.debug(mapManager.toString());
 		log.debug(mapManager.getRoadDirectionInformationList().toString());
 		log.debug("creation of main frame");

@@ -128,6 +128,7 @@ public class JCase extends JComponent {
 			width = size;
 			height = size2;
 			yShifting = height;
+			break;
 		case BOTTOM:
 			y = shape.getBounds2D().getHeight() - size;
 			width = size2;

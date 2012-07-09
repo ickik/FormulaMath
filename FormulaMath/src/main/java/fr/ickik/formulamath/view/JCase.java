@@ -61,7 +61,7 @@ public class JCase extends JComponent {
 			Color color = updateBackGroundColor();
 			g2.setColor(color);
 			g2.fill(shape);
-			paintSprilled(g2);
+			paintVibrator(g2);
 			if (model != null && model.isPaintBorder()) {
 				g2.setColor(Color.BLACK);
 				g2.draw(shape);
@@ -100,7 +100,7 @@ public class JCase extends JComponent {
 		return Color.WHITE;
 	}
 	
-	private void paintSprilled(Graphics2D g2) {
+	private void paintVibrator(Graphics2D g2) {
 		if (model == null || model.getBorderCaseSide() == null) {
 			return ;
 		}

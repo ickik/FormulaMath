@@ -18,7 +18,7 @@ import fr.ickik.formulamath.model.map.MapManager;
  * has the same size. A case is a shape (Rectangle) draw on the screen. The model
  * of the case defines the color of the case background.
  * @author Ickik.
- * @version 0.1.004, 6 July 2012.
+ * @version 0.1.005, 9 July 2012.
  */
 public class JCase extends JComponent {
 
@@ -30,7 +30,6 @@ public class JCase extends JComponent {
 	private Rectangle2D shape;
 	private final CaseModel model;
 	private static final Color[] colorList = new Color[] { Color.RED, Color.BLACK, Color.BLUE, Color.YELLOW };
-	private final Dimension dimension;
 	
 	/**
 	 * Constructor of the component. The size in pixel must be parameterized and
@@ -41,7 +40,7 @@ public class JCase extends JComponent {
 	public JCase(int size, CaseModel model) {
 		this.model = model;
 		setOpaque(true);
-		this.dimension = new Dimension(size, size);
+		Dimension dimension = new Dimension(size, size);
 		setSize(dimension);
 		shape = new Rectangle2D.Double(0.0, 0.0, size, size);
 	}
@@ -53,14 +52,17 @@ public class JCase extends JComponent {
 			Graphics2D g2 = (Graphics2D) g;
 			if (model != null && model.getIdPlayer() == 0 && model.getField() == Field.FINISHING_LINE) {
 				drawEndLine(g2);
-				g2.setColor(Color.BLACK);
-				g2.draw(shape);
+				if (model != null && model.isPaintBorder()) {
+					g2.setColor(Color.BLACK);
+					g2.draw(shape);
+				}
 				return ;
 			}
 			Color color = updateBackGroundColor();
 			g2.setColor(color);
 			g2.fill(shape);
-			if (model.isPaintBorder()) {
+			paintSprilled(g2);
+			if (model != null && model.isPaintBorder()) {
 				g2.setColor(Color.BLACK);
 				g2.draw(shape);
 			}
@@ -98,6 +100,54 @@ public class JCase extends JComponent {
 		return Color.WHITE;
 	}
 	
+	private void paintSprilled(Graphics2D g2) {
+		if (model == null || model.getBorderCaseSide() == null) {
+			return ;
+		}
+		double size = shape.getBounds2D().getWidth() / 10;
+		double size2 = shape.getBounds2D().getWidth() / 8;
+		double x = 0;
+		double y = 0;
+		double width = 0;
+		double height = 0;
+		double xShifting = 0;
+		double yShifting = 0;
+		switch(model.getBorderCaseSide()) {
+		case TOP:
+			width = size2;
+			height = size;y++;
+			xShifting = width;
+			break;
+		case LEFT:
+			width = size;x++;
+			height = size2;
+			yShifting = height;
+			break;
+		case RIGHT :
+			x = shape.getBounds2D().getWidth() - size;
+			width = size;
+			height = size2;
+			yShifting = height;
+		case BOTTOM:
+			y = shape.getBounds2D().getHeight() - size;
+			width = size2;
+			height = size;
+			xShifting = width;
+			break;
+		default:
+			return;
+		}
+		for (int j = 0; j < 8; j++) {
+			Shape s = new Rectangle2D.Double(x + (j * xShifting), y + (j * yShifting), width, height);
+			if (j % 2 == 0) {
+				g2.setColor(Color.RED);
+			} else {
+				g2.setColor(Color.WHITE);
+			}
+			g2.fill(s);
+		}
+	}
+	
 	@Override
 	public void paintComponents(Graphics g) {
 		paint(g);
@@ -118,8 +168,6 @@ public class JCase extends JComponent {
 		setMaximumSize(d);
 		setPreferredSize(d);
 		shape = new Rectangle2D.Double(0.0, 0.0, d.getWidth(), d.getHeight());
-		dimension.setSize(d);
-		//repaint();
 	}
 	
 	@Override
@@ -137,10 +185,4 @@ public class JCase extends JComponent {
 	public Dimension getMinimumSize() {
 		return getSize();
 	}
-	
-	@Override
-	public Dimension getSize() {
-		return dimension;
-	}
-	
 }

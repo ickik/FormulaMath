@@ -11,7 +11,7 @@ import fr.ickik.formulamath.view.JCase;
  * Model of the {@link JCase} component. It stores the type of the field and
  * the id of the player if one is this case.
  * @author Ickik.
- * @version 0.1.006, 6 July 2012.
+ * @version 0.1.007, 9 July 2012.
  */
 public class CaseModel {
 
@@ -19,6 +19,7 @@ public class CaseModel {
 	private int idPlayer = MapManager.EMPTY_PLAYER;
 	private Color backgroundColor;
 	private boolean paintBorder = true;
+	private JCaseSide borderCaseSide;
 
 	/**
 	 * Constructor of the model. It initializes the model with the default
@@ -110,5 +111,21 @@ public class CaseModel {
 	 */
 	public void setPaintBorder(boolean paintBorder) {
 		this.paintBorder = paintBorder;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public JCaseSide getBorderCaseSide() {
+		return borderCaseSide;
+	}
+
+	/**
+	 * 
+	 * @param borderCaseSide
+	 */
+	public void setBorderCaseSide(JCaseSide borderCaseSide) {
+		this.borderCaseSide = borderCaseSide;
 	}
 }

@@ -13,6 +13,7 @@ import fr.ickik.formulamath.entity.Position;
 import fr.ickik.formulamath.entity.RoadDirectionInformation;
 import fr.ickik.formulamath.entity.RoadDirectionList;
 import fr.ickik.formulamath.model.CaseModel;
+import fr.ickik.formulamath.model.JCaseSide;
 
 /**
  * Contains and handles the map of the application. The map is a everytime a square.<br>
@@ -22,7 +23,7 @@ import fr.ickik.formulamath.model.CaseModel;
  * <b>Warning : </b>Correction of random generator, it starts at 0 but creation is not available and
  * finish the construction. A part of generated maps contains not completed road.
  * @author Ickik.
- * @version 0.1.010, 6 July 2012.
+ * @version 0.1.011, 9 July 2012.
  */
 public final class MapManager {
 
@@ -104,8 +105,8 @@ public final class MapManager {
 	}
 	
 	private boolean isModelAvailable(int x, int y) {
-		if (x >= 0 || x < mapSize) {
-			if (y >= 0 || y < mapSize) {
+		if (x >= 0 && x < mapSize) {
+			if (y >= 0 && y < mapSize) {
 				return true;
 			}
 		}
@@ -824,12 +825,22 @@ public final class MapManager {
 		if (positionDepart.getX() == positionDepart2.getX()) {
 			for (int i = minY; i <= maxY; i++) {
 				carte.get(i).get(positionDepart.getX()).setField(terrain);
+				if (i == minY) {
+					carte.get(i).get(positionDepart.getX()).setBorderCaseSide(JCaseSide.TOP);
+				} else if (i == maxY) {
+					carte.get(i).get(positionDepart.getX()).setBorderCaseSide(JCaseSide.BOTTOM);
+				}
 			}
 		}
 
 		if (positionDepart.getY() == positionDepart2.getY()) {
 			for (int i = minX; i <= maxX; i++) {
 				carte.get(positionDepart.getY()).get(i).setField(terrain);
+				if (i == minX) {
+					carte.get(positionDepart.getY()).get(i).setBorderCaseSide(JCaseSide.LEFT);
+				} else if (i == maxX) {
+					carte.get(positionDepart.getY()).get(i).setBorderCaseSide(JCaseSide.RIGHT);
+				}
 			}
 		}
 		log.debug("traceLargeur exiting");

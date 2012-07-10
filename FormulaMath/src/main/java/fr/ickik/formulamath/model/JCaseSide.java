@@ -56,7 +56,7 @@ public enum JCaseSide {
 	/**
 	 * The Top Left corner but the direction is from NORTH to WEST (right) the angle is outside.
 	 */
-	TOP_LEFT_CORNER_RELFEX,
+	TOP_LEFT_CORNER_REFLEX,
 	
 	/**
 	 * The Top Right corner but the direction is from SOUTH to WEST (left) the angle is inside.

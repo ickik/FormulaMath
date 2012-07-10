@@ -26,7 +26,7 @@ import fr.ickik.formulamath.model.map.Orientation;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.2.013, 03 July 2012.
+ * @version 0.2.014, 10 July 2012.
  */
 public final class PlayerManager {
 
@@ -797,8 +797,13 @@ public final class PlayerManager {
 		indexPlayerGame = 0;
 	}
 	
+	/**
+	 * Reinitializes the player list to have the same players with new statistics.
+	 */
 	public void mapReinitialization() {
-		playerList.clear();
+		for (Player player : playerList) {
+			player.reinitializePlayer();
+		}
 		finishPositionList.clear();
 		playerRoadPosition.clear();
 		indexPlayerGame = 0;

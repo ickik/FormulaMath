@@ -790,7 +790,10 @@ public final class PlayerManager {
 		return finishPositionList;
 	}
 
-	public void reinitialization() {
+	/**
+	 * Reinitializes all variable. It remove all data.
+	 */
+	public void fullReinitialization() {
 		playerList.clear();
 		finishPositionList.clear();
 		playerRoadPosition.clear();
@@ -800,7 +803,7 @@ public final class PlayerManager {
 	/**
 	 * Reinitializes the player list to have the same players with new statistics.
 	 */
-	public void mapReinitialization() {
+	public void reinitialization() {
 		for (Player player : playerList) {
 			player.reinitializePlayer();
 		}

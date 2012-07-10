@@ -38,7 +38,7 @@ import fr.ickik.formulamath.view.StatFrame;
  * Controller of the application in MVC design pattern. It receive event from the view to
  * transmit them to the appropriate model if needed.
  * @author Ickik
- * @version 0.1.010, 6 July 2012
+ * @version 0.1.011, 10 July 2012
  * @since 0.2
  */
 public final class FormulaMathController {
@@ -88,10 +88,6 @@ public final class FormulaMathController {
 //	public void initManager(int size, int level) {
 	public void initManager(int size) {
 		log.debug("initialization of the map manager with a dimension of {} case", size);
-		/*ExecutorService executor = Executors.newSingleThreadExecutor();
-		completion = new ExecutorCompletionService<MapManager>(executor);
-		completion.submit(new MapManagerConstructor(mapManager, size));
-		executor.shutdown();*/
 		mapManager.init(size);
 		mapManager.constructRoad();
 	}
@@ -156,22 +152,27 @@ public final class FormulaMathController {
 		statFrame.close();
 	}
 	
-	public void modelReinitialization() {
-		informationModel.addMessage(new InformationMessage(MessageType.INFORMATION, "Reinitialisation"));
-		playerManager.reinitialization();
-		mapManager.mapReinitialization();
+	/**
+	 * Replay FormulaMath with another map.
+	 */
+	public void modelFullReinitialization() {
+		informationModel.addMessage(new InformationMessage(MessageType.INFORMATION, "Full Reinitialisation"));
+		playerManager.fullReinitialization();
+		mapManager.fullReinitialization();
 		closeStatFrame();
 		//mainFrame.close();
 		//openConfigurationFrame();
 	}
 	
-	public void modelReinitializationMap() {
+	/**
+	 * Replay the same map.
+	 */
+	public void modelReinitialization() {
 		informationModel.addMessage(new InformationMessage(MessageType.INFORMATION, "Reinitialisation"));
-		playerManager.mapReinitialization();
+		playerManager.reinitialization();
 		mapManager.reinitialization();
 		closeStatFrame();
-		mainFrame.close();
-		openConfigurationFrame();
+		chooseStartPosition();
 	}
 	
 	public void activateChuckNorrisTimer() {

@@ -55,7 +55,7 @@ import fr.ickik.formulamath.model.map.MapDimension;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.2.011, 06 July 2012.
+ * @version 0.2.012, 10 July 2012.
  */
 public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
@@ -270,14 +270,31 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 
 	private JPanel getDirectionalPanel() {
 		JPanel panel = new JPanel(new GridLayout(3, 3));
+
+		JButton upLeft= new JButton(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/up_left.png")));
+		upLeft.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/up_left_pressed.png")));
+		upLeft.addActionListener(getDirectionButtonActionListener(upLeft, scrollPane.getHorizontalScrollBar().getModel(), scrollPane.getVerticalScrollBar().getModel(), -40, -40));
+		
 		JButton up = new JButton(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/up.png")));
 		up.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/up_pressed.png")));
 		up.addActionListener(getDirectionButtonActionListener(up, scrollPane.getVerticalScrollBar().getModel(), -40));
+		
+		JButton upRight = new JButton(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/up_right.png")));
+		upRight.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/up_right_pressed.png")));
+		upRight.addActionListener(getDirectionButtonActionListener(upRight, scrollPane.getHorizontalScrollBar().getModel(), scrollPane.getVerticalScrollBar().getModel(), 40, -40));
+		
+		JButton downLeft= new JButton(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/down_left.png")));
+		downLeft.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/down_left_pressed.png")));
+		downLeft.addActionListener(getDirectionButtonActionListener(downLeft, scrollPane.getHorizontalScrollBar().getModel(), scrollPane.getVerticalScrollBar().getModel(), -40, 40));
 		
 		JButton down = new JButton(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/down.png")));
 		down.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/down_pressed.png")));
 		down.addActionListener(getDirectionButtonActionListener(down, scrollPane.getVerticalScrollBar().getModel(), 40));
 		
+		JButton downRight = new JButton(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/down_right.png")));
+		downRight.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/down_right_pressed.png")));
+		downRight.addActionListener(getDirectionButtonActionListener(downRight, scrollPane.getHorizontalScrollBar().getModel(), scrollPane.getVerticalScrollBar().getModel(), 40, 40));
+				
 		JButton left = new JButton(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/left.png")));
 		left.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/left_pressed.png")));
 		left.addActionListener(getDirectionButtonActionListener(left, scrollPane.getHorizontalScrollBar().getModel(), -40));
@@ -290,15 +307,15 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		centered.setPressedIcon(new ImageIcon(AbstractFormulaMathFrame.class.getResource("img/center_pressed.png")));
 		centered.addActionListener(getPlayerFocusListener());
 		
-		panel.add(disabledButtonFactory());
+		panel.add(upLeft);
 		panel.add(up);
-		panel.add(disabledButtonFactory());
+		panel.add(upRight);
 		panel.add(left);
 		panel.add(centered);
 		panel.add(right);
-		panel.add(disabledButtonFactory());
+		panel.add(downLeft);
 		panel.add(down);
-		panel.add(disabledButtonFactory());
+		panel.add(downRight);
 		return panel;
 	}
 	
@@ -314,13 +331,13 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		return listener;
 	}
 	
-	private ActionListener getDirectionButtonActionListener(final JButton button, final BoundedRangeModel hModel, final BoundedRangeModel vModel, final int value) {
+	private ActionListener getDirectionButtonActionListener(final JButton button, final BoundedRangeModel hModel, final BoundedRangeModel vModel, final int hValue, final int vValue) {
 		final ActionListener listener = new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				hModel.setValue(hModel.getValue() + value);
-				vModel.setValue(vModel.getValue() + value);
+				hModel.setValue(hModel.getValue() + hValue);
+				vModel.setValue(vModel.getValue() + vValue);
 			}
 		};
 		button.addMouseListener(getDirectionMouseListener(listener));
@@ -350,12 +367,6 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			@Override
 			public void mouseClicked(MouseEvent arg0) {}
 		};
-	}
-	
-	private JButton disabledButtonFactory() {
-		JButton button = new JButton();
-		button.setEnabled(false);
-		return button;
 	}
 	
 	private ActionListener getPlayerFocusListener() {

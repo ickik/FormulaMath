@@ -11,9 +11,9 @@ import fr.ickik.formulamath.view.JCase;
  * Model of the {@link JCase} component. It stores the type of the field and
  * the id of the player if one is this case.
  * @author Ickik.
- * @version 0.1.007, 9 July 2012.
+ * @version 0.1.008, 10 July 2012.
  */
-public class CaseModel {
+public final class CaseModel {
 
 	private Field field;
 	private int idPlayer = MapManager.EMPTY_PLAYER;

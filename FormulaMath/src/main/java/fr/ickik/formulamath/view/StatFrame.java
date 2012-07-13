@@ -122,7 +122,7 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				controller.modelReinitialization();
+				controller.modelFullReinitialization();
 			}
 		});
 		JButton replayMap = new JButton("Replay same map");
@@ -130,7 +130,7 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				controller.modelReinitializationMap();
+				controller.modelReinitialization();
 			}
 		});
 		JButton button = new JButton("Close");
@@ -141,8 +141,8 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 				controller.closeStatFrame();
 			}
 		});
-		buttonPanel.add(replay);
-		//buttonPanel.add(replayMap);
+		//buttonPanel.add(replay);
+		buttonPanel.add(replayMap);
 		buttonPanel.add(button);
 		return buttonPanel;
 	}

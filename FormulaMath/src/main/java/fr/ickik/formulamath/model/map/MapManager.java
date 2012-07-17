@@ -23,7 +23,7 @@ import fr.ickik.formulamath.model.JCaseSide;
  * <b>Warning : </b>Correction of random generator, it starts at 0 but creation is not available and
  * finish the construction. A part of generated maps contains not completed road.
  * @author Ickik.
- * @version 0.1.013, 13 July 2012.
+ * @version 0.1.014, 17 July 2012.
  */
 public final class MapManager {
 
@@ -32,7 +32,8 @@ public final class MapManager {
 	private static final Logger log = LoggerFactory.getLogger(MapManager.class);
 	private List<List<CaseModel>> carte;
 	private int mapSize;
-	private final List<Position> startingPositionList = new ArrayList<Position>(2);
+	private final List<Position> startingPositionList = new ArrayList<Position>();
+	private final List<Position> startingPositionListSave = new ArrayList<Position>();
 	private final List<Position> finishingLinePositionList = new ArrayList<Position>(2);
 	private final RoadDirectionList roadList = new RoadDirectionList();
 
@@ -113,25 +114,27 @@ public final class MapManager {
 		return false;
 	}
 	
-	/**
-	 * Reinitializes of variable to play again.
-	 */
-	public void reinitialization() {
-		log.debug("Reinitialization of map");
-		startingPositionList.clear();
-		finishingLinePositionList.clear();
-		roadList.clear();
-		log.debug("End of Map Reinitialization");
-	}
 	
 	/**
 	 * Reinitializes the map manager to replay the same map.
 	 */
-	public void fullReinitialization() {
+	public void reinitialization() {
 		log.debug("Reinitialization of map");
-		//startingPositionList.clear();
+		startingPositionList.clear();
+		startingPositionList.addAll(startingPositionListSave);
 		//finishingLinePositionList.clear();
 		//roadList.clear();
+		log.debug("End of Map Reinitialization");
+	}
+	
+	/**
+	 * Reinitializes of variable to play again.
+	 */
+	public void fullReinitialization() {
+		log.debug("FullReinitialization of map");
+		startingPositionList.clear();
+		finishingLinePositionList.clear();
+		roadList.clear();
 		log.debug("End of Map Reinitialization");
 	}
 
@@ -144,11 +147,13 @@ public final class MapManager {
 			for (int i = minY; i <= maxY; i++) {
 				log.debug("{}", (new Position(p.getX(), i).toString()));
 				startingPositionList.add(new Position(p.getX(), i));
+				startingPositionListSave.add(new Position(p.getX(), i));
 			}
 		} else if (p.getY() == p2.getY()) {
 			for (int i = minX; i <= maxX; i++) {
 				log.debug("{}", (new Position(i, p.getY()).toString()));
 				startingPositionList.add(new Position(i, p.getY()));
+				startingPositionListSave.add(new Position(i, p.getY()));
 			}
 		}
 	}

@@ -32,8 +32,8 @@ public final class MapManager {
 	private static final Logger log = LoggerFactory.getLogger(MapManager.class);
 	private List<List<CaseModel>> carte;
 	private int mapSize;
-	private final List<Position> startingPositionList = new ArrayList<Position>();
-	private final List<Position> startingPositionListSave = new ArrayList<Position>();
+	private final List<Position> startingPositionList = new ArrayList<Position>(ROAD_SIZE);
+	private final List<Position> startingPositionListSave = new ArrayList<Position>(ROAD_SIZE);
 	private final List<Position> finishingLinePositionList = new ArrayList<Position>(2);
 	private final RoadDirectionList roadList = new RoadDirectionList();
 

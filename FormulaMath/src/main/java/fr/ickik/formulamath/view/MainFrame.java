@@ -55,7 +55,7 @@ import fr.ickik.formulamath.model.map.MapDimension;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.2.012, 10 July 2012.
+ * @version 0.2.013, 17 July 2012.
  */
 public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
@@ -448,6 +448,15 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			}
 		});
 		
+		JMenuItem restartMap = new JMenuItem("Restart Map");
+		restartMap.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				controller.modelReinitialization();
+			}
+		});
+		
 		JMenuItem quit = new JMenuItem("Quit");
 		quit.addActionListener(new ActionListener() {
 			
@@ -463,6 +472,8 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		});
 		//file.add(save);
 		//file.add(loadMap);
+		file.addSeparator();
+		file.add(restartMap);
 		file.addSeparator();
 		file.add(quit);
 		return file;
@@ -538,6 +549,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 
 	@Override
 	public void displayPlayerStartingPossibilities(Player player, List<Position> startingPositionList, int mapSize) {
+		scrollPane.repaint();
 		startPositionChooserPanel.construct(startingPositionList, mapSize);
 	}
 

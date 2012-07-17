@@ -20,7 +20,7 @@ import fr.ickik.formulamath.entity.Position;
 /**
  * This class create a JPanel which is displayed to give a start position choice for a human player.
  * @author Ickik
- * @version 0.1.000, 10 mai 2012
+ * @version 0.1.001, 17 July 2012
  * @since 0.3
  */
 public final class StartPositionChooserPanel {
@@ -50,7 +50,7 @@ public final class StartPositionChooserPanel {
 			solution[i] = box;
 			panel.add(box);
 		}
-		
+		removeActionListener();
 		playButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -68,6 +68,12 @@ public final class StartPositionChooserPanel {
 				playButton.removeActionListener(this);
 			}
 		});
+	}
+	
+	private void removeActionListener() {
+		for (ActionListener listener : playButton.getActionListeners()) {
+			playButton.removeActionListener(listener);
+		}
 	}
 	
 	private int getSelectedButton(JToggleButton[] buttonArray) {

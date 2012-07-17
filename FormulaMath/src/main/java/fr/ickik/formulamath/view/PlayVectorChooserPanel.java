@@ -29,7 +29,7 @@ import fr.ickik.formulamath.model.map.Field;
  * Panel creation class. It creates the panel for Human player to choose the
  * start position on the starting line.
  * @author Ickik
- * @version 0.1.006, 5 July 2012
+ * @version 0.1.007, 17 July 2012
  * @since 0.3
  */
 public final class PlayVectorChooserPanel {
@@ -72,6 +72,7 @@ public final class PlayVectorChooserPanel {
 		log.trace("Player position :{}", player.getPosition().toString());
 		log.trace("Player position on map : ( {}, {} )", xTrayPanel, yTrayPanel);
 		final List<JCase> solutionCaseList = new ArrayList<JCase>();
+		final List<MouseListener> mouseListenerList = new ArrayList<MouseListener>();
 		for (int i = 0; i < vectorList.size();) {
 			Vector v = vectorList.get(i);
 			JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
@@ -105,10 +106,11 @@ public final class PlayVectorChooserPanel {
 			box.setSelected(false);
 			group.add(box);
 			solution[i] = box;
-			initMouseListener(solutionCaseList.get(i), box);
+			mouseListenerList.add(initMouseListener(solutionCaseList.get(i), box));
 			panel.add(box);
 		}
 		panel.validate();
+		removeActionListener();
 		playButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -123,10 +125,13 @@ public final class PlayVectorChooserPanel {
 				for (JToggleButton button : solution) {
 					button.setEnabled(false);
 				}
-				for (JCase jCase : solutionCaseList) {
+				for (int i = 0; i < solutionCaseList.size(); i++) {
+					solutionCaseList.get(i).removeMouseListener(mouseListenerList.get(i));
+				}
+				/*for (JCase jCase : solutionCaseList) {
 					MouseListener[] mouseListenerArray = jCase.getMouseListeners();
 					jCase.removeMouseListener(mouseListenerArray[0]);
-				}
+				}*/
 				log.trace("checkbox disabled!");//peut etre mettre le test de fin de ligne dans le model
 				int marge = MainFrame.MAP_MARGIN / 2;
 				int xTrayPanel = player.getPosition().getX() + marge;
@@ -154,9 +159,17 @@ public final class PlayVectorChooserPanel {
 		});
 	}
 	
-	private void initMouseListener(final JCase jCase, final JRadioButton radioButton) {
-		jCase.addMouseListener(getSolutionMouseListener(jCase, radioButton));
-		radioButton.addMouseListener(getSolutionMouseListener(jCase, radioButton));
+	private void removeActionListener() {
+		for (ActionListener listener : playButton.getActionListeners()) {
+			playButton.removeActionListener(listener);
+		}
+	}
+	
+	private MouseListener initMouseListener(final JCase jCase, final JRadioButton radioButton) {
+		MouseListener listener = getSolutionMouseListener(jCase, radioButton);
+		jCase.addMouseListener(listener);
+		radioButton.addMouseListener(listener);
+		return listener;
 	}
 	
 	private MouseListener getSolutionMouseListener(final JCase jCase, final JRadioButton radioButton) {

@@ -305,49 +305,22 @@ public final class PlayerManager {
 				RoadDirectionInformation nextRoadDirection;
 				if (mapManager.getRoadDirectionInformationList().size() > roadPosition + 1) {
 					nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition + 1);
-					//playerRoadPosition.put(p.getId(), roadPosition + 1);
 				} else {
 					nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition);
-					//playerRoadPosition.put(p.getId(), roadPosition);
 				}
 				log.trace("Next orientation: {}", nextRoadDirection.getOrientation());
 				switch (r.getOrientation()) {
 				case NORTH:
-//					if (nextRoadDirection.getOrientation() == Orientation.EAST) {
-//						vector = new Vector(1, 0);
-//					} else if (nextRoadDirection.getOrientation() == Orientation.WEST) {
-//						vector = new Vector(-1, 0);
-//					} else {
-						vector = new Vector(0, 1);
-//					}
+					vector = new Vector(0, 1);
 					break;
 				case SOUTH:
-//					if (nextRoadDirection.getOrientation() == Orientation.EAST) {
-//						vector = new Vector(-1, 0);
-//					} else if (nextRoadDirection.getOrientation() == Orientation.WEST) {
-//						vector = new Vector(1, 0);
-//					} else {
-						vector = new Vector(0, -1);
-//					}
+					vector = new Vector(0, -1);
 					break;
 				case WEST:
-//					if (nextRoadDirection.getOrientation() == Orientation.NORTH) {
-//						vector = new Vector(-1, 0);
-////						vector = new Vector(0, 1);
-//					} else if (nextRoadDirection.getOrientation() == Orientation.SOUTH) {
-//						vector = new Vector(0, -1);
-//					} else {
-						vector = new Vector(-1, 0);
-//					}
+					vector = new Vector(-1, 0);
 					break;
 				case EAST:
-//					if (nextRoadDirection.getOrientation() == Orientation.NORTH) {
-//						vector = new Vector(0, 1);
-//					} else if (nextRoadDirection.getOrientation() == Orientation.SOUTH) {
-//						vector = new Vector(0, -1);
-//					} else {
-						vector = new Vector(1, 0);
-//					}
+					vector = new Vector(1, 0);
 					break;
 				}
 			} else {
@@ -371,7 +344,6 @@ public final class PlayerManager {
 					if (len < Math.sqrt(vector.getX() * vector.getX() + vector.getY() * vector.getY())) {
 						log.trace("Last direction, last play, the AI will finished with {}", vector.toString());
 						lastPlay(vector);
-						//fireEndGameListener();
 						return;
 					}
 				} else {

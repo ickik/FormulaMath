@@ -122,8 +122,11 @@ public final class MapManager {
 		log.debug("Reinitialization of map");
 		startingPositionList.clear();
 		startingPositionList.addAll(startingPositionListSave);
-		//finishingLinePositionList.clear();
-		//roadList.clear();
+		for (List<CaseModel> modelList : carte) {
+			for (CaseModel model : modelList) {
+				model.setIdPlayer(EMPTY_PLAYER);
+			}
+		}
 		log.debug("End of Map Reinitialization");
 	}
 	

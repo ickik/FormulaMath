@@ -26,6 +26,7 @@ import fr.ickik.formulamath.model.FormulaMathSaver;
 import fr.ickik.formulamath.model.InformationModel;
 import fr.ickik.formulamath.model.PropertiesModel;
 import fr.ickik.formulamath.model.Stats;
+import fr.ickik.formulamath.model.ai.AILevelFactory;
 import fr.ickik.formulamath.model.map.MapManager;
 import fr.ickik.formulamath.model.player.PlayerManager;
 import fr.ickik.formulamath.model.player.PlayerType;
@@ -38,7 +39,7 @@ import fr.ickik.formulamath.view.StatFrame;
  * Controller of the application in MVC design pattern. It receive event from the view to
  * transmit them to the appropriate model if needed.
  * @author Ickik
- * @version 0.1.011, 10 July 2012
+ * @version 0.1.012, 18 July 2012
  * @since 0.2
  */
 public final class FormulaMathController {
@@ -85,10 +86,10 @@ public final class FormulaMathController {
 		}
 	}*/
 	
-//	public void initManager(int size, int level) {
-	public void initManager(int size) {
+	public void initManager(int size, int level) {
 		log.debug("initialization of the map manager with a dimension of {} case", size);
 		mapManager.init(size);
+		playerManager.setComputerLevel(AILevelFactory.createLevelInstance(level, mapManager));
 		mapManager.constructRoad();
 	}
 	

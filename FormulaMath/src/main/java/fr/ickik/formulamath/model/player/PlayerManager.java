@@ -1,7 +1,6 @@
 package fr.ickik.formulamath.model.player;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -15,18 +14,17 @@ import fr.ickik.formulamath.entity.InformationMessage;
 import fr.ickik.formulamath.entity.MessageType;
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Position;
-import fr.ickik.formulamath.entity.RoadDirectionInformation;
 import fr.ickik.formulamath.entity.Vector;
 import fr.ickik.formulamath.model.CaseModel;
 import fr.ickik.formulamath.model.InformationModel;
+import fr.ickik.formulamath.model.ai.AILevel;
 import fr.ickik.formulamath.model.map.Field;
 import fr.ickik.formulamath.model.map.MapManager;
-import fr.ickik.formulamath.model.map.Orientation;
 
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.2.014, 10 July 2012.
+ * @version 0.3.000, 18 July 2012.
  */
 public final class PlayerManager {
 
@@ -36,7 +34,7 @@ public final class PlayerManager {
 	private final MapManager mapManager;
 	private InformationModel informationModel;
 	private final List<UpdateCaseListener> updateCaseListenerList = new ArrayList<UpdateCaseListener>();
-	//private AILevel computerLevel;
+	private AILevel computerLevel;
 	
 	/**
 	 * Map representing the index of the user (represented by the id) in the road model.
@@ -256,179 +254,72 @@ public final class PlayerManager {
 			Player p = getCurrentPlayer();
 			log.debug("AI Player {} is under playing", p.toString());
 			
-			int roadPosition = playerRoadPosition.get(p.getId());
-			RoadDirectionInformation r = mapManager.getRoadDirectionInformationList().get(roadPosition);
-			int len = r.getLengthToEnd(p.getPosition()) - 1;
-			Vector vector = null;
-			log.debug("AI rest length of the vector:{}", len);
-			log.trace("Orientation: {}", r.getOrientation());
-			if ((Math.abs(len) == 1 || len == 0) && (p.getVector().getX() == 1 ||  p.getVector().getX() == -1 || p.getVector().getY() == 1 || p.getVector().getY() == -1)) {
-				RoadDirectionInformation nextRoadDirection;
-				if (mapManager.getRoadDirectionInformationList().size() > roadPosition + 1) {
-					nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition + 1);
-				} else {
-					nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition);
-				}
-				playerRoadPosition.put(p.getId(), roadPosition + 1);
-				log.trace("Next orientation: {}", nextRoadDirection.getOrientation());
-				switch (r.getOrientation()) {
-				case NORTH:
-					if (nextRoadDirection.getOrientation() == Orientation.EAST) {
-						vector = new Vector(1, 1);
-					} else {
-						vector = new Vector(-1, 1);
-					}
-					break;
-				case SOUTH:
-					if (nextRoadDirection.getOrientation() == Orientation.EAST) {
-						vector = new Vector(1, -1);
-					} else {
-						vector = new Vector(-1, -1);
-					}
-					break;
-				case WEST:
-					if (nextRoadDirection.getOrientation() == Orientation.NORTH) {
-						vector = new Vector(-1, 1);
-					} else {
-						vector = new Vector(-1, -1);
-					}
-					break;
-				case EAST:
-					if (nextRoadDirection.getOrientation() == Orientation.NORTH) {
-						vector = new Vector(1, 1);
-					} else {
-						vector = new Vector(1, -1);
-					}
-					break;
-				}
-			} else if ((p.getVector().getX() == 1 ||  p.getVector().getX() == -1) && (p.getVector().getY() == 1 || p.getVector().getY() == -1)) {
-				RoadDirectionInformation nextRoadDirection;
-				if (mapManager.getRoadDirectionInformationList().size() > roadPosition + 1) {
-					nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition + 1);
-				} else {
-					nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition);
-				}
-				log.trace("Next orientation: {}", nextRoadDirection.getOrientation());
-				switch (r.getOrientation()) {
-				case NORTH:
-					vector = new Vector(0, 1);
-					break;
-				case SOUTH:
-					vector = new Vector(0, -1);
-					break;
-				case WEST:
-					vector = new Vector(-1, 0);
-					break;
-				case EAST:
-					vector = new Vector(1, 0);
-					break;
-				}
+			Vector vector = computerLevel.getNextPlay(p, playerRoadPosition);
+			log.debug("Vector returned by AILevel: {}", vector.toString());
+			log.trace("is last play? {}", computerLevel.isLastPlay());
+			if (computerLevel.isLastPlay()) {
+				lastPlay(vector);
+				return;
 			} else {
-				log.debug("Go in the same direction {}", r.getOrientation());
-				if (roadPosition == mapManager.getRoadDirectionInformationList().size() - 1) {
-					log.trace("Last direction, final sprint");
-					switch (r.getOrientation()) {
-					case NORTH:
-						vector = new Vector(0, p.getVector().getY() + 1);
-						break;
-					case SOUTH:
-						vector = new Vector(0, p.getVector().getY() - 1);
-						break;
-					case WEST:
-						vector = new Vector(p.getVector().getX() - 1, 0);
-						break;
-					case EAST:
-						vector = new Vector(p.getVector().getX() + 1, 0);
-						break;
-					}
-					if (len < Math.sqrt(vector.getX() * vector.getX() + vector.getY() * vector.getY())) {
-						log.trace("Last direction, last play, the AI will finished with {}", vector.toString());
-						lastPlay(vector);
-						return;
-					}
-				} else {
-					log.debug("Normal way, orientation {}", r.getOrientation().toString());
-					switch (r.getOrientation()) {
-					case NORTH:
-						int d = getNextPlay(len, p.getVector().getY());
-						log.debug("Next play : {}", d);
-						vector = new Vector(0, p.getVector().getY() + d);
-						break;
-					case SOUTH:
-						d = getNextPlay(len, p.getVector().getY());
-						log.debug("Next play : {}", d);
-						vector = new Vector(0, p.getVector().getY() - d);
-						break;
-					case WEST:
-						d = getNextPlay(len, p.getVector().getX());
-						log.debug("Next play : {}", d);
-						vector = new Vector(p.getVector().getX() - d, 0);
-						break;
-					case EAST:
-						d = getNextPlay(len, p.getVector().getX());
-						log.debug("Next play : {}", d);
-						vector = new Vector(p.getVector().getX() + d, 0);
-						break;
-					}
-				}
-			}
-			mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
-			log.debug("Player initial position: {}", p.getPosition());
-			log.debug("Player last vector {}", p.getVector());
-			log.debug("{}", vector);
-			for (int i = 0; i <= vector.getX(); i++) {
-				for (int j = 0; j <= vector.getY(); j++) {
-					if (p.getPosition().getX() + i >= 0 && p.getPosition().getX() + i < mapManager.getMapSize() && p.getPosition().getY() - j >= 0 && p.getPosition().getY() - j < mapManager.getMapSize()) {
-						CaseModel model = mapManager.getCase(p.getPosition().getY() - j, p.getPosition().getX() + i);
-						if (model.getField() == Field.FINISHING_LINE) {
-							lastPlay(new Vector(i, j));
-							return;
+				mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
+				log.debug("Player initial position: {}", p.getPosition());
+				log.debug("Player last vector {}", p.getVector());
+				log.debug("{}", vector);
+				for (int i = 0; i <= vector.getX(); i++) {
+					for (int j = 0; j <= vector.getY(); j++) {
+						if (p.getPosition().getX() + i >= 0 && p.getPosition().getX() + i < mapManager.getMapSize() && p.getPosition().getY() - j >= 0 && p.getPosition().getY() - j < mapManager.getMapSize()) {
+							CaseModel model = mapManager.getCase(p.getPosition().getY() - j, p.getPosition().getX() + i);
+							if (model.getField() == Field.FINISHING_LINE) {
+								log.trace("computer is going through finish lane");
+								lastPlay(new Vector(i, j));
+								return;
+							}
 						}
 					}
 				}
-			}
-			p.getPosition().setX(p.getPosition().getX() + vector.getX());
-			p.getPosition().setY(p.getPosition().getY() - vector.getY());
-			p.getVector().setX(vector.getX());
-			p.getVector().setY(vector.getY());
-			p.incrementPlayingCounter();
-			mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(p.getId());
-			if (!updateIndexPlayerGame()) {
-				return;
+				p.getPosition().setX(p.getPosition().getX() + vector.getX());
+				p.getPosition().setY(p.getPosition().getY() - vector.getY());
+				p.getVector().setX(vector.getX());
+				p.getVector().setY(vector.getY());
+				p.incrementPlayingCounter();
+				mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(p.getId());
+				if (!updateIndexPlayerGame()) {
+					return;
+				}
 			}
 		}
 		fireDisplayPlayerMovePossibilities();
 	}
 	
-	/**
-	 * Return the adding length of the vector to run as fastest as possible the straight line.
-	 * @param distance the total distance to run
-	 * @param vitesse the current speed.
-	 * @return the number to add to the current vector.
-	 */
-	private int getNextPlay(int distance, int vitesse) {
-		log.trace("getNextPlay({}, {})", distance, vitesse);
-		int v = Math.abs(vitesse);
-		if (distance == 0) {
-			if (v == 2) {
-				return -1;
-			}
-			return vitesse;
-		}
-		if (distance > vitesse * vitesse) {
-			return 1;
-		}
-		int nbLess = getNbStep(distance, v - 1, 0);
-		int nbEqual = getNbStep(distance, v, 0);
-		int nbMore = getNbStep(distance, v + 1, 0);
-		log.debug("Next play possibilities : {}, {}, {}", new Object[]{nbLess, nbEqual, nbMore});
-		if (nbLess <= nbEqual && nbLess <= nbMore) {
-			return -1;
-		} else if (nbMore < nbEqual && nbMore < nbLess) {
-			return 1;
-		}
-		return 0;
-	}
+//	/**
+//	 * Return the adding length of the vector to run as fastest as possible the straight line.
+//	 * @param distance the total distance to run
+//	 * @param vitesse the current speed.
+//	 * @return the number to add to the current vector.
+//	 */
+//	private int getNextPlay(int distance, int vitesse) {
+//		log.trace("getNextPlay({}, {})", distance, vitesse);
+//		int v = Math.abs(vitesse);
+//		if (distance == 0) {
+//			if (v == 2) {
+//				return -1;
+//			}
+//			return vitesse;
+//		}
+//		if (distance > vitesse * vitesse) {
+//			return 1;
+//		}
+//		int nbLess = getNbStep(distance, v - 1, 0);
+//		int nbEqual = getNbStep(distance, v, 0);
+//		int nbMore = getNbStep(distance, v + 1, 0);
+//		log.debug("Next play possibilities : {}, {}, {}", new Object[]{nbLess, nbEqual, nbMore});
+//		if (nbLess <= nbEqual && nbLess <= nbMore) {
+//			return -1;
+//		} else if (nbMore < nbEqual && nbMore < nbLess) {
+//			return 1;
+//		}
+//		return 0;
+//	}
 
 	/**
 	 * Return the number of step to run the distance depending the speed.
@@ -438,7 +329,7 @@ public final class PlayerManager {
 	 * @param step the current number of step
 	 * @return the number of step to run the distance
 	 */
-	private int getNbStep(int distance, int vitesse, int step) {
+	/*private int getNbStep(int distance, int vitesse, int step) {
 		if ((distance == 0 || distance == 1) && vitesse == 1) {
 			return step;
 		}
@@ -449,7 +340,7 @@ public final class PlayerManager {
 		int nbEqual = getNbStep(distance - vitesse, vitesse, step + 1);
 		int nbMore = getNbStep(distance - vitesse, vitesse + 1, step + 1);
 		return Math.min(nbMore, Math.min(nbLess, nbEqual));
-	}
+	}*/
 	
 	private boolean updateIndexPlayerGame() {
 		if (playerList.size() == getNumberOfFinishPlayer()) {
@@ -493,12 +384,12 @@ public final class PlayerManager {
 				Player p = it.next();
 				if (p.getType().equals(PlayerType.COMPUTER)) {
 					log.debug("computer");
-					p.getPosition().setX(list.get(0).getX());
-					p.getPosition().setY(list.get(0).getY());
+					Position position = computerLevel.getStartingPosition();
+					p.getPosition().setX(position.getX());
+					p.getPosition().setY(position.getY());
 					updateIndexPlayerGame();
 					log.debug("computer start position : ({}, {})", p.getPosition().getX(), p.getPosition().getY());
-					mapManager.getCase(list.get(0).getY(), list.get(0).getX()).setIdPlayer(p.getId());
-					list.remove(0);
+					mapManager.getCase(position.getY(), position.getX()).setIdPlayer(p.getId());
 					fireUpdateCaseListener(p);
 					log.debug("initStartPosition fire for Computer");
 				} else {
@@ -560,7 +451,8 @@ public final class PlayerManager {
 				Player p = it.next();
 				if (p.getType().equals(PlayerType.COMPUTER)) {
 					log.debug("Computer first move");
-					int len = mapManager.getRoadDirectionInformationList().get(0).getLength() - 1;
+					Vector vector = computerLevel.getFirstMove(p, playerRoadPosition);
+					/*int len = mapManager.getRoadDirectionInformationList().get(0).getLength() - 1;
 					log.trace("length of the road : {}, orientation:{}", len, mapManager.getRoadDirectionInformationList().get(0).toString());
 					int val = getFirstMove(len);
 					log.trace("length of the first move found : {}", val);
@@ -615,7 +507,7 @@ public final class PlayerManager {
 							break;
 						}
 						playerRoadPosition.put(p.getId(), 1);
-					}
+					}*/
 					log.debug("Vector determined : {}", vector.toString());
 					log.debug("AI initial position {}", p.getPosition().toString());
 					mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
@@ -662,7 +554,7 @@ public final class PlayerManager {
 		}
 	}
 
-	private int getFirstMove(int distance) {
+	/*private int getFirstMove(int distance) {
 		log.debug("getFirstMove : distance = {}", Integer.toString(distance));
 		Map<Integer,Integer> distanceMap = new HashMap<Integer,Integer>();
 		if (distance == 1) {
@@ -679,9 +571,9 @@ public final class PlayerManager {
 		log.debug("Size of the list of the distance found : {}", Integer.toString(list.size()));
 		Collections.sort(list);
 		return distanceMap.get(list.get(0));
-	}
+	}*/
 	
-	private int getHighDistance(int distance) {
+	/*private int getHighDistance(int distance) {
 		int sum = 0;
 		int value = 1;
 		while(sum + value <= distance) {
@@ -702,7 +594,7 @@ public final class PlayerManager {
 		int nbEqual = getNbStep(distance - vitesse, vitesse, step + 1);
 		return Math.min(nbLess, nbEqual);
 	}
-	
+	*/
 	/**
 	 * Update the starting position of the player, depending the index of the available positions.
 	 * @param p the player to update.
@@ -779,16 +671,19 @@ public final class PlayerManager {
 		for (Player player : playerList) {
 			player.reinitializePlayer();
 		}
-		finishPositionList.clear();
+		for (int i = 0; i < finishPositionList.size(); i++) {
+			finishPositionList.set(i, null);
+		}
 		playerRoadPosition.clear();
 		indexPlayerGame = 0;
+		computerLevel.reinitIsLastPlay();
 	}
 
 	public void setInformationMessageModel(InformationModel informationModel) {
 		this.informationModel = informationModel;
 	}
 
-//	public void setComputerLevel(AILevel computerLevel) {
-//		this.computerLevel = computerLevel;
-//	}
+	public void setComputerLevel(AILevel computerLevel) {
+		this.computerLevel = computerLevel;
+	}
 }

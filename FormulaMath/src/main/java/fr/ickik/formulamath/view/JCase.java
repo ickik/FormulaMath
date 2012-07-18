@@ -124,6 +124,7 @@ public class JCase extends JComponent {
 			printTopLeftCornerAcute(g2);
 			return;
 		case TOP_LEFT_CORNER_REFLEX:
+			printTopLeftCornerReflex(g2);
 			return ;
 		case TOP_RIGHT_CORNER_ACUTE:
 			printTopRightCornerAcute(g2);
@@ -174,6 +175,13 @@ public class JCase extends JComponent {
 		}
 	}
 	
+	private void printTopLeftCornerReflex(Graphics2D g2) {
+		double size = shape.getBounds2D().getWidth() / 8;
+		Shape s = new Rectangle2D.Double(1, 1, size, size);
+		g2.setColor(Color.RED);
+		g2.fill(s);
+	}
+
 	private void printTopLeftCornerAcute(Graphics2D g2) {
 		double size = shape.getBounds2D().getWidth() / 8;
 		double size2 = shape.getBounds2D().getWidth() / 8;

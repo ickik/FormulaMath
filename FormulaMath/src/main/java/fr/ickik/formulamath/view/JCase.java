@@ -18,7 +18,7 @@ import fr.ickik.formulamath.model.map.MapManager;
  * has the same size. A case is a shape (Rectangle) draw on the screen. The model
  * of the case defines the color of the case background.
  * @author Ickik.
- * @version 0.1.006, 13 July 2012.
+ * @version 0.1.007, 18 July 2012.
  */
 public class JCase extends JComponent {
 
@@ -112,47 +112,60 @@ public class JCase extends JComponent {
 		double height = 0;
 		double xShifting = 0;
 		double yShifting = 0;
+		int color = 0;
 		switch(model.getBorderCaseSide()) {
 		case TOP:
 			width = size2;
 			height = size;y++;
 			xShifting = width;
+			color = 0;
 			break;
 		case TOP_LEFT_CORNER_ACUTE:
 			printTopLeftCornerAcute(g2);
 			return;
+		case TOP_LEFT_CORNER_REFLEX:
+			return ;
 		case TOP_RIGHT_CORNER_ACUTE:
 			printTopRightCornerAcute(g2);
+			return;
+		case TOP_RIGHT_CORNER_REFLEX:
 			return;
 		case LEFT:
 			width = size;x++;
 			height = size2;
 			yShifting = height;
+			color = 0;
 			break;
 		case RIGHT :
 			x = shape.getBounds2D().getWidth() - size;
 			width = size;
 			height = size2;
 			yShifting = height;
+			color = 1;
 			break;
 		case BOTTOM:
 			y = shape.getBounds2D().getHeight() - size;
 			width = size2;
 			height = size;
 			xShifting = width;
+			color = 1;
 			break;
 		case BOTTOM_LEFT_CORNER_ACUTE:
 			printBottomLeftCornerAcute(g2);
 			return;
+		case BOTTOM_LEFT_CORNER_REFLEX:
+			return;
 		case BOTTOM_RIGHT_CORNER_ACUTE:
 			printBottomRightCornerAcute(g2);
+			return;
+		case BOTTOM_RIGHT_CORNER_REFLEX:
 			return;
 		default:
 			return;
 		}
 		for (int j = 0; j < 8; j++) {
 			Shape s = new Rectangle2D.Double(x + (j * xShifting), y + (j * yShifting), width, height);
-			if (j % 2 == 0) {
+			if (j % 2 == color) {
 				g2.setColor(Color.RED);
 			} else {
 				g2.setColor(Color.WHITE);
@@ -180,7 +193,7 @@ public class JCase extends JComponent {
 		width = size2;
 		height = size;
 		xShifting = width;
-		for (int j = 1; j < 8; j++) {
+		for (int j = 0; j < 8; j++) {
 			Shape s = new Rectangle2D.Double(x + (j * xShifting), y + (j * yShifting), width, height);
 			if (j % 2 == 0) {
 				g2.setColor(Color.RED);
@@ -204,7 +217,6 @@ public class JCase extends JComponent {
 			}
 			g2.fill(s2);
 		}
-		//Shape s = new Polygon(new int[] {0}, new int[] {0}, 3);
 	}
 	
 	private void printTopRightCornerAcute(Graphics2D g2) {
@@ -226,7 +238,7 @@ public class JCase extends JComponent {
 		width = size2;
 		height = size;
 		xShifting = width;
-		for (int j = 1; j < 8; j++) {
+		for (int j = 0; j < 8; j++) {
 			Shape s = new Rectangle2D.Double(x + (j * xShifting), y + (j * yShifting), width, height);
 			if (j % 2 == 0) {
 				g2.setColor(Color.RED);
@@ -242,14 +254,13 @@ public class JCase extends JComponent {
 		yShifting2 = height;
 		for (int j = 1; j < 8; j++) {
 			Shape s2 = new Rectangle2D.Double(x2 + (j * xShifting2), y2 + (j * yShifting2), width2, height2);
-			if (j % 2 == 0) {
+			if (j % 2 == 1) {
 				g2.setColor(Color.RED);
 			} else {
 				g2.setColor(Color.WHITE);
 			}
 			g2.fill(s2);
 		}
-		//Shape s = new Polygon(new int[] {0}, new int[] {0}, 3);
 	}
 	
 	private void printBottomLeftCornerAcute(Graphics2D g2) {
@@ -273,7 +284,7 @@ public class JCase extends JComponent {
 		xShifting = width;
 		for (int j = 1; j < 8; j++) {
 			Shape s = new Rectangle2D.Double(x + (j * xShifting), y + (j * yShifting), width, height);
-			if (j % 2 == 0) {
+			if (j % 2 == 1) {
 				g2.setColor(Color.RED);
 			} else {
 				g2.setColor(Color.WHITE);
@@ -286,7 +297,7 @@ public class JCase extends JComponent {
 		height2 = size2;
 		yShifting2 = height;
 		
-		for (int j = 1; j < 8; j++) {
+		for (int j = 0; j < 8; j++) {
 			Shape s2 = new Rectangle2D.Double(x2 + (j * xShifting2), y2 + (j * yShifting2), width2, height2);
 			if (j % 2 == 0) {
 				g2.setColor(Color.RED);
@@ -295,7 +306,6 @@ public class JCase extends JComponent {
 			}
 			g2.fill(s2);
 		}
-		//Shape s = new Polygon(new int[] {0}, new int[] {0}, 3);
 	}
 	
 	private void printBottomRightCornerAcute(Graphics2D g2) {
@@ -317,9 +327,9 @@ public class JCase extends JComponent {
 		width = size2;
 		height = size;
 		xShifting = width;
-		for (int j = 1; j < 8; j++) {
+		for (int j = 0; j < 8; j++) {
 			Shape s = new Rectangle2D.Double(x + (j * xShifting), y + (j * yShifting), width, height);
-			if (j % 2 == 0) {
+			if (j % 2 == 1) {
 				g2.setColor(Color.RED);
 			} else {
 				g2.setColor(Color.WHITE);
@@ -331,16 +341,15 @@ public class JCase extends JComponent {
 		width2 = size;
 		height2 = size2;
 		yShifting2 = height;
-		for (int j = 1; j < 8; j++) {
+		for (int j = 0; j < 7; j++) {
 			Shape s2 = new Rectangle2D.Double(x2 + (j * xShifting2), y2 + (j * yShifting2), width2, height2);
-			if (j % 2 == 0) {
+			if (j % 2 == 1) {
 				g2.setColor(Color.RED);
 			} else {
 				g2.setColor(Color.WHITE);
 			}
 			g2.fill(s2);
 		}
-		//Shape s = new Polygon(new int[] {0}, new int[] {0}, 3);
 	}
 	
 	@Override

@@ -4,6 +4,7 @@ package fr.ickik.formulamath.model.ai;
 import java.util.Map;
 
 import fr.ickik.formulamath.entity.Player;
+import fr.ickik.formulamath.entity.Position;
 import fr.ickik.formulamath.entity.Vector;
 
 /**
@@ -14,7 +15,33 @@ import fr.ickik.formulamath.entity.Vector;
  */
 public interface AILevel {
 
-	//Position getStartingPosition(Player player);
-	//Vector getFirstMove(Player player);
+	/**
+	 * Return the optimal starting position depending the level of the AI.
+	 * @return the optimal starting position.
+	 */
+	Position getStartingPosition();
+	
+	/**
+	 * Return the first optimal moving {@link Vector}.
+	 * @param player the current player which must choose starting vector.
+	 * @param playerRoadPosition the Map of index of player which defines the Position in the ideal way.
+	 * The ideal way is defined in the Road in MapManager.
+	 * @return a optimal starting Vector.
+	 */
+	Vector getFirstMove(Player player, Map<Integer, Integer> playerRoadPosition);
+	
+	/**
+	 * Return the next play depending Player last Vector moving.
+	 * @param player
+	 * @param playerRoadPosition the Map of player <-> index which defines the position in the ideal way.
+	 * The ideal way is defined in the Road in MapManager.
+	 * @return
+	 */
 	Vector getNextPlay(Player player,  Map<Integer, Integer> playerRoadPosition);
+	
+	/**
+	 * Return true if the getNextPlay is the last move that pass the finish line.
+	 * @return true if the getNextPlay return the last moving {@link Vector}, false otherwise.
+	 */
+	boolean isLastPlay();
 }

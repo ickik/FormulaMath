@@ -44,4 +44,9 @@ public interface AILevel {
 	 * @return true if the getNextPlay return the last moving {@link Vector}, false otherwise.
 	 */
 	boolean isLastPlay();
+	
+	/**
+	 * Set the boolean value to false, to replay.
+	 */
+	void reinitIsLastPlay();
 }

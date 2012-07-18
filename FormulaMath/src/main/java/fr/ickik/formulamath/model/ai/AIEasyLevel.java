@@ -130,4 +130,9 @@ public class AIEasyLevel implements AILevel {
 		return position;
 	}
 
+	@Override
+	public void reinitIsLastPlay() {
+		this.isLastPlay = false;
+	}
+
 }

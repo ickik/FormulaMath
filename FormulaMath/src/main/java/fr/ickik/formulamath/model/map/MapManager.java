@@ -23,7 +23,7 @@ import fr.ickik.formulamath.model.JCaseSide;
  * <b>Warning : </b>Correction of random generator, it starts at 0 but creation is not available and
  * finish the construction. A part of generated maps contains not completed road.
  * @author Ickik.
- * @version 0.1.014, 17 July 2012.
+ * @version 0.1.015, 18 July 2012.
  */
 public final class MapManager {
 
@@ -509,9 +509,10 @@ public final class MapManager {
 							traceBorderSide(positionDepart2, JCaseSide.RIGHT);
 						}
 						traceBorderSide(positionDepart, JCaseSide.LEFT);
-						getCase(positionDepart2.getY(), positionDepart2.getX() - ROAD_SIZE).setBorderCaseSide(JCaseSide.BOTTOM_RIGHT_CORNER_ACUTE);
-						getCase(positionDepart2.getY() + ROAD_SIZE, positionDepart2.getX()).setBorderCaseSide(JCaseSide.TOP_LEFT_CORNER_REFLEX);
-
+						getCase(positionDepart2.getY() + ROAD_SIZE, positionDepart2.getX()).setBorderCaseSide(JCaseSide.BOTTOM_RIGHT_CORNER_ACUTE);
+						getCase(positionDepart2.getY(), positionDepart2.getX()  - ROAD_SIZE).setBorderCaseSide(JCaseSide.TOP_LEFT_CORNER_REFLEX);
+						
+						
 						Position centerEnd = new Position((positionDepart.getX() + positionDepart2.getX()) / 2, (positionDepart.getY() + positionDepart2.getY() + 1) / 2);
 						roadList.add(new RoadDirectionInformation(Orientation.NORTH, centerDepart, centerEnd));
 						log.debug("{} => {} exiting", coteDepart.name(), direction.name());

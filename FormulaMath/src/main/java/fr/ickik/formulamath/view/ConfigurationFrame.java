@@ -29,6 +29,7 @@ import fr.ickik.formulamath.controler.FormulaMathController;
 import fr.ickik.formulamath.model.FormulaMathProperty;
 import fr.ickik.formulamath.model.JTextFieldLimit;
 import fr.ickik.formulamath.model.PropertiesModel;
+import fr.ickik.formulamath.model.ai.AILevelFactory;
 import fr.ickik.formulamath.model.map.MapDimension;
 import fr.ickik.formulamath.model.player.PlayerManager;
 import fr.ickik.formulamath.model.player.PlayerType;
@@ -38,7 +39,7 @@ import fr.ickik.formulamath.model.player.PlayerType;
  * The user can choose between Human and Computer players;
  * give a name to every player.
  * @author Ickik.
- * @version 0.2.008, 17 July 2012
+ * @version 0.2.009, 18 July 2012
  */
 public class ConfigurationFrame extends AbstractFormulaMathFrame {
 
@@ -52,7 +53,7 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 			FormulaMathProperty.PLAYER3_NAME, FormulaMathProperty.PLAYER4_NAME};
 	private final FormulaMathProperty[] typePropertyArray = {FormulaMathProperty.PLAYER1_TYPE, FormulaMathProperty.PLAYER2_TYPE, 
 			FormulaMathProperty.PLAYER3_TYPE, FormulaMathProperty.PLAYER4_TYPE};
-	//private int computerLevel = 1;
+	private int computerLevel = 1;
 	private final FormulaMathController controller;
 
 	/**
@@ -117,7 +118,7 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 					displayErrorMessage("No human player selected");
 					return;
 				}
-				controller.initManager(MapDimension.values()[dimensionMapItem].getValue());
+				controller.initManager(MapDimension.values()[dimensionMapItem].getValue(), computerLevel);
 				log.trace("number of player selected : {}", numberOfPlayerSelected);
 				
 				for (int i = 0; i < numberOfPlayerSelected; i++) {
@@ -206,8 +207,8 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 	}
 	
 	private JPanel getNumberPlayerPanel() {
-		GridLayout gridLayout = new GridLayout(2, 2);
-//		GridLayout gridLayout = new GridLayout(3, 2);
+//		GridLayout gridLayout = new GridLayout(2, 2);
+		GridLayout gridLayout = new GridLayout(3, 2);
 		JPanel panel = new JPanel(gridLayout);
 
 		final JComboBox<String> sizeComboBox = new JComboBox<String>();
@@ -222,7 +223,7 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 		});
 		sizeComboBox.setSelectedIndex(dimensionMapItem);
 		
-		/*final JComboBox<String> levelComboBox = new JComboBox<String>(AILevelFactory.LEVEL);
+		final JComboBox<String> levelComboBox = new JComboBox<String>(AILevelFactory.LEVEL);
 		levelComboBox.addActionListener(new ActionListener() {
 			
 			@Override
@@ -230,7 +231,7 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 				computerLevel = levelComboBox.getSelectedIndex();
 			}
 		});
-		sizeComboBox.setSelectedIndex(computerLevel);*/
+		levelComboBox.setSelectedIndex(computerLevel);
 		
 		JLabel label = new JLabel("Number of player : ");
 		String[] nbPlayer = { "1", "2", "3", "4" };
@@ -253,8 +254,8 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 			}
 		});
 		
-		//panel.add(new JLabel("Computer level : "));
-		//panel.add(levelComboBox);
+		panel.add(new JLabel("Computer level : "));
+		panel.add(levelComboBox);
 		panel.add(new JLabel("Dimension of the map : "));
 		panel.add(sizeComboBox);
 		panel.add(label);

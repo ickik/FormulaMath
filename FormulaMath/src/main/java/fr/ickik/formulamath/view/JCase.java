@@ -20,7 +20,7 @@ import fr.ickik.formulamath.model.map.MapManager;
  * @author Ickik.
  * @version 0.1.008, 19 July 2012.
  */
-public class JCase extends JComponent {
+public final class JCase extends JComponent {
 
 	/**
 	 * 
@@ -182,7 +182,7 @@ public class JCase extends JComponent {
 	private void printTopLeftCornerReflex(Graphics2D g2) {
 		double size = shape.getBounds2D().getWidth() / 8;
 		Shape s = new Rectangle2D.Double(1, 1, size, size);
-		g2.setColor(Color.RED);
+		g2.setColor(Color.WHITE);
 		g2.fill(s);
 	}
 	

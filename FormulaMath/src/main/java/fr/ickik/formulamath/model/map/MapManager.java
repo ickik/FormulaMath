@@ -224,7 +224,7 @@ public final class MapManager {
 						}
 						traceBorderSide(positionDepart, JCaseSide.BOTTOM);
 						getCase(positionDepart2.getY(), positionDepart2.getX() + ROAD_SIZE).setBorderCaseSide(JCaseSide.TOP_RIGHT_CORNER_ACUTE);
-						getCase(positionDepart2.getY() + ROAD_SIZE, positionDepart2.getX()).setBorderCaseSide(JCaseSide.BOTTOM_LEFT_CORNER_REFLEX);
+						getCase(positionDepart.getY(), positionDepart.getX() + 1).setBorderCaseSide(JCaseSide.BOTTOM_LEFT_CORNER_REFLEX);
 
 						Position centerEnd = new Position((positionDepart.getX() + positionDepart2.getX() + 1) / 2, (positionDepart.getY() + positionDepart2.getY()) / 2);
 						roadList.add(new RoadDirectionInformation(Orientation.WEST, centerDepart, centerEnd));
@@ -473,7 +473,7 @@ public final class MapManager {
 						}
 						traceBorderSide(positionDepart2, JCaseSide.TOP);
 						getCase(positionDepart.getY(), positionDepart.getX() + ROAD_SIZE).setBorderCaseSide(JCaseSide.BOTTOM_RIGHT_CORNER_ACUTE);
-						getCase(positionDepart.getY() - ROAD_SIZE, positionDepart.getX() + 1).setBorderCaseSide(JCaseSide.TOP_LEFT_CORNER_REFLEX);
+						getCase(positionDepart2.getY(), positionDepart2.getX() + 1).setBorderCaseSide(JCaseSide.TOP_LEFT_CORNER_REFLEX);
 
 						centerEnd = new Position((positionDepart.getX() + positionDepart2.getX() + 1) / 2, (positionDepart.getY() + positionDepart2.getY()) / 2);
 						roadList.add(new RoadDirectionInformation(Orientation.WEST, centerDepart, centerEnd));

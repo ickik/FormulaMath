@@ -19,7 +19,7 @@ import fr.ickik.formulamath.model.map.MapManager;
 import fr.ickik.formulamath.model.map.Orientation;
 
 /**
- * 
+ * Class implements a medium level computer intelligence.
  * @author Ickik
  * @version 0.1.000, 18 July 2012
  * @since 0.3.9
@@ -33,7 +33,7 @@ public class AIMediumLevel implements AILevel {
 	public AIMediumLevel(MapManager mapManager) {
 		this.mapManager = mapManager;
 	}
-
+	
 	@Override
 	public Vector getNextPlay(Player player,  Map<Integer, Integer> playerRoadPosition) {
 		int roadPosition = playerRoadPosition.get(player.getId());
@@ -42,6 +42,7 @@ public class AIMediumLevel implements AILevel {
 		Vector vector = null;
 		log.debug("AI rest length of the vector:{}", len);
 		log.trace("Orientation: {}", r.getOrientation());
+		List<Vector> solutionList = getVectorsPossibilities(player);
 		if ((Math.abs(len) == 1 || len == 0) && (player.getVector().getX() == 1 ||  player.getVector().getX() == -1 || player.getVector().getY() == 1 || player.getVector().getY() == -1)) {
 			RoadDirectionInformation nextRoadDirection;
 			if (mapManager.getRoadDirectionInformationList().size() > roadPosition + 1) {
@@ -150,7 +151,11 @@ public class AIMediumLevel implements AILevel {
 					vector = new Vector(player.getVector().getX() + d, 0);
 					break;
 				}
+				
 			}
+		}
+		if (solutionList.indexOf(vector) != -1) {
+			vector = player.getVector();
 		}
 		CaseModel model = mapManager.getCase(player.getPosition().getY() - vector.getY(), player.getPosition().getX()  + vector.getX());
 		if (model != null && model.isOccuped()) {
@@ -170,6 +175,143 @@ public class AIMediumLevel implements AILevel {
 		}
 		return vector;
 	}
+
+//	@Override
+//	public Vector getNextPlay(Player player,  Map<Integer, Integer> playerRoadPosition) {
+//		int roadPosition = playerRoadPosition.get(player.getId());
+//		RoadDirectionInformation r = mapManager.getRoadDirectionInformationList().get(roadPosition);
+//		int len = r.getLengthToEnd(player.getPosition()) - 1;
+//		Vector vector = null;
+//		log.debug("AI rest length of the vector:{}", len);
+//		log.trace("Orientation: {}", r.getOrientation());
+//		if ((Math.abs(len) == 1 || len == 0) && (player.getVector().getX() == 1 ||  player.getVector().getX() == -1 || player.getVector().getY() == 1 || player.getVector().getY() == -1)) {
+//			RoadDirectionInformation nextRoadDirection;
+//			if (mapManager.getRoadDirectionInformationList().size() > roadPosition + 1) {
+//				nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition + 1);
+//			} else {
+//				nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition);
+//			}
+//			playerRoadPosition.put(player.getId(), roadPosition + 1);
+//			log.trace("Next orientation: {}", nextRoadDirection.getOrientation());
+//			switch (r.getOrientation()) {
+//			case NORTH:
+//				if (nextRoadDirection.getOrientation() == Orientation.EAST) {
+//					vector = new Vector(1, 1);
+//				} else {
+//					vector = new Vector(-1, 1);
+//				}
+//				break;
+//			case SOUTH:
+//				if (nextRoadDirection.getOrientation() == Orientation.EAST) {
+//					vector = new Vector(1, -1);
+//				} else {
+//					vector = new Vector(-1, -1);
+//				}
+//				break;
+//			case WEST:
+//				if (nextRoadDirection.getOrientation() == Orientation.NORTH) {
+//					vector = new Vector(-1, 1);
+//				} else {
+//					vector = new Vector(-1, -1);
+//				}
+//				break;
+//			case EAST:
+//				if (nextRoadDirection.getOrientation() == Orientation.NORTH) {
+//					vector = new Vector(1, 1);
+//				} else {
+//					vector = new Vector(1, -1);
+//				}
+//				break;
+//			}
+//		} else if ((player.getVector().getX() == 1 ||  player.getVector().getX() == -1) && (player.getVector().getY() == 1 || player.getVector().getY() == -1)) {
+//			RoadDirectionInformation nextRoadDirection;
+//			if (mapManager.getRoadDirectionInformationList().size() > roadPosition + 1) {
+//				nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition + 1);
+//			} else {
+//				nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition);
+//			}
+//			log.trace("Next orientation: {}", nextRoadDirection.getOrientation());
+//			switch (r.getOrientation()) {
+//			case NORTH:
+//				vector = new Vector(0, 1);
+//				break;
+//			case SOUTH:
+//				vector = new Vector(0, -1);
+//				break;
+//			case WEST:
+//				vector = new Vector(-1, 0);
+//				break;
+//			case EAST:
+//				vector = new Vector(1, 0);
+//				break;
+//			}
+//		} else {
+//			log.debug("Go in the same direction {}", r.getOrientation());
+//			if (roadPosition == mapManager.getRoadDirectionInformationList().size() - 1) {
+//				log.trace("Last direction, final sprint");
+//				switch (r.getOrientation()) {
+//				case NORTH:
+//					vector = new Vector(0, player.getVector().getY() + 1);
+//					break;
+//				case SOUTH:
+//					vector = new Vector(0, player.getVector().getY() - 1);
+//					break;
+//				case WEST:
+//					vector = new Vector(player.getVector().getX() - 1, 0);
+//					break;
+//				case EAST:
+//					vector = new Vector(player.getVector().getX() + 1, 0);
+//					break;
+//				}
+//				if (len < Math.sqrt(vector.getX() * vector.getX() + vector.getY() * vector.getY())) {
+//					log.trace("Last direction, last play, the AI will finished with {}", vector.toString());
+//					isLastPlay = true;
+//					return vector;
+//				}
+//			} else {
+//				log.debug("Normal way, orientation {}", r.getOrientation().toString());
+//				switch (r.getOrientation()) {
+//				case NORTH:
+//					int d = getNextPlay(len, player.getVector().getY());
+//					log.debug("Next play : {}", d);
+//					vector = new Vector(0, player.getVector().getY() + d);
+//					break;
+//				case SOUTH:
+//					d = getNextPlay(len, player.getVector().getY());
+//					log.debug("Next play : {}", d);
+//					vector = new Vector(0, player.getVector().getY() - d);
+//					break;
+//				case WEST:
+//					d = getNextPlay(len, player.getVector().getX());
+//					log.debug("Next play : {}", d);
+//					vector = new Vector(player.getVector().getX() - d, 0);
+//					break;
+//				case EAST:
+//					d = getNextPlay(len, player.getVector().getX());
+//					log.debug("Next play : {}", d);
+//					vector = new Vector(player.getVector().getX() + d, 0);
+//					break;
+//				}
+//			}
+//		}
+//		CaseModel model = mapManager.getCase(player.getPosition().getY() - vector.getY(), player.getPosition().getX()  + vector.getX());
+//		if (model != null && model.isOccuped()) {
+//			List<Vector> list = getVectorsPossibilities(player);
+//			if (list.isEmpty()) {
+//				return null;
+//			}
+//			double defaultLength = getLength(player.getVector());
+//			for (Vector v : list) {
+//				CaseModel m = mapManager.getCase(player.getPosition().getY() - v.getY(), player.getPosition().getX()  + v.getX());
+//				double length = getLength(v);
+//				if (m != null && !m.isOccuped() && defaultLength >= length) {
+//					vector = v;
+//					break;
+//				}
+//			}
+//		}
+//		return vector;
+//	}
 	
 	private double getLength(Vector vector) {
 		return Math.sqrt(vector.getX() * vector.getX() + vector.getY() * vector.getY());

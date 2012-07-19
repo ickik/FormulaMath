@@ -382,7 +382,7 @@ public final class MapManager {
 						}
 						traceBorderSide(positionDepart2, JCaseSide.RIGHT);
 						getCase(positionDepart.getY() + ROAD_SIZE, positionDepart.getX()).setBorderCaseSide(JCaseSide.BOTTOM_LEFT_CORNER_ACUTE);
-						getCase(positionDepart.getY(), positionDepart.getX() + ROAD_SIZE).setBorderCaseSide(JCaseSide.TOP_RIGHT_CORNER_REFLEX);
+						getCase(positionDepart2.getY() + 1, positionDepart2.getX()).setBorderCaseSide(JCaseSide.TOP_RIGHT_CORNER_REFLEX);
 
 						centerEnd = new Position((positionDepart.getX() + positionDepart2.getX()) / 2, (positionDepart.getY() + positionDepart2.getY() + 1) / 2);
 						roadList.add(new RoadDirectionInformation(Orientation.NORTH, centerDepart, centerEnd));

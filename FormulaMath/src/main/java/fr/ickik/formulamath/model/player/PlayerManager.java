@@ -24,7 +24,7 @@ import fr.ickik.formulamath.model.map.MapManager;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.3.000, 18 July 2012.
+ * @version 0.3.001, 19 July 2012.
  */
 public final class PlayerManager {
 
@@ -255,92 +255,48 @@ public final class PlayerManager {
 			log.debug("AI Player {} is under playing", p.toString());
 			
 			Vector vector = computerLevel.getNextPlay(p, playerRoadPosition);
+			if (vector == null) {
+				p.incrementPlayingCounter();
+				addFinishPlayer(p, false);
+				if (!updateIndexPlayerGame()) {
+					return;
+				}
+				continue ;
+			}
 			log.debug("Vector returned by AILevel: {}", vector.toString());
 			log.trace("is last play? {}", computerLevel.isLastPlay());
 			if (computerLevel.isLastPlay()) {
 				lastPlay(vector);
 				return;
-			} else {
-				mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
-				log.debug("Player initial position: {}", p.getPosition());
-				log.debug("Player last vector {}", p.getVector());
-				log.debug("{}", vector);
-				for (int i = 0; i <= vector.getX(); i++) {
-					for (int j = 0; j <= vector.getY(); j++) {
-						if (p.getPosition().getX() + i >= 0 && p.getPosition().getX() + i < mapManager.getMapSize() && p.getPosition().getY() - j >= 0 && p.getPosition().getY() - j < mapManager.getMapSize()) {
-							CaseModel model = mapManager.getCase(p.getPosition().getY() - j, p.getPosition().getX() + i);
-							if (model.getField() == Field.FINISHING_LINE) {
-								log.trace("computer is going through finish lane");
-								lastPlay(new Vector(i, j));
-								return;
-							}
+			}	
+			mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
+			log.debug("Player initial position: {}", p.getPosition());
+			log.debug("Player last vector {}", p.getVector());
+			log.debug("{}", vector);
+			for (int i = 0; i <= vector.getX(); i++) {
+				for (int j = 0; j <= vector.getY(); j++) {
+					if (p.getPosition().getX() + i >= 0 && p.getPosition().getX() + i < mapManager.getMapSize() && p.getPosition().getY() - j >= 0 && p.getPosition().getY() - j < mapManager.getMapSize()) {
+						CaseModel model = mapManager.getCase(p.getPosition().getY() - j, p.getPosition().getX() + i);
+						if (model.getField() == Field.FINISHING_LINE) {
+							log.trace("computer is going through finish lane");
+							lastPlay(new Vector(i, j));
+							return;
 						}
 					}
 				}
-				p.getPosition().setX(p.getPosition().getX() + vector.getX());
-				p.getPosition().setY(p.getPosition().getY() - vector.getY());
-				p.getVector().setX(vector.getX());
-				p.getVector().setY(vector.getY());
-				p.incrementPlayingCounter();
-				mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(p.getId());
-				if (!updateIndexPlayerGame()) {
-					return;
-				}
+			}
+			p.getPosition().setX(p.getPosition().getX() + vector.getX());
+			p.getPosition().setY(p.getPosition().getY() - vector.getY());
+			p.getVector().setX(vector.getX());
+			p.getVector().setY(vector.getY());
+			p.incrementPlayingCounter();
+			mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(p.getId());
+			if (!updateIndexPlayerGame()) {
+				return;
 			}
 		}
 		fireDisplayPlayerMovePossibilities();
 	}
-	
-//	/**
-//	 * Return the adding length of the vector to run as fastest as possible the straight line.
-//	 * @param distance the total distance to run
-//	 * @param vitesse the current speed.
-//	 * @return the number to add to the current vector.
-//	 */
-//	private int getNextPlay(int distance, int vitesse) {
-//		log.trace("getNextPlay({}, {})", distance, vitesse);
-//		int v = Math.abs(vitesse);
-//		if (distance == 0) {
-//			if (v == 2) {
-//				return -1;
-//			}
-//			return vitesse;
-//		}
-//		if (distance > vitesse * vitesse) {
-//			return 1;
-//		}
-//		int nbLess = getNbStep(distance, v - 1, 0);
-//		int nbEqual = getNbStep(distance, v, 0);
-//		int nbMore = getNbStep(distance, v + 1, 0);
-//		log.debug("Next play possibilities : {}, {}, {}", new Object[]{nbLess, nbEqual, nbMore});
-//		if (nbLess <= nbEqual && nbLess <= nbMore) {
-//			return -1;
-//		} else if (nbMore < nbEqual && nbMore < nbLess) {
-//			return 1;
-//		}
-//		return 0;
-//	}
-
-	/**
-	 * Return the number of step to run the distance depending the speed.
-	 * This method is recursively called with a variation of speed from 1, 0 or -1.
-	 * @param distance the distance to run
-	 * @param vitesse the current speed
-	 * @param step the current number of step
-	 * @return the number of step to run the distance
-	 */
-	/*private int getNbStep(int distance, int vitesse, int step) {
-		if ((distance == 0 || distance == 1) && vitesse == 1) {
-			return step;
-		}
-		if (distance < 0 || vitesse <= 0) {
-			return Integer.MAX_VALUE;
-		}
-		int nbLess = getNbStep(distance - vitesse, vitesse - 1, step + 1);
-		int nbEqual = getNbStep(distance - vitesse, vitesse, step + 1);
-		int nbMore = getNbStep(distance - vitesse, vitesse + 1, step + 1);
-		return Math.min(nbMore, Math.min(nbLess, nbEqual));
-	}*/
 	
 	private boolean updateIndexPlayerGame() {
 		if (playerList.size() == getNumberOfFinishPlayer()) {
@@ -422,10 +378,6 @@ public final class PlayerManager {
 		log.trace("Display moving possibilities for {}", getCurrentPlayer().toString());
 		List<Vector> list = getVectorsPossibilities(getCurrentPlayer());
 		if (list.isEmpty() && finishPositionList.contains(getCurrentPlayer())) {
-			/*log.debug("No possibilities to play the player lose");
-			addFinishPlayer(getCurrentPlayer(), false);
-			updateIndexPlayerGame();
-			computerPlay();*/
 			return;
 		}
 		informationModel.pushMessage(new InformationMessage(MessageType.PLAYER, "Player " + getCurrentPlayer().getName() + " (" + getCurrentPlayer().getId() + ") must choose the next move"));
@@ -452,62 +404,7 @@ public final class PlayerManager {
 				if (p.getType().equals(PlayerType.COMPUTER)) {
 					log.debug("Computer first move");
 					Vector vector = computerLevel.getFirstMove(p, playerRoadPosition);
-					/*int len = mapManager.getRoadDirectionInformationList().get(0).getLength() - 1;
-					log.trace("length of the road : {}, orientation:{}", len, mapManager.getRoadDirectionInformationList().get(0).toString());
-					int val = getFirstMove(len);
-					log.trace("length of the first move found : {}", val);
-					Vector vector = null;
-					if (val != 1) {
-						switch (mapManager.getRoadDirectionInformationList().get(0).getOrientation()) {
-						case NORTH:
-							vector = new Vector(0, val);
-							break;
-						case WEST:
-							vector = new Vector(-val, 0);
-							break;
-						case SOUTH:
-							vector = new Vector(0, -val);
-							break;
-						case EAST:
-							vector = new Vector(val, 0);
-							break;
-						}
-						playerRoadPosition.put(p.getId(), 0);
-					} else {
-						RoadDirectionInformation r = mapManager.getRoadDirectionInformationList().get(0);
-						RoadDirectionInformation nextRoadDirection = mapManager.getRoadDirectionInformationList().get(1);
-						switch (r.getOrientation()) {
-						case NORTH:
-							if (nextRoadDirection.getOrientation() == Orientation.EAST) {
-								vector = new Vector(1, 1);
-							} else {
-								vector = new Vector(-1, 1);
-							}
-							break;
-						case SOUTH:
-							if (nextRoadDirection.getOrientation() == Orientation.EAST) {
-								vector = new Vector(1, -1);
-							} else {
-								vector = new Vector(-1, -1);
-							}
-							break;
-						case WEST:
-							if (nextRoadDirection.getOrientation() == Orientation.NORTH) {
-								vector = new Vector(-1, 1);
-							} else {
-								vector = new Vector(-1, -1);
-							}
-							break;
-						case EAST:
-							if (nextRoadDirection.getOrientation() == Orientation.NORTH) {
-								vector = new Vector(1, 1);
-							} else {
-								vector = new Vector(1, -1);
-							}
-							break;
-						}
-						playerRoadPosition.put(p.getId(), 1);
-					}*/
+					
 					log.debug("Vector determined : {}", vector.toString());
 					log.debug("AI initial position {}", p.getPosition().toString());
 					mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
@@ -554,47 +451,7 @@ public final class PlayerManager {
 		}
 	}
 
-	/*private int getFirstMove(int distance) {
-		log.debug("getFirstMove : distance = {}", Integer.toString(distance));
-		Map<Integer,Integer> distanceMap = new HashMap<Integer,Integer>();
-		if (distance == 1) {
-			return 1;
-		}
-		if (distance > 12) {
-			return getHighDistance(distance);
-		}
-		int halfDistance = distance / 2;
-		for (int i = 1; i <= halfDistance; i++) {
-			distanceMap.put(getNbStepFirstMove(distance, i, 0), i);
-		}
-		List<Integer> list = new ArrayList<Integer>(distanceMap.keySet());
-		log.debug("Size of the list of the distance found : {}", Integer.toString(list.size()));
-		Collections.sort(list);
-		return distanceMap.get(list.get(0));
-	}*/
-	
-	/*private int getHighDistance(int distance) {
-		int sum = 0;
-		int value = 1;
-		while(sum + value <= distance) {
-			sum += value;
-			value++;
-		}
-		return value - 1;
-	}
-	
-	private int getNbStepFirstMove(int distance, int vitesse, int step) {
-		if (distance == 0 && vitesse == 1) {
-			return step;
-		}
-		if (distance < 0 || vitesse <= 0) {
-			return Integer.MAX_VALUE;
-		}
-		int nbLess = getNbStep(distance - vitesse, vitesse - 1, step +1);
-		int nbEqual = getNbStep(distance - vitesse, vitesse, step + 1);
-		return Math.min(nbLess, nbEqual);
-	}
-	*/
+
 	/**
 	 * Update the starting position of the player, depending the index of the available positions.
 	 * @param p the player to update.
@@ -624,15 +481,6 @@ public final class PlayerManager {
 		updateCaseListenerList.add(updateCaseListener);
 	}
 
-	/*public void removeUpdateCaseListener(UpdateCaseListener updateCaseListener)
-			throws FormulaMathException {
-		if (fireUpdateCaseListener) {
-			throw new FormulaMathException();
-		} else {
-			updateCaseListenerList.remove(updateCaseListener);
-		}
-	}*/
-	
 	private void fireUpdateCaseListener(Player p) {
 		for (UpdateCaseListener u : updateCaseListenerList) {
 			u.updatePlayerCase();

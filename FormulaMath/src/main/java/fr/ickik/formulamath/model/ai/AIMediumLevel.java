@@ -13,6 +13,8 @@ import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Position;
 import fr.ickik.formulamath.entity.RoadDirectionInformation;
 import fr.ickik.formulamath.entity.Vector;
+import fr.ickik.formulamath.model.CaseModel;
+import fr.ickik.formulamath.model.map.Field;
 import fr.ickik.formulamath.model.map.MapManager;
 import fr.ickik.formulamath.model.map.Orientation;
 
@@ -150,12 +152,76 @@ public class AIMediumLevel implements AILevel {
 				}
 			}
 		}
-		
-		if (mapManager.getCase(player.getPosition().getY() - vector.getY(), player.getPosition().getX()  + vector.getX()).isOccuped()) {
-			
+		CaseModel model = mapManager.getCase(player.getPosition().getY() - vector.getY(), player.getPosition().getX()  + vector.getX());
+		if (model != null && model.isOccuped()) {
+			List<Vector> list = getVectorsPossibilities(player);
+			if (list.isEmpty()) {
+				return null;
+			}
+			double defaultLength = getLength(player.getVector());
+			for (Vector v : list) {
+				CaseModel m = mapManager.getCase(player.getPosition().getY() - v.getY(), player.getPosition().getX()  + v.getX());
+				double length = getLength(v);
+				if (m != null && !m.isOccuped() && defaultLength >= length) {
+					vector = v;
+					break;
+				}
+			}
 		}
 		return vector;
 	}
+	
+	private double getLength(Vector vector) {
+		return Math.sqrt(vector.getX() * vector.getX() + vector.getY() * vector.getY());
+	}
+	
+	
+	private List<Vector> getVectorsPossibilities(Player player) {
+		log.trace("getVectorsPossibilities entering");
+		List<Vector> list = new ArrayList<Vector>(5);
+		log.trace("Player {} , init vector {}", player.toString(), player.getVector().toString());
+		if (isMovingAvailable(player.getPosition().getX() + player.getVector().getX(), player.getPosition().getY() - player.getVector().getY(), player)) {
+			list.add(player.getVector());
+		}
+		
+		if (isMovingAvailable(player.getPosition().getX() + player.getVector().getX() - 1, player.getPosition().getY() - player.getVector().getY(), player)) {
+			list.add(new Vector(player.getVector().getX() - 1, player.getVector().getY()));
+		}
+		
+		if (isMovingAvailable(player.getPosition().getX() + player.getVector().getX() + 1, player.getPosition().getY() - player.getVector().getY(), player)) {
+			list.add(new Vector(player.getVector().getX() + 1, player.getVector().getY()));
+		}
+		
+		if (isMovingAvailable(player.getPosition().getX() + player.getVector().getX(), player.getPosition().getY() - player.getVector().getY() + 1, player)) {
+			list.add(new Vector(player.getVector().getX(), player.getVector().getY() - 1));
+		}
+		
+		if (isMovingAvailable(player.getPosition().getX() + player.getVector().getX(), player.getPosition().getY() - player.getVector().getY() - 1, player)) {
+			list.add(new Vector(player.getVector().getX(), player.getVector().getY() + 1));
+		}
+		log.debug("number of vectors possible : {}", list.size());
+		for(Vector v : list) {
+			log.trace(v.toString());
+		}
+		log.trace("getVectorsPossibilities exiting");
+		return list;
+	}
+	
+	private boolean isMovingAvailable(int xMove, int yMove, Player player) {
+		log.trace("isMovingAvailable: player id = {}, x={}, y={}", new Object[] {player.getId(), xMove, yMove});
+		CaseModel model = mapManager.getCase(yMove, xMove);
+		if (model != null && model.getField() != Field.GRASS 
+				&& (!model.isOccuped() || model.getIdPlayer() == player.getId())) {
+			log.trace("Moving is available");
+			return true;
+		}
+		log.trace("model==null => {}", model==null);
+		if (model != null) {
+			log.trace("Model field: {}", model.getField());
+		}
+		return model == null;
+	}
+	
 
 	/**
 	 * Return the adding length of the vector to run as fastest as possible the straight line.

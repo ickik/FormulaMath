@@ -18,7 +18,7 @@ import fr.ickik.formulamath.model.map.MapManager;
  * has the same size. A case is a shape (Rectangle) draw on the screen. The model
  * of the case defines the color of the case background.
  * @author Ickik.
- * @version 0.1.007, 18 July 2012.
+ * @version 0.1.008, 19 July 2012.
  */
 public class JCase extends JComponent {
 
@@ -130,6 +130,7 @@ public class JCase extends JComponent {
 			printTopRightCornerAcute(g2);
 			return;
 		case TOP_RIGHT_CORNER_REFLEX:
+			printTopRightCornerReflex(g2);
 			return;
 		case LEFT:
 			width = size;x++;
@@ -155,11 +156,13 @@ public class JCase extends JComponent {
 			printBottomLeftCornerAcute(g2);
 			return;
 		case BOTTOM_LEFT_CORNER_REFLEX:
+			printBottomLeftCornerReflex(g2);
 			return;
 		case BOTTOM_RIGHT_CORNER_ACUTE:
 			printBottomRightCornerAcute(g2);
 			return;
 		case BOTTOM_RIGHT_CORNER_REFLEX:
+			printBottomRightCornerReflex(g2);
 			return;
 		default:
 			return;
@@ -175,9 +178,31 @@ public class JCase extends JComponent {
 		}
 	}
 	
+	
 	private void printTopLeftCornerReflex(Graphics2D g2) {
 		double size = shape.getBounds2D().getWidth() / 8;
 		Shape s = new Rectangle2D.Double(1, 1, size, size);
+		g2.setColor(Color.RED);
+		g2.fill(s);
+	}
+	
+	private void printTopRightCornerReflex(Graphics2D g2) {
+		double size = shape.getBounds2D().getWidth() / 8;
+		Shape s = new Rectangle2D.Double(shape.getBounds2D().getWidth() - size, 1, size, size);
+		g2.setColor(Color.RED);
+		g2.fill(s);
+	}
+	
+	private void printBottomLeftCornerReflex(Graphics2D g2) {
+		double size = shape.getBounds2D().getWidth() / 8;
+		Shape s = new Rectangle2D.Double(1, shape.getBounds2D().getWidth() - size, size, size);
+		g2.setColor(Color.RED);
+		g2.fill(s);
+	}
+	
+	private void printBottomRightCornerReflex(Graphics2D g2) {
+		double size = shape.getBounds2D().getWidth() / 8;
+		Shape s = new Rectangle2D.Double(shape.getBounds2D().getWidth() - size, shape.getBounds2D().getWidth() - size, size, size);
 		g2.setColor(Color.RED);
 		g2.fill(s);
 	}

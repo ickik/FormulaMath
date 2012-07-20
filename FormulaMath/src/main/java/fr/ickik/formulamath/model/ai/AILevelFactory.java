@@ -26,7 +26,7 @@ public final class AILevelFactory {
 		case 1:
 			return new AIMediumLevel(mapManager);
 		case 2:
-			//return new AIHighLevel(mapManager);
+			return new AIHighLevel(mapManager);
 		default :
 			return new AIMediumLevel(mapManager);
 		}

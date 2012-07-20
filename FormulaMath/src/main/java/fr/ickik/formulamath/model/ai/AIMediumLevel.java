@@ -24,7 +24,7 @@ import fr.ickik.formulamath.model.map.Orientation;
  * @version 0.1.000, 18 July 2012
  * @since 0.3.9
  */
-public class AIMediumLevel implements AILevel {
+public final class AIMediumLevel implements AILevel {
 
 	private final MapManager mapManager;
 	private static final Logger log = LoggerFactory.getLogger(AIMediumLevel.class);
@@ -154,25 +154,30 @@ public class AIMediumLevel implements AILevel {
 				
 			}
 		}
+		/*log.trace("Vector found : {}", vector);
 		if (solutionList.indexOf(vector) != -1) {
+			log.debug("Solution list did not found the vector in possible solution, the old vector will be instaciate");
 			vector = player.getVector();
 		}
 		CaseModel model = mapManager.getCase(player.getPosition().getY() - vector.getY(), player.getPosition().getX()  + vector.getX());
 		if (model != null && model.isOccuped()) {
 			List<Vector> list = getVectorsPossibilities(player);
 			if (list.isEmpty()) {
+				log.debug("Solution list is empty");
 				return null;
 			}
 			double defaultLength = getLength(player.getVector());
+			log.trace("Length of the previous vector: {}", Double.toString(defaultLength));
 			for (Vector v : list) {
 				CaseModel m = mapManager.getCase(player.getPosition().getY() - v.getY(), player.getPosition().getX()  + v.getX());
 				double length = getLength(v);
 				if (m != null && !m.isOccuped() && defaultLength >= length) {
+					log.debug("Case is not occuped, it will be used : {}", v);
 					vector = v;
 					break;
 				}
 			}
-		}
+		}*/
 		return vector;
 	}
 

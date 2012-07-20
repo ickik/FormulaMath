@@ -21,7 +21,7 @@ import fr.ickik.formulamath.model.map.Orientation;
  * @version 0.1.000, 18 July 2012
  * @since 0.3.9
  */
-public class AIEasyLevel implements AILevel {
+public final class AIEasyLevel implements AILevel {
 
 	private final MapManager mapManager;
 	private static final Logger log = LoggerFactory.getLogger(AIEasyLevel.class);

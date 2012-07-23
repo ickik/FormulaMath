@@ -6,13 +6,14 @@ import java.util.LinkedList;
 import fr.ickik.formulamath.model.map.MapManager;
 
 /**
- * The RoadDirectionList extends LinkedList to redefined the add method. This
+ * The DetailledRoadDirectionList extends LinkedList to redefined the add method. This
  * redefinition is used to store the road constructed by the {@link MapManager}.
  * Every object are connected with coordinates one to the others. It should be
  * the best way of the road.
  * 
  * @author Ickik.
- * @version 0.1.002, 19 apr. 2012.
+ * @version 0.1.000, 23 July 2012.
+ * @since 0.3.9
  */
 public class DetailledRoadDirectionList extends LinkedList<RoadDirectionInformation> {
 
@@ -35,28 +36,11 @@ public class DetailledRoadDirectionList extends LinkedList<RoadDirectionInformat
 			previous.getEnd().setY(e.getEnd().getY());
 			return true;
 		}
-		previousPositionCorrection(previous, e);
+		e.getBegin().setX(previous.getEnd().getX());
+		e.getBegin().setY(previous.getEnd().getY());
 		return super.add(e);
 	}
 	
-	private void previousPositionCorrection(RoadDirectionInformation previousRoadDirection, RoadDirectionInformation currentRoadDirection) {
-		switch(previousRoadDirection.getOrientation()) {
-		case EAST:
-		case WEST:
-			previousRoadDirection.getEnd().setX(currentRoadDirection.getBegin().getX());
-			previousRoadDirection.getEnd().setY(previousRoadDirection.getBegin().getY());
-			currentRoadDirection.getBegin().setY(previousRoadDirection.getEnd().getY());
-			break;
-			
-		case NORTH:
-		case SOUTH:
-			previousRoadDirection.getEnd().setX(previousRoadDirection.getBegin().getX());
-			previousRoadDirection.getEnd().setY(currentRoadDirection.getBegin().getY());
-			currentRoadDirection.getBegin().setX(previousRoadDirection.getEnd().getX());
-			break;
-		}
-	}
-
 	@Override
 	public String toString() {
 		StringBuilder str = new StringBuilder();

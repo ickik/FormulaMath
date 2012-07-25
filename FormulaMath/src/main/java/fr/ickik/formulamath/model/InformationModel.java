@@ -12,7 +12,7 @@ import fr.ickik.formulamath.entity.InformationMessage;
 /**
  * Model of the panel that displays information periodically.
  * @author Ickik
- * @version 0.1.002, 28 June 2012
+ * @version 0.1.003, 25 July 2012
  * @since 0.3.5
  */
 public final class InformationModel {
@@ -83,10 +83,14 @@ public final class InformationModel {
 		return msg;
 	}
 	
-	public void stop() {
+	public boolean stop() {
+		if (timer == null) {
+			return false;
+		}
 		timer.purge();
 		timer.cancel();
 		timer = null;
+		return true;
 	}
 	
 	private void fireMessageListener(String message) {

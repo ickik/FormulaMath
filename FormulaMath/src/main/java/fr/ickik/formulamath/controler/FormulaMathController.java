@@ -39,7 +39,7 @@ import fr.ickik.formulamath.view.StatFrame;
  * Controller of the application in MVC design pattern. It receive event from the view to
  * transmit them to the appropriate model if needed.
  * @author Ickik
- * @version 0.1.012, 18 July 2012
+ * @version 0.1.013, 31 July 2012
  * @since 0.2
  */
 public final class FormulaMathController {
@@ -74,7 +74,6 @@ public final class FormulaMathController {
 		this.playerManager.addUpdateCaseListener(mainFrame);
 		aboutFrame = new AboutFrame(this, ChuckNorrisTimer.getInstance().isRunning());
 		statFrame = new StatFrame(this);
-		openConfigurationFrame();
 	}
 	
 	/*private void propertiesCorrection() {
@@ -191,7 +190,11 @@ public final class FormulaMathController {
 	public void saveProperties() throws FormulaMathException {
 		try {
 			log.trace("Information model stopping...");
-			informationModel.stop();
+			if(informationModel.stop()) {
+				log.trace("Information model stopped");
+			} else {
+				log.trace("Information model already stopped");
+			}
 			log.debug("Saving properties...");
 			PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.VERSION);
 			PropertiesModel.getSingleton().save();
@@ -202,14 +205,13 @@ public final class FormulaMathController {
 	}
 	
 	public boolean saveMap(File saveFile) throws IOException {
-		return FormulaMathSaver.getInstance().saveMap2(mapManager, saveFile);
+		return FormulaMathSaver.getInstance().saveMap(mapManager, saveFile);
 	}
 	
 	public void loadMap(File loadFile) throws IOException {
-		//mapManager.mapReinitialization();
-		FormulaMathSaver.getInstance().loadMap2(loadFile);
-		
-		mainFrame.display(mapManager.getMap());
+		MapManager mapManager = FormulaMathSaver.getInstance().loadMap(loadFile);
+		this.mapManager.mergeMapManager(mapManager);
+		mainFrame.updateDisplay(mapManager.getMap());
 	}
 	
 	public void setLookAndFeel(String className) {

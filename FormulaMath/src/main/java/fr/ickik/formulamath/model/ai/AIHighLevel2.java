@@ -37,63 +37,191 @@ public final class AIHighLevel2 implements AILevel {
 	@Override
 	public Vector getNextPlay(Player player,  Map<Integer, Integer> playerRoadPosition) {
 		int roadPosition = playerRoadPosition.get(player.getId());
-		RoadDirectionInformation r = mapManager.getRoadDirectionInformationList().get(roadPosition);
-		Position arrivalPosition = null;
-		if (mapManager.getRoadDirectionInformationList().size() > roadPosition + 1) {
-			arrivalPosition = mapManager.getRoadDirectionInformationList().get(roadPosition + 1).getEnd();
-		} else {
-			arrivalPosition = mapManager.getRoadDirectionInformationList().get(roadPosition).getEnd();
-			
-		}
+		RoadDirectionInformation r = mapManager.getDetailledRoadDirectionInformationList().get(roadPosition);
 		
+		int len = r.getLengthToEnd(player.getPosition()) - 1;
 		Vector vector = null;
+		log.debug("AI rest length of the vector:{}", len);
 		log.trace("Orientation: {}", r.getOrientation());
 		List<Vector> solutionList = getVectorsPossibilities(player);
 		if (solutionList.isEmpty()) {
 			return null;
 		}
-
-		int minStep = 25;
-		for (Vector v : solutionList) {
-			CaseModel model = mapManager.getCase(player.getPosition().getY() - v.getY(), player.getPosition().getX()  + v.getX());
-			if (model != null && model.isOccuped()) {
-				continue;
+		boolean isLastDirection = mapManager.getRoadDirectionInformationList().size() == roadPosition + 1;
+		if (len > 3 || isLastDirection) {
+			switch (r.getOrientation()) {
+			case NORTH:
+				int d = getNextPlay(len, player.getVector().getY());
+				if (isLastDirection) {
+					d = 1;
+				}
+				log.debug("Next play : {}", d);
+				vector = new Vector(0, player.getVector().getY() + d);
+				break;
+			case SOUTH:
+				d = getNextPlay(len, player.getVector().getY());
+				if (isLastDirection) {
+					d = 1;
+				}
+				log.debug("Next play : {}", d);
+				vector = new Vector(0, player.getVector().getY() - d);
+				break;
+			case WEST:
+				d = getNextPlay(len, player.getVector().getX());
+				if (isLastDirection) {
+					d = 1;
+				}
+				log.debug("Next play : {}", d);
+				vector = new Vector(player.getVector().getX() - d, 0);
+				break;
+			case EAST:
+				d = getNextPlay(len, player.getVector().getX());
+				if (isLastDirection) {
+					d = 1;
+				}
+				log.debug("Next play : {}", d);
+				vector = new Vector(player.getVector().getX() + d, 0);
+				break;
 			}
-			int pound = getVectorResultPound(v, player.getPosition().clone(), 1, minStep, arrivalPosition);
-			if (minStep > pound) {
-				minStep = pound;
-				vector = v;
+			if (solutionList.contains(vector)) {
+				return vector;
+			}
+			Vector tmpVector = null;
+			for (Vector v : solutionList) {
+				switch (r.getOrientation()) {
+				case NORTH:
+					if (v.getY() == vector.getY()) {
+						tmpVector = v;
+					}
+					break;
+				case SOUTH:
+					if (v.getY() == vector.getY()) {
+						tmpVector = v;
+					}
+					break;
+				case WEST:
+					if (v.getX() == vector.getX()) {
+						tmpVector = v;
+					}
+					break;
+				case EAST:
+					if (v.getX() == vector.getX()) {
+						tmpVector = v;
+					}
+					break;
+				}
+			}
+			if (tmpVector != null) {
+				return tmpVector;
+			}
+			int min = Integer.MAX_VALUE;
+			for (Vector v : solutionList) {
+				switch (r.getOrientation()) {
+				case NORTH:
+					if (v.getY() == vector.getY() - 1 && v.getX() < min) {
+						tmpVector = v;
+						min = v.getX();
+					}
+					break;
+				case SOUTH:
+					if (v.getY() >= vector.getY() + 1) {
+						tmpVector = v;
+					}
+					break;
+				case WEST:
+					if (v.getX() <= vector.getX() + 1) {
+						tmpVector = v;
+					}
+					break;
+				case EAST:
+					if (v.getX() >= vector.getX() - 1) {
+						tmpVector = v;
+					}
+					break;
+				}
+			}
+			return tmpVector;
+		}
+		Position endPosition = r.getEnd();
+		for (Vector v : solutionList) {
+			Position tmp = new Position(player.getPosition().getX() + v.getX(), player.getPosition().getY() - v.getY());
+			if (endPosition.equals(tmp) && !mapManager.getCase(tmp.getY(), tmp.getX()).isOccuped()) {
+				playerRoadPosition.put(player.getId(), roadPosition + 1);
+				return v;
 			}
 		}
 		
+		RoadDirectionInformation nextRoadInformation = null;
+		if (mapManager.getRoadDirectionInformationList().size() > roadPosition + 1) {
+			nextRoadInformation = mapManager.getRoadDirectionInformationList().get(roadPosition + 1);
+		}
+		for (Vector v : solutionList) {
+			Position tmp = new Position(player.getPosition().getX() + v.getX(), player.getPosition().getY() - v.getY());
+			if (!endPosition.equals(tmp) && !mapManager.getCase(tmp.getY(), tmp.getX()).isOccuped()) {
+				List<Vector> list = getVectorsPossibilities(tmp, v);
+				for (Vector vect : list) {
+					Position tmpPos = new Position(tmp.getX() + vect.getX(), tmp.getY() - vect.getY());
+					switch (nextRoadInformation.getOrientation()) {
+					case NORTH:
+						if (tmpPos.getY() == r.getEnd().getY()) {
+							vector = v;
+						}
+						break;
+					case SOUTH:
+						if (tmpPos.getY() == r.getEnd().getY()) {
+							vector = v;
+						}
+						break;
+					case WEST:
+						if (tmpPos.getX() == r.getEnd().getX()) {
+							vector = v;
+						}
+						break;
+					case EAST:
+						if (tmpPos.getX() == r.getEnd().getX()) {
+							vector = v;
+						}
+						break;
+					}
+				}
+			}
+			
+		}
+		playerRoadPosition.put(player.getId(), roadPosition + 1);
 		return vector;
 	}
 	
-	private int getVectorResultPound(Vector vector, Position position, int step, int minStep, Position arrivalPosition) {
-		if (vector.getX() == 0 && vector.getY() == 0) {
-			return Integer.MAX_VALUE;
-		}
-		if (position.equals(arrivalPosition)) {
-			return step;
-		}
-		position.setX(position.getX() + vector.getX());
-		position.setY(position.getY() - vector.getY());
-		if (step > minStep || position.getX() < 0 || position.getX() > mapManager.getMapSize() || position.getY() < 0 || position.getY() > mapManager.getMapSize()) {
-			return Integer.MAX_VALUE;
-		}
-		List<Vector> list = getVectorsPossibilities(position, vector);
-		int nbStepMin = Integer.MAX_VALUE;
-		for (Vector v : list) {
-			if (v != null) {
-			int value = getVectorResultPound(v, position.clone(), step + 1, minStep, arrivalPosition);
-			if (value < nbStepMin) {
-				nbStepMin = value;
+	/**
+	 * Return the adding length of the vector to run as fastest as possible the straight line.
+	 * @param distance the total distance to run
+	 * @param vitesse the current speed.
+	 * @return the number to add to the current vector.
+	 */
+	private int getNextPlay(int distance, int vitesse) {
+		log.trace("getNextPlay({}, {})", distance, vitesse);
+		int v = Math.abs(vitesse);
+		if (distance == 0) {
+			if (v == 2) {
+				return -1;
 			}
-			}
+			return vitesse;
 		}
-		return nbStepMin;
+		if (distance > vitesse * vitesse) {
+			return 1;
+		}
+		int nbLess = getNbStep(distance, v - 1, 0);
+		int nbEqual = getNbStep(distance, v, 0);
+		int nbMore = getNbStep(distance, v + 1, 0);
+		log.debug("Next play possibilities : {}, {}, {}", new Object[]{nbLess, nbEqual, nbMore});
+		if (nbLess <= nbEqual && nbLess <= nbMore) {
+			return -1;
+		} else if (nbMore < nbEqual && nbMore < nbLess) {
+			return 1;
+		}
+		return 0;
 	}
-
+	
+	
 	private List<Vector> getVectorsPossibilities(Player player) {
 		log.trace("getVectorsPossibilities entering");
 		List<Vector> list = new ArrayList<Vector>(5);
@@ -318,8 +446,10 @@ public final class AIHighLevel2 implements AILevel {
 			}
 		} else {
 			
-			RoadDirectionInformation r = mapManager.getRoadDirectionInformationList().get(0);
-			RoadDirectionInformation nextRoadDirection = mapManager.getRoadDirectionInformationList().get(1);
+//			RoadDirectionInformation r = mapManager.getRoadDirectionInformationList().get(0);
+//			RoadDirectionInformation nextRoadDirection = mapManager.getRoadDirectionInformationList().get(1);
+			RoadDirectionInformation r = mapManager.getDetailledRoadDirectionInformationList().get(0);
+			RoadDirectionInformation nextRoadDirection = mapManager.getDetailledRoadDirectionInformationList().get(1);
 			int curveLen = nextRoadDirection.getLength();
 			switch (r.getOrientation()) {
 			case NORTH:

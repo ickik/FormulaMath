@@ -721,6 +721,8 @@ public final class MapManager {
 					solutionAvailable = false;
 				}
 				break;
+			default:
+				break;
 			}
 			break;
 
@@ -761,6 +763,8 @@ public final class MapManager {
 					}
 				}
 				break;
+			default:
+				break;
 			}
 			break;
 
@@ -799,6 +803,8 @@ public final class MapManager {
 					}
 				}
 				break;
+			default:
+				break;
 			}
 			break;
 
@@ -836,6 +842,8 @@ public final class MapManager {
 						}
 					}
 				}
+				break;
+			default:
 				break;
 			}
 		}
@@ -967,6 +975,8 @@ public final class MapManager {
 					getCase(positionDepart2.getY() - i, positionDepart2.getX() - 1).setBorderCaseSide(JCaseSide.LEFT);
 				}
 				break;
+			default:
+				break;
 			}
 			break;
 		case WEST:
@@ -980,6 +990,8 @@ public final class MapManager {
 				for (int i = 0; i < length; i++) {
 					getCase(positionDepart2.getY() - 1, positionDepart2.getX() - i).setBorderCaseSide(JCaseSide.BOTTOM);
 				}
+				break;
+			default:
 				break;
 			}
 			break;
@@ -995,6 +1007,8 @@ public final class MapManager {
 					getCase(positionDepart2.getY() + i, positionDepart2.getX() - 1).setBorderCaseSide(JCaseSide.RIGHT);
 				}
 				break;
+			default:
+				break;
 			}
 			break;
 		case EAST:
@@ -1008,6 +1022,8 @@ public final class MapManager {
 				for (int i = 0; i < length; i++) {
 					getCase(positionDepart2.getY() - 1, positionDepart2.getX() + i).setBorderCaseSide(JCaseSide.TOP);
 				}
+				break;
+			default:
 				break;
 			}
 			break;
@@ -1105,5 +1121,26 @@ public final class MapManager {
 	 */
 	public List<RoadDirectionInformation> getRoadDirectionInformationList() {
 		return roadList;
+	}
+	
+	/**
+	 * Merge the MapManager parameter with this MapManager.<br>
+	 * It remove all data and replace them with parameter MapManager data.
+	 * @param mapManager the MapManager to copy.
+	 */
+	public void mergeMapManager(MapManager mapManager) {
+		this.mapSize = mapManager.getMapSize();
+		this.carte.clear();
+		this.carte.addAll(mapManager.getMap());
+		this.detailledRoadList.clear();
+		this.detailledRoadList.addAll(mapManager.getRoadDirectionInformationList());
+		this.finishingLinePositionList.clear();
+		this.finishingLinePositionList.addAll(mapManager.getFinishingLinePositionList());
+		this.roadList.clear();
+		this.roadList.addAll(mapManager.getRoadDirectionInformationList());
+		this.startingPositionList.clear();
+		this.startingPositionListSave.clear();
+		this.startingPositionList.addAll(mapManager.getStartingPositionList());
+		this.startingPositionListSave.addAll(mapManager.getStartingPositionList());
 	}
 }

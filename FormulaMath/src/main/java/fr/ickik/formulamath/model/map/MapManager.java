@@ -1123,6 +1123,10 @@ public final class MapManager {
 		return roadList;
 	}
 	
+	public List<RoadDirectionInformation> getDetailledRoadDirectionInformationList() {
+		return detailledRoadList;
+	}
+	
 	/**
 	 * Merge the MapManager parameter with this MapManager.<br>
 	 * It remove all data and replace them with parameter MapManager data.

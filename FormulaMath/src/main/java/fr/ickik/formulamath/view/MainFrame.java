@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.filechooser.FileFilter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +57,7 @@ import fr.ickik.formulamath.model.map.MapDimension;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.2.013, 17 July 2012.
+ * @version 0.2.014, 1 August 2012.
  */
 public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
@@ -102,6 +104,15 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		initMap(carte);
 		createMainFrame();
 		controller.chooseStartPosition();
+	}
+	
+	public void updateDisplay(List<List<CaseModel>> carte) {
+		caseArrayList.clear();
+		scrollPane.getViewport().removeAll();
+		initMap(carte);
+		scrollPane.getViewport().add(getTrayPanel());
+		controller.chooseStartPosition();
+		scrollPane.validate();
 	}
 	
 	private void initMap(List<List<CaseModel>> carte) {
@@ -409,10 +420,26 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			public void actionPerformed(ActionEvent arg0) {
 				JFileChooser fileChooser = new JFileChooser();
 				fileChooser.setMultiSelectionEnabled(false);
+				fileChooser.setFileFilter(new FileFilter() {
+					
+					@Override
+					public String getDescription() {
+						return "FMS saved file";
+					}
+					
+					@Override
+					public boolean accept(File arg0) {
+						return arg0.getName().endsWith(".fms");
+					}
+				});
 				int result = fileChooser.showSaveDialog(mainFrame);
 				if (result == JFileChooser.APPROVE_OPTION) {
 					try {
-						if (!controller.saveMap(fileChooser.getSelectedFile())) {
+						File savedFile = fileChooser.getSelectedFile();
+						if (!fileChooser.getSelectedFile().getName().endsWith(".fms")) {
+							savedFile = new File(fileChooser.getSelectedFile().getAbsolutePath() + ".fms");
+						}
+						if (!controller.saveMap(savedFile)) {
 							displayErrorMessage("An error was encounter during file saving");
 						}
 					} catch (IOException e) {
@@ -430,6 +457,18 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			public void actionPerformed(ActionEvent arg0) {
 				JFileChooser fileChooser = new JFileChooser();
 				fileChooser.setMultiSelectionEnabled(false);
+				fileChooser.setFileFilter(new FileFilter() {
+					
+					@Override
+					public String getDescription() {
+						return "FMS saved file";
+					}
+					
+					@Override
+					public boolean accept(File arg0) {
+						return arg0.getName().endsWith(".fms");
+					}
+				});
 				int result = fileChooser.showOpenDialog(mainFrame);
 				if (result == JFileChooser.APPROVE_OPTION) {
 					try {
@@ -470,8 +509,8 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				System.exit(0);
 			}
 		});
-		//file.add(save);
-		//file.add(loadMap);
+		file.add(save);
+		file.add(openMap);
 		file.addSeparator();
 		file.add(restartMap);
 		file.addSeparator();

@@ -31,7 +31,7 @@ import fr.ickik.updater.UpdaterListener;
  * and search the last release to update. It download and placed it in the right directory.
  * The updater overrides all existing files and then start the application.
  * @author Ickik
- * @version 0.1.007, 1 june 2012
+ * @version 0.1.008, 1 August 2012
  */
 public final class UpdateModel {
 
@@ -75,15 +75,9 @@ public final class UpdateModel {
 	}
 	
 	public void startApplication() {
-//		File currentVersion = new File(APPLICATION);
-//		try {
-//			new ProcessBuilder("java -jar " + currentVersion.getName()).start();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 		try {
 			Desktop.getDesktop().open(new File(APPLICATION + currentVersion + extension));
+			System.exit(0);
 		} catch(Exception exception) {
 			exception.printStackTrace();
 		}

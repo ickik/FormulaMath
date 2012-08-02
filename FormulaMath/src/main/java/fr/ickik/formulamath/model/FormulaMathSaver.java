@@ -25,7 +25,7 @@ import fr.ickik.formulamath.model.map.Orientation;
 /**
  * This model saves and load map to permit the player to replay maps.
  * @author Ickik
- * @version 0.1.003, 31 July 2012
+ * @version 0.1.005, 2 August 2012
  * @since 0.2
  */
 public final class FormulaMathSaver {
@@ -144,15 +144,15 @@ public final class FormulaMathSaver {
 	private int readMap(MapManager manager, String[] array) {
 		int size = manager.getMapSize();
 		int i;
-		for (i = 1; i < size; i++) {
+		for (i = 1; i < size + 1; i++) {
 			String line = array[i];
 			for(int j = 0; j < size; j++) {
 				Field field = valueFieldMap.get(Integer.parseInt(String.valueOf(line.charAt(j))));
 				manager.getCase(i - 1, j).setField(field);
 				if (field == Field.STARTING_LINE) {
-					manager.getStartingPositionList().add(new Position(i - 1, j));
+					manager.getStartingPositionList().add(new Position(j, i - 1));
 				} else if (field == Field.FINISHING_LINE) {
-					manager.getFinishingLinePositionList().add(new Position(i - 1, j));
+					manager.getFinishingLinePositionList().add(new Position(j, i - 1));
 				}
 			}
 		}

@@ -8,7 +8,7 @@ import fr.ickik.formulamath.model.map.Orientation;
  * @author Ickik.
  * @version 0.1.001, 14 dec. 2011.
  */
-public final class RoadDirectionInformation {
+public class RoadDirectionInformation {
 
 	private final Position begin;
 	private final Position end;

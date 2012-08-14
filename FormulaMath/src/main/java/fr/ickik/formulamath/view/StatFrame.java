@@ -49,7 +49,6 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 	}
 	
 	public void display(List<Stats> statsList) {
-		statPanel.removeAll();
 		statPanel.add(displayStats(statsList));
 		displayFrame();
 		getFrame().setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

@@ -233,8 +233,10 @@ public final class PlayVectorChooserPanel {
 		for (List<JCase> caseList : caseArrayList) {
 			for (JCase c : caseList) {
 				if (c.getModel() != null && c.getModel().getField() == terrain) {
-					boolean result1 =shape.intersectsLine(c.getX(), c.getY(), c.getX() + c.getWidth(), c.getY() + c.getHeight());
-					boolean result2 = shape.intersectsLine(c.getX() + c.getWidth(), c.getY(), c.getX(), c.getY() + c.getHeight());
+					boolean result1 =shape.intersectsLine(c.getX() + 1, c.getY() + 1, c.getX() + c.getWidth() - 1, c.getY() + c.getHeight() - 1);
+					boolean result2 = shape.intersectsLine(c.getX() + c.getWidth() - 1, c.getY() + 1, c.getX() + 1, c.getY() + c.getHeight() - 1);
+//					boolean result1 =shape.intersectsLine(c.getX() + 1, c.getY() + 1, c.getX() + c.getWidth() - 1, c.getY() + c.getHeight() - 1);
+//					boolean result2 = shape.intersectsLine(c.getX() + c.getWidth() + 1, c.getY() - 1, c.getX() + 1, c.getY() + c.getHeight() - 1);
 					if (result1 || result2) {
 						log.info("intersection found for shape and {} on ( {}, {} )", new Object[]{terrain, c.getX(), c.getY()});
 						return true;

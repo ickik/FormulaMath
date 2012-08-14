@@ -164,7 +164,8 @@ public final class FirstMovePanel {
 		for (List<JCase> caseList : caseArrayList) {
 			for (JCase c : caseList) {
 				if (c.getModel() != null && c.getModel().getField() == terrain) {
-					if (shape.intersects(c.getX(), c.getY(), c.getWidth(), c.getHeight())) {
+//					if (shape.intersects(c.getX() + 1, c.getY() + 1, c.getWidth() - 1, c.getHeight() - 1)) {
+					if (shape.intersects(c.getX() + 1, c.getY() + 1, c.getWidth() - 1, c.getHeight() - 1)) {
 						log.debug("intersection for shape and {} is {}", terrain, true);
 						return true;
 					}

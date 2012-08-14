@@ -27,7 +27,7 @@ import fr.ickik.formulamath.view.JCase;
  * <b>Warning : </b>Correction of random generator, it starts at 0 but creation is not available and
  * finish the construction. A part of generated maps contains not completed road.
  * @author Ickik.
- * @version 0.1.017, 9 August 2012.
+ * @version 0.1.018, 14 August 2012.
  */
 public final class MapManager {
 
@@ -78,8 +78,7 @@ public final class MapManager {
 		switch (value % 10) {
 		case 0:
 			return Field.SAND;
-		//case 1:
-		//	return Field.WATER;
+		case 1:
 		default:
 			return Field.GRASS;
 		}
@@ -611,6 +610,14 @@ public final class MapManager {
 		log.debug("{}", roadList.toString());
 		if (detailledRoadList.get(0).getBegin().equals(detailledRoadList.get(0).getEnd())) {
 			detailledRoadList.removeFirst();
+		}
+		CaseModelFactory factory = new CaseModelFactory();
+		for (List<CaseModel> list : carte) {
+			for (CaseModel m : list) {
+				if (m != null && (m.getField() != Field.FINISHING_LINE || m.getField() != Field.ROAD || m.getField() != Field.STARTING_LINE)) {
+					m = factory.getCaseModel(m.getField());
+				}
+			}
 		}
 	}
 	

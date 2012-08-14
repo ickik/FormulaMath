@@ -23,7 +23,7 @@ import javax.swing.WindowConstants;
 public abstract class AbstractFormulaMathFrame {
 
 	public static final String NAME = "FormulaMath";
-	public static final String VERSION = "0.3.9";
+	public static final String VERSION = "0.3.10";
 	private final JFrame frame;
 	
 	/**

@@ -1,5 +1,6 @@
 package fr.ickik.formulamath.model.map;
 
+import java.awt.Shape;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import fr.ickik.formulamath.entity.RoadDirectionInformation;
 import fr.ickik.formulamath.entity.RoadDirectionList;
 import fr.ickik.formulamath.model.CaseModel;
 import fr.ickik.formulamath.model.JCaseSide;
+import fr.ickik.formulamath.view.JCase;
 
 /**
  * Contains and handles the map of the application. The map is a everytime a square.<br>
@@ -33,6 +35,7 @@ public final class MapManager {
 	public static final int EMPTY_PLAYER = 0;
 	private static final Logger log = LoggerFactory.getLogger(MapManager.class);
 	private List<List<CaseModel>> carte;
+	private List<List<JCase>> carteComponent;
 	private int mapSize;
 	private final List<Position> startingPositionList = new ArrayList<Position>(ROAD_SIZE);
 	private final List<Position> startingPositionListSave = new ArrayList<Position>(ROAD_SIZE);
@@ -523,7 +526,7 @@ public final class MapManager {
 						}
 						traceBorderSide(positionDepart, JCaseSide.LEFT);
 						getCase(positionDepart2.getY() + ROAD_SIZE, positionDepart2.getX()).setBorderCaseSide(JCaseSide.BOTTOM_RIGHT_CORNER_ACUTE);
-						getCase(positionDepart2.getY(), positionDepart2.getX()  - ROAD_SIZE).setBorderCaseSide(JCaseSide.TOP_LEFT_CORNER_REFLEX);
+						getCase(positionDepart.getY() + 1, positionDepart.getX()).setBorderCaseSide(JCaseSide.TOP_LEFT_CORNER_REFLEX);
 						
 						
 						Position centerEnd = new Position((positionDepart.getX() + positionDepart2.getX()) / 2, (positionDepart.getY() + positionDepart2.getY() + 1) / 2);
@@ -606,6 +609,9 @@ public final class MapManager {
 		log.debug("constructRoad end");
 		log.debug("Road list operational : size {}",roadList.size());
 		log.debug("{}", roadList.toString());
+		if (detailledRoadList.get(0).getBegin().equals(detailledRoadList.get(0).getEnd())) {
+			detailledRoadList.removeFirst();
+		}
 	}
 	
 	private void updateLastDirectionRoad() {
@@ -1108,6 +1114,10 @@ public final class MapManager {
 		return startingPositionList;
 	}
 	
+	public List<Position> getStartingPositionListSave() {
+		return startingPositionListSave;
+	}
+	
 	/**
 	 * Return the list of positions on finishing lane.
 	 * @return the list of positions on finishing lane.
@@ -1147,5 +1157,40 @@ public final class MapManager {
 		this.startingPositionListSave.clear();
 		this.startingPositionList.addAll(mapManager.getStartingPositionList());
 		this.startingPositionListSave.addAll(mapManager.getStartingPositionList());
+	}
+
+	public List<List<JCase>> getCarteComponent() {
+		return carteComponent;
+	}
+
+	public void setCarteComponent(List<List<JCase>> carteComponent) {
+		this.carteComponent = carteComponent;
+	}
+	
+	/**
+	 * Verify that the shape given in argument intersects a JCase with a field model given in
+	 * argument.
+	 * @param shape the possible instected shape.
+	 * @param terrain the field of the shape.
+	 * @return true if the shape intersects a JCase component which has a model containing a Field terrain,
+	 * false otherwise.
+	 */
+	public boolean checkIntersection(Shape shape, Field terrain) {
+		for (List<JCase> caseList : carteComponent) {
+			for (JCase c : caseList) {
+				if (c.getModel() != null && c.getModel().getField() == terrain) {
+					/*
+					boolean result1 =shape.intersectsLine(c.getX() + 1, c.getY() + 1, c.getX() + c.getWidth() - 1, c.getY() + c.getHeight() - 1);
+					boolean result2 = shape.intersectsLine(c.getX() + c.getWidth() - 1, c.getY() + 1, c.getX() + 1, c.getY() + c.getHeight() - 1);
+					 */
+					if (shape.intersects(c.getX() + 1, c.getY() + 1, c.getWidth() - 1, c.getHeight() - 1)) {
+						log.debug("intersection for shape and {} is {}", terrain, true);
+						return true;
+					}
+				}
+			}
+		}
+		log.debug("intersection for shape and {} is {}", terrain, false);
+		return false;
 	}
 }

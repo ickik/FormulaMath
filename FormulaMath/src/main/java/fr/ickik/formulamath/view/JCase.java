@@ -189,14 +189,14 @@ public final class JCase extends JComponent {
 	private void printTopRightCornerReflex(Graphics2D g2) {
 		double size = shape.getBounds2D().getWidth() / 8;
 		Shape s = new Rectangle2D.Double(shape.getBounds2D().getWidth() - size, 1, size, size);
-		g2.setColor(Color.RED);
+		g2.setColor(Color.WHITE);
 		g2.fill(s);
 	}
 	
 	private void printBottomLeftCornerReflex(Graphics2D g2) {
 		double size = shape.getBounds2D().getWidth() / 8;
 		Shape s = new Rectangle2D.Double(1, shape.getBounds2D().getWidth() - size, size, size);
-		g2.setColor(Color.RED);
+		g2.setColor(Color.WHITE);
 		g2.fill(s);
 	}
 	

@@ -10,7 +10,8 @@ import fr.ickik.formulamath.controler.InformationMessageListener;
 import fr.ickik.formulamath.entity.InformationMessage;
 
 /**
- * Model of the panel that displays information periodically.
+ * Model of the panel that displays information periodically. It uses a timer to have
+ * periodically information.
  * @author Ickik
  * @version 0.1.003, 25 July 2012
  * @since 0.3.5
@@ -18,13 +19,17 @@ import fr.ickik.formulamath.entity.InformationMessage;
 public final class InformationModel {
 
 	private Timer timer;
-	private final int delay = 4000;
+	private final int delay = 2000;
 	private final LinkedList<InformationMessage> messageDeque = new LinkedList<InformationMessage>();
 	private final List<InformationMessageListener> informationMessageListenerList = new ArrayList<InformationMessageListener>();
 	private final int sleepTime = 30;
 	
 	public InformationModel() {}
 	
+	/**
+	 * Add a listener to this model.
+	 * @param listener the listener that hear this model.
+	 */
 	public void addInformationMessageListener(InformationMessageListener listener) {
 		if (timer == null) {
 			timer = new Timer();
@@ -83,6 +88,10 @@ public final class InformationModel {
 		return msg;
 	}
 	
+	/**
+	 * Stop the timer that display messages.
+	 * @return true if the timer was stopped, false if it is already stopped.
+	 */
 	public boolean stop() {
 		if (timer == null) {
 			return false;
@@ -99,10 +108,18 @@ public final class InformationModel {
 		}
 	}
 
+	/**
+	 * Add an {@link InformationMessage} at the end of the message queue.
+	 * @param message the message to add.
+	 */
 	public void addMessage(InformationMessage message) {
 		messageDeque.add(message);
 	}
 	
+	/**
+	 * Add an {@link InformationMessage} at the beginning of the queue. It will be the next message displayed.
+	 * @param message the message to add.
+	 */
 	public void pushMessage(InformationMessage message) {
 		messageDeque.addFirst(message);
 		fireMessageListener(message.getMessage());

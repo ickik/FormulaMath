@@ -49,6 +49,7 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 	private final Logger log = LoggerFactory.getLogger(ConfigurationFrame.class);
 	private int numberOfPlayerSelected = 1;
 	private int dimensionMapItem = 1;
+	//private File selectedFileMap = null;
 	private final FormulaMathProperty[] namePropertyArray = {FormulaMathProperty.PLAYER1_NAME, FormulaMathProperty.PLAYER2_NAME, 
 			FormulaMathProperty.PLAYER3_NAME, FormulaMathProperty.PLAYER4_NAME};
 	private final FormulaMathProperty[] typePropertyArray = {FormulaMathProperty.PLAYER1_TYPE, FormulaMathProperty.PLAYER2_TYPE, 
@@ -118,7 +119,22 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 					displayErrorMessage("No human player selected");
 					return;
 				}
-				controller.initManager(MapDimension.values()[dimensionMapItem].getValue(), computerLevel);
+				
+				if (dimensionMapItem < MapDimension.values().length) {
+					controller.initManager(MapDimension.values()[dimensionMapItem].getValue(), computerLevel);
+				} else {
+					/*if (selectedFileMap != null) {
+						try {
+							controller.loadMap(selectedFileMap);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					} else {
+						displayErrorMessage("No map file selected");
+						return;
+					}*/
+				}
 				log.trace("number of player selected : {}", numberOfPlayerSelected);
 				
 				for (int i = 0; i < numberOfPlayerSelected; i++) {
@@ -207,7 +223,6 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 	}
 	
 	private JPanel getNumberPlayerPanel() {
-//		GridLayout gridLayout = new GridLayout(2, 2);
 		GridLayout gridLayout = new GridLayout(3, 2);
 		JPanel panel = new JPanel(gridLayout);
 
@@ -215,10 +230,35 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 		for (MapDimension d : MapDimension.values()) {
 			sizeComboBox.addItem(d.toString());
 		}
+	//	sizeComboBox.addItem("Choose a map");
 		sizeComboBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+//				int previous = dimensionMapItem;
 				dimensionMapItem = sizeComboBox.getSelectedIndex();
+//				if (dimensionMapItem == sizeComboBox.getItemCount() - 1) {
+//					JFileChooser fileChooser = new JFileChooser();
+//					fileChooser.setMultiSelectionEnabled(false);
+//					fileChooser.setFileFilter(new FileFilter() {
+//						
+//						@Override
+//						public String getDescription() {
+//							return "FMS saved file";
+//						}
+//						
+//						@Override
+//						public boolean accept(File arg0) {
+//							return arg0.getName().endsWith(".fms");
+//						}
+//					});
+//					int result = fileChooser.showOpenDialog(getFrame());
+//					if (result == JFileChooser.APPROVE_OPTION) {
+//						selectedFileMap = fileChooser.getSelectedFile();
+//					} else {
+//						dimensionMapItem = previous;
+//						sizeComboBox.setSelectedIndex(dimensionMapItem);
+//					}
+//				}
 			}
 		});
 		sizeComboBox.setSelectedIndex(dimensionMapItem);
@@ -262,6 +302,48 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 		panel.add(comboBox);
 		return panel;
 	}
+	
+//	private class ComboBoxRenderer extends JLabel implements ListCellRenderer<String> {
+//
+//		public ComboBoxRenderer() {
+//			setOpaque(true);
+//			setHorizontalAlignment(CENTER);
+//			setVerticalAlignment(CENTER);
+//		}
+//
+//		@Override
+//		public Component getListCellRendererComponent(
+//				JList<? extends String> list, String value, int index,
+//				boolean isSelected, boolean cellHasFocus) {
+//
+//			//always valid, so just use the value.)
+//			int selectedIndex = index;
+//
+//			if (isSelected) {
+//				setBackground(list.getSelectionBackground());
+//				setForeground(list.getSelectionForeground());
+//			} else {
+//				setBackground(list.getBackground());
+//				setForeground(list.getForeground());
+//			}
+//
+//			/*ImageIcon icon = images[selectedIndex];
+//            String pet = petStrings[selectedIndex];
+//            setIcon(icon);
+//            if (icon != null) {
+//                setText(pet);
+//            } else {
+//                setUhOhText(pet + " (no image available)");
+//            }
+//			 */
+//			return this;
+//		}
+//
+//		private void setUhOhText(String uhOhText) {
+//			setText(uhOhText);
+//		}
+//
+//	}
 
 	private JPanel getConfigurationPanel() {
 		JPanel panel = new JPanel();

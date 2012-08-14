@@ -2,6 +2,7 @@ package fr.ickik.formulamath.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
@@ -78,6 +79,10 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	public static final int MAP_MARGIN = 20;
 	private final String theme;
 
+	/*
+	 * Creation d'un flyweight pour les modeles des composants qui sont GRASS pour mutualiser
+	 * les ressources
+	 */
 	/**
 	 * Constructor of the JFrame, it initializes all panels and the map panel.
 	 * @param mapSize the size of the map model.
@@ -90,6 +95,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		mainFrame = getFrame();
 		gameMenuPanel = new JPanel();
 		playButton = new JButton("Play");
+		playButton.setFont(new Font(Font.DIALOG, Font.BOLD, 16));
 		listener = new FormulaMathMouseListener(caseSize);
 		informationLabel = new InformationPanel();
 		informationLabel.setInformationModel(informationModel);
@@ -142,6 +148,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				y++;
 			}
 		}
+		controller.putMap(caseArrayList);
 		log.debug("Duration of map initialization : {}ms", (System.currentTimeMillis() - begin));
 	}
 
@@ -509,9 +516,9 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				System.exit(0);
 			}
 		});
-		file.add(save);
-		file.add(openMap);
-		file.addSeparator();
+		//file.add(save);
+		//file.add(openMap);
+		//file.addSeparator();
 		file.add(restartMap);
 		file.addSeparator();
 		file.add(quit);

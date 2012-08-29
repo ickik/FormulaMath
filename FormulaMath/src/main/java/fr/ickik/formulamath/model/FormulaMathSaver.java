@@ -25,7 +25,7 @@ import fr.ickik.formulamath.model.map.Orientation;
 /**
  * This model saves and load map to permit the player to replay maps.
  * @author Ickik
- * @version 0.1.005, 2 August 2012
+ * @version 0.1.006, 29 August 2012
  * @since 0.2
  */
 public final class FormulaMathSaver {
@@ -179,9 +179,9 @@ public final class FormulaMathSaver {
 
 			@Override
 			public int compare(Position pos1, Position pos2) {
-				if (pos1.getX() > pos2.getY()) {
+				if (pos1.getX() > pos2.getX()) {
 					return 1;
-				} else if (pos1.getX() < pos2.getY()) {
+				} else if (pos1.getX() < pos2.getX()) {
 					return -1;
 				}
 				if (pos1.getY() > pos2.getY()) {

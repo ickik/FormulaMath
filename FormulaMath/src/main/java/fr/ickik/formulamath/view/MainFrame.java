@@ -58,7 +58,7 @@ import fr.ickik.formulamath.model.map.MapDimension;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.2.014, 1 August 2012.
+ * @version 0.2.015, 29 August 2012.
  */
 public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
@@ -79,10 +79,6 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 	public static final int MAP_MARGIN = 20;
 	private final String theme;
 
-	/*
-	 * Creation d'un flyweight pour les modeles des composants qui sont GRASS pour mutualiser
-	 * les ressources
-	 */
 	/**
 	 * Constructor of the JFrame, it initializes all panels and the map panel.
 	 * @param mapSize the size of the map model.
@@ -516,9 +512,9 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				System.exit(0);
 			}
 		});
-		//file.add(save);
-		//file.add(openMap);
-		//file.addSeparator();
+		file.add(save);
+		file.add(openMap);
+		file.addSeparator();
 		file.add(restartMap);
 		file.addSeparator();
 		file.add(quit);

@@ -2,23 +2,29 @@ package fr.ickik.formulamath.model;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.event.MouseInputListener;
 
+import fr.ickik.formulamath.entity.Position;
+import fr.ickik.formulamath.view.JCase;
+
 /**
  * Implementation of the MouseListener.
  * @author Ickik
- * @version 0.1.002, 5 July 2012
+ * @version 0.1.003, 29 August 2012
  * @since 0.3.6
  */
 public class FormulaMathMouseListener implements MouseInputListener {
 
 	private Point startPoint;
+	private Position startPosition;
 	private JScrollPane scrollPanel;
 	private JLabel descriptionLabel;
 	private int caseSize;
+	private List<List<JCase>> caseArrayList;
 	
 	public FormulaMathMouseListener(int caseSize) {
 		this.setCaseSize(caseSize);
@@ -27,38 +33,55 @@ public class FormulaMathMouseListener implements MouseInputListener {
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		if (arg0.getButton() == MouseEvent.BUTTON1) {
+			Position p = getJCasePosition(arg0.getPoint());
 			if (startPoint == null) {
+				startPosition = p;
 				startPoint = arg0.getPoint();
-				scrollPanel.getGraphics().drawLine(arg0.getX() - 10, arg0.getY() - 10, arg0.getX() + 10, arg0.getY() + 10);
-				scrollPanel.getGraphics().drawLine(arg0.getX() - 10, arg0.getY() + 10, arg0.getX() + 10, arg0.getY() - 10);
+				caseArrayList.get(p.getY()).get(p.getX()).getGraphics().drawLine(arg0.getX() - 10, arg0.getY() - 10, arg0.getX() + 10, arg0.getY() + 10);
+				caseArrayList.get(p.getY()).get(p.getX()).getGraphics().drawLine(arg0.getX() - 10, arg0.getY() + 10, arg0.getX() + 10, arg0.getY() - 10);
 			} else {
-				scrollPanel.getGraphics().drawLine(arg0.getX() - 10, arg0.getY() - 10, arg0.getX() + 10, arg0.getY() + 10);
-				scrollPanel.getGraphics().drawLine(arg0.getX() - 10, arg0.getY() + 10, arg0.getX() + 10, arg0.getY() - 10);
-				descriptionLabel.setText("Vector (" + getHorizontalCaseNumber(startPoint, arg0.getPoint()) + ", " + getVerticalCaseNumber(startPoint, arg0.getPoint()) + ") - Distance : " + Double.toString(getDistance(startPoint, arg0.getPoint())) + " px");
+				caseArrayList.get(p.getY()).get(p.getX()).getGraphics().drawLine(arg0.getX() - 10, arg0.getY() - 10, arg0.getX() + 10, arg0.getY() + 10);
+				caseArrayList.get(p.getY()).get(p.getX()).getGraphics().drawLine(arg0.getX() - 10, arg0.getY() + 10, arg0.getX() + 10, arg0.getY() - 10);
+			
+				descriptionLabel.setText("Vector (" + getHorizontalCaseNumber(startPosition, p) + ", " + getVerticalCaseNumber(startPosition, p) + ") - Distance : " + Double.toString(getDistance(startPosition, p)) + " px");
 				startPoint = null;
-				scrollPanel.repaint();
+				startPosition = null;
+			//	scrollPanel.repaint();
 			}
 		}
 	}
 	
-	private double getHorizontalCaseNumber(Point start, Point end) {
-		return Math.floor((Math.sqrt((start.getX() - end.getX()) * (start.getX() - end.getX())) / caseSize) + 0.5);
+	private Position getJCasePosition(Point point) {
+		for (int i = 0; i < caseArrayList.size(); i++) {
+			for (int j = 0; j < caseArrayList.size(); j++) {
+				JCase c = caseArrayList.get(i).get(j);
+				if (c.getLocation().getX() <= point.getX() && c.getLocation().getX() + c.getWidth() >= point.getX()
+						&& c.getLocation().getY() <= point.getY() && c.getLocation().getY() + c.getHeight() >= point.getY()) {
+					return new Position(i, j);
+				}
+			}
+		}
+		return null;
 	}
 	
-	private double getVerticalCaseNumber(Point start, Point end) {
-		return Math.floor((Math.sqrt((start.getY() - end.getY()) * (start.getY() - end.getY())) / caseSize) + 0.5);
+	private int getHorizontalCaseNumber(Position start, Position end) {
+		return end.getX() - start.getX();
 	}
 	
-	private double getDistance(Point start, Point end) {
-		double powX = start.getX() - end.getX();
-		double powY = start.getY() - end.getY();
+	private double getVerticalCaseNumber(Position start, Position end) {
+		return end.getY() - start.getY();
+	}
+	
+	private double getDistance(Position start, Position end) {
+		int powX = start.getX() - end.getX();
+		int powY = start.getY() - end.getY();
 		double dist = Math.sqrt(powX * powX + powY * powY);
 		dist *= 100.0;
 		dist = Math.floor(dist+0.5);
 		dist /= 100.0;
 		return dist;
 	}
-
+	
 	@Override
 	public void mouseEntered(MouseEvent arg0) {}
 
@@ -118,5 +141,9 @@ public class FormulaMathMouseListener implements MouseInputListener {
 
 	public void setCaseSize(int caseSize) {
 		this.caseSize = caseSize;
+	}
+
+	public void setCaseArrayList(List<List<JCase>> caseArrayList) {
+		this.caseArrayList = caseArrayList;
 	}
 }

@@ -40,7 +40,7 @@ public class FormulaMathMouseListener implements MouseInputListener {
 				JCase c = caseArrayList.get(p.getY()).get(p.getX());
 				c.getGraphics().drawLine(0, 0, c.getWidth(), c.getHeight());
 				c.getGraphics().drawLine(0, c.getHeight(), c.getWidth(), 0);
-				descriptionLabel.setText("Vector (" + getHorizontalCaseNumber(startPosition, p) + ", " + getVerticalCaseNumber(startPosition, p) + ") - Distance : " + Double.toString(getDistance(startPosition, p)) + " case");
+				descriptionLabel.setText("Vector (" + Integer.toString(getHorizontalCaseNumber(startPosition, p)) + ", " + Integer.toString(getVerticalCaseNumber(startPosition, p)) + ") - Distance : " + Double.toString(getDistance(startPosition, p)) + " case");
 				startPosition = null;
 				scrollPanel.repaint();
 			}

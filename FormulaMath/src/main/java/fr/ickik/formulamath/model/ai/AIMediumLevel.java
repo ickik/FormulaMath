@@ -1,6 +1,5 @@
 package fr.ickik.formulamath.model.ai;
 
-import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,8 +17,6 @@ import fr.ickik.formulamath.model.CaseModel;
 import fr.ickik.formulamath.model.map.Field;
 import fr.ickik.formulamath.model.map.MapManager;
 import fr.ickik.formulamath.model.map.Orientation;
-import fr.ickik.formulamath.view.JCase;
-import fr.ickik.formulamath.view.MainFrame;
 
 /**
  * Class implements a medium level computer intelligence.
@@ -32,9 +29,10 @@ public final class AIMediumLevel extends AbstractAILevel {
 
 	private final MapManager mapManager;
 	private static final Logger log = LoggerFactory.getLogger(AIMediumLevel.class);
-	private boolean isLastPlay = false;
+	
 
 	public AIMediumLevel(MapManager mapManager) {
+		super(mapManager);
 		this.mapManager = mapManager;
 	}
 	
@@ -332,53 +330,6 @@ public final class AIMediumLevel extends AbstractAILevel {
 		return vectorListFiltered(position, list);
 	}
 	
-	private List<Vector> vectorListFiltered(Position position, List<Vector> list) {
-		int marge = MainFrame.MAP_MARGIN / 2;
-		int xTrayPanel = position.getX() + marge;
-		int yTrayPanel = position.getY() + marge;
-		log.trace("Player position :{}", position.toString());
-		log.trace("Player position on map : ( {}, {} )", xTrayPanel, yTrayPanel);
-		for (int i = 0; i < list.size();) {
-			Vector v = list.get(i);
-			if (v.getX() == 0 && v.getY() == 0) {
-				list.remove(i);
-				continue;
-			}
-			JCase c = mapManager.getCarteComponent().get(yTrayPanel).get(xTrayPanel);
-			int y = getCoordinateLimit(yTrayPanel - v.getY(), mapManager.getMapSize());
-			int x = getCoordinateLimit(xTrayPanel + v.getX(), mapManager.getMapSize());
-			log.debug("solution : {}", list.get(i).toString());
-			log.trace("Player final  position on map : ( {}, {} )", x, y);
-
-			final JCase c2 = mapManager.getCarteComponent().get(y).get(x);
-			Line2D line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
-			log.trace("Vector's line on map from ( {}, {} ) to ( {} , {} )", new Object[]{c.getX(), c.getY(), c2.getX(), c2.getY()});
-			if (isGrassIntersection(line)) {
-				log.trace("{} intersects grass", list.get(i).toString());
-				list.remove(i);
-			} else {
-				i++;
-			}
-		}
-		return list;
-	}
-	
-	private boolean isGrassIntersection(Line2D shape) {
-		log.debug("isGrassIntersection");
-		return mapManager.checkIntersection(shape, Field.GRASS);
-	}
-	
-	private int getCoordinateLimit(int coordinate, int mapSize) {
-		if (coordinate < MainFrame.MAP_MARGIN / 2) {
-			return MainFrame.MAP_MARGIN / 2;
-		} else if (coordinate >= mapSize + (MainFrame.MAP_MARGIN / 2)) {
-			return mapSize + (MainFrame.MAP_MARGIN / 2) - 1;
-		}
-		return coordinate;
-	}
-	
-	
-	
 	private boolean isMovingAvailable(int xMove, int yMove) {
 		CaseModel model = mapManager.getCase(yMove, xMove);
 		if (model != null && model.getField() == Field.GRASS) {
@@ -454,14 +405,7 @@ public final class AIMediumLevel extends AbstractAILevel {
 		return Math.min(nbLess, nbEqual);
 	}
 
-	public boolean isLastPlay() {
-		return isLastPlay;
-	}
 	
-	@Override
-	public void reinitIsLastPlay() {
-		this.isLastPlay = false;
-	}
 
 	@SuppressWarnings("incomplete-switch")
 	@Override
@@ -1003,136 +947,6 @@ public final class AIMediumLevel extends AbstractAILevel {
 		return vector;
 	}
 	
-	
-	
-	/*@Override
-	public Vector getFirstMove(Player player, Map<Integer, Integer> playerRoadPosition) {
-		int len = mapManager.getDetailledRoadDirectionInformationList().get(0).getLength();
-		if (len == 0) {
-			len = mapManager.getDetailledRoadDirectionInformationList().get(1).getLength();
-		}
-		log.trace("length of the road : {}, orientation:{}", len, mapManager.getDetailledRoadDirectionInformationList().get(0).toString());
-		Vector vector = null;
-
-		int val = getFirstMove(len);
-		log.trace("length of the first move found : {}", val);
-
-		if (val != 1) {
-			if (mapManager.getDetailledRoadDirectionInformationList().size() == 1) {
-				switch (mapManager.getDetailledRoadDirectionInformationList().get(0).getOrientation()) {
-				case NORTH:
-					vector = new Vector(0, mapManager.getMapSize());
-					break;
-				case WEST:
-					vector = new Vector(-mapManager.getMapSize(), 0);
-					break;
-				case SOUTH:
-					vector = new Vector(0, -mapManager.getMapSize());
-					break;
-				case EAST:
-					vector = new Vector(mapManager.getMapSize(), 0);
-					break;
-				}
-				playerRoadPosition.put(player.getId(), 0);
-			} else {
-				switch (mapManager.getDetailledRoadDirectionInformationList().get(0).getOrientation()) {
-				case NORTH:
-					vector = new Vector(0, val);
-					break;
-				case WEST:
-					vector = new Vector(-val, 0);
-					break;
-				case SOUTH:
-					vector = new Vector(0, -val);
-					break;
-				case EAST:
-					vector = new Vector(val, 0);
-					break;
-				}
-				playerRoadPosition.put(player.getId(), 0);
-				
-				Position startPosition = player.getPosition();
-				CaseModel model = mapManager.getCase(startPosition.getY() - vector.getY(), startPosition.getX() + vector.getX());
-				if (model.isOccuped()) {
-					//Il serait judicieux de prendre la décision suivant le prochain virage......
-					switch (mapManager.getDetailledRoadDirectionInformationList().get(0).getOrientation()) {
-					case NORTH:
-						if (mapManager.getCase(startPosition.getY() - vector.getY(), startPosition.getX() - vector.getX() - 1).getField() != Field.GRASS && !mapManager.getCase(startPosition.getY() - vector.getY(), startPosition.getX() - vector.getX() - 1).isOccuped()) {
-							vector = new Vector(-1, val);
-						}
-						if (mapManager.getCase(startPosition.getY() - vector.getY(), startPosition.getX() - vector.getX() + 1).getField() != Field.GRASS && !mapManager.getCase(startPosition.getY() - vector.getY(), startPosition.getX() - vector.getX() + 1).isOccuped()) {
-							vector = new Vector(1,  val);
-						}
-					case SOUTH:
-						if (mapManager.getCase(startPosition.getY() - vector.getY(), startPosition.getX() - vector.getX() - 1).getField() != Field.GRASS && !mapManager.getCase(startPosition.getY() - vector.getY(), startPosition.getX() - vector.getX() - 1).isOccuped()) {
-							vector = new Vector(-1, -val);
-						}
-						if (mapManager.getCase(startPosition.getY() - vector.getY(), startPosition.getX() - vector.getX() + 1).getField() != Field.GRASS && !mapManager.getCase(startPosition.getY() - vector.getY(), startPosition.getX() - vector.getX() + 1).isOccuped()) {
-							vector = new Vector(1, -val);
-						}
-						break;
-					case WEST:
-						if (mapManager.getCase(startPosition.getY() - vector.getY() - 1, startPosition.getX() - vector.getX()).getField() != Field.GRASS && !mapManager.getCase(startPosition.getY() - vector.getY() - 1, startPosition.getX() - vector.getX()).isOccuped()) {
-							vector = new Vector(-val, -1);
-						}
-						if (mapManager.getCase(startPosition.getY() - vector.getY() + 1, startPosition.getX() - vector.getX()).getField() != Field.GRASS && !mapManager.getCase(startPosition.getY() - vector.getY() + 1, startPosition.getX() - vector.getX()).isOccuped()) {
-							vector = new Vector(-val, 1);
-						}
-						break;
-					case EAST:
-						if (mapManager.getCase(startPosition.getY() - vector.getY() - 1, startPosition.getX() - vector.getX()).getField() != Field.GRASS && !mapManager.getCase(startPosition.getY() - vector.getY() - 1, startPosition.getX() - vector.getX()).isOccuped()) {
-							vector = new Vector(val, -1);
-						}
-						if (mapManager.getCase(startPosition.getY() - vector.getY() + 1, startPosition.getX() - vector.getX()).getField() != Field.GRASS && !mapManager.getCase(startPosition.getY() - vector.getY() + 1, startPosition.getX() - vector.getX()).isOccuped()) {
-							vector = new Vector(val, 1);
-						}
-						break;
-					}
-					
-				}
-			}
-		} else {
-			
-			RoadDirectionInformation r = mapManager.getDetailledRoadDirectionInformationList().get(0);
-			RoadDirectionInformation nextRoadDirection = mapManager.getDetailledRoadDirectionInformationList().get(1);
-			int curveLen = nextRoadDirection.getLength();
-			switch (r.getOrientation()) {
-			case NORTH:
-				if (nextRoadDirection.getOrientation() == Orientation.EAST) {
-					
-					vector = new Vector(1, 1);
-				} else {
-					vector = new Vector(-1, 1);
-				}
-				break;
-			case SOUTH:
-				if (nextRoadDirection.getOrientation() == Orientation.EAST) {
-					vector = new Vector(1, -1);
-				} else {
-					vector = new Vector(-1, -1);
-				}
-				break;
-			case WEST:
-				if (nextRoadDirection.getOrientation() == Orientation.NORTH) {
-					vector = new Vector(-1, 1);
-				} else {
-					vector = new Vector(-1, -1);
-				}
-				break;
-			case EAST:
-				if (nextRoadDirection.getOrientation() == Orientation.NORTH) {
-					vector = new Vector(1, 1);
-				} else {
-					vector = new Vector(1, -1);
-				}
-				break;
-			}
-			playerRoadPosition.put(player.getId(), 1);
-			
-		}
-		return vector;
-	}*/
-	
 	private int getHighDistance(int distance) {
 		int sum = 0;
 		int value = 1;
@@ -1141,16 +955,6 @@ public final class AIMediumLevel extends AbstractAILevel {
 			value++;
 		}
 		return value - 1;
-	}
-
-	@Override
-	public Position getStartingPosition() {
-		List<Position> list = mapManager.getStartingPositionList();
-		if (mapManager.getRoadDirectionInformationList().size() == 1) {
-			return list.remove(0);
-		}
-		int index = Math.round(list.size() / 2);
-		return list.remove(index);
 	}
 
 }

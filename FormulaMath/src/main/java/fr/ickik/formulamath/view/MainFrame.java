@@ -92,7 +92,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		gameMenuPanel = new JPanel();
 		playButton = new JButton("Play");
 		playButton.setFont(new Font(Font.DIALOG, Font.BOLD, 16));
-		listener = new FormulaMathMouseListener(caseSize);
+		listener = new FormulaMathMouseListener();
 		informationLabel = new InformationPanel();
 		informationLabel.setInformationModel(informationModel);
 		informationModel.addInformationMessageListener(informationLabel);
@@ -126,7 +126,6 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		int marge = MAP_MARGIN / 2;
 		if (carte.size() < MapDimension.MEDIUM.getValue()) {
 			caseSize*=2;
-			listener.setCaseSize(caseSize);
 		}
 		for (int i = 0; i < sideSize; i++) {
 			x = 0;
@@ -145,6 +144,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			}
 		}
 		controller.putMap(caseArrayList);
+		listener.setCaseArrayList(caseArrayList);
 		log.debug("Duration of map initialization : {}ms", (System.currentTimeMillis() - begin));
 	}
 
@@ -259,7 +259,6 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			public void actionPerformed(ActionEvent arg0) {
 				if (caseSize < MAX_ZOOM_SIZE) {
 					caseSize++;
-					listener.setCaseSize(caseSize);
 					log.trace("Zoom : {}", caseSize);
 					repaintTrayPanel();
 				}
@@ -271,7 +270,6 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			public void actionPerformed(ActionEvent e) {
 				if (caseSize * caseArrayList.size() > scrollPane.getWidth()) {
 					caseSize--;
-					listener.setCaseSize(caseSize);
 					log.trace("Dezoom : {}", caseSize);
 					repaintTrayPanel();
 				}

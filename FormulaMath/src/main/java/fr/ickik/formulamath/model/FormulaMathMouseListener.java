@@ -19,34 +19,30 @@ import fr.ickik.formulamath.view.JCase;
  */
 public class FormulaMathMouseListener implements MouseInputListener {
 
-	private Point startPoint;
 	private Position startPosition;
 	private JScrollPane scrollPanel;
 	private JLabel descriptionLabel;
-	private int caseSize;
 	private List<List<JCase>> caseArrayList;
 	
-	public FormulaMathMouseListener(int caseSize) {
-		this.setCaseSize(caseSize);
+	public FormulaMathMouseListener() {
 	}
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		if (arg0.getButton() == MouseEvent.BUTTON1) {
 			Position p = getJCasePosition(arg0.getPoint());
-			if (startPoint == null) {
+			if (startPosition == null) {
 				startPosition = p;
-				startPoint = arg0.getPoint();
-				caseArrayList.get(p.getY()).get(p.getX()).getGraphics().drawLine(arg0.getX() - 10, arg0.getY() - 10, arg0.getX() + 10, arg0.getY() + 10);
-				caseArrayList.get(p.getY()).get(p.getX()).getGraphics().drawLine(arg0.getX() - 10, arg0.getY() + 10, arg0.getX() + 10, arg0.getY() - 10);
+				JCase c = caseArrayList.get(p.getY()).get(p.getX());
+				c.getGraphics().drawLine(0, 0, c.getWidth(), c.getHeight());
+				c.getGraphics().drawLine(0, c.getHeight(), c.getWidth(), 0);
 			} else {
-				caseArrayList.get(p.getY()).get(p.getX()).getGraphics().drawLine(arg0.getX() - 10, arg0.getY() - 10, arg0.getX() + 10, arg0.getY() + 10);
-				caseArrayList.get(p.getY()).get(p.getX()).getGraphics().drawLine(arg0.getX() - 10, arg0.getY() + 10, arg0.getX() + 10, arg0.getY() - 10);
-			
-				descriptionLabel.setText("Vector (" + getHorizontalCaseNumber(startPosition, p) + ", " + getVerticalCaseNumber(startPosition, p) + ") - Distance : " + Double.toString(getDistance(startPosition, p)) + " px");
-				startPoint = null;
+				JCase c = caseArrayList.get(p.getY()).get(p.getX());
+				c.getGraphics().drawLine(0, 0, c.getWidth(), c.getHeight());
+				c.getGraphics().drawLine(0, c.getHeight(), c.getWidth(), 0);
+				descriptionLabel.setText("Vector (" + getHorizontalCaseNumber(startPosition, p) + ", " + getVerticalCaseNumber(startPosition, p) + ") - Distance : " + Double.toString(getDistance(startPosition, p)) + " case");
 				startPosition = null;
-			//	scrollPanel.repaint();
+				scrollPanel.repaint();
 			}
 		}
 	}
@@ -57,7 +53,7 @@ public class FormulaMathMouseListener implements MouseInputListener {
 				JCase c = caseArrayList.get(i).get(j);
 				if (c.getLocation().getX() <= point.getX() && c.getLocation().getX() + c.getWidth() >= point.getX()
 						&& c.getLocation().getY() <= point.getY() && c.getLocation().getY() + c.getHeight() >= point.getY()) {
-					return new Position(i, j);
+					return new Position(j, i);
 				}
 			}
 		}
@@ -68,8 +64,8 @@ public class FormulaMathMouseListener implements MouseInputListener {
 		return end.getX() - start.getX();
 	}
 	
-	private double getVerticalCaseNumber(Position start, Position end) {
-		return end.getY() - start.getY();
+	private int getVerticalCaseNumber(Position start, Position end) {
+		return start.getY() - end.getY();
 	}
 	
 	private double getDistance(Position start, Position end) {
@@ -137,10 +133,6 @@ public class FormulaMathMouseListener implements MouseInputListener {
 	
 	public void setScrollPane(JScrollPane scrollPane) {
 		this.scrollPanel = scrollPane;
-	}
-
-	public void setCaseSize(int caseSize) {
-		this.caseSize = caseSize;
 	}
 
 	public void setCaseArrayList(List<List<JCase>> caseArrayList) {

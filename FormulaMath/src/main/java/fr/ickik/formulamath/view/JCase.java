@@ -62,6 +62,7 @@ public final class JCase extends JComponent {
 			g2.setColor(color);
 			g2.fill(shape);
 			paintVibrator(g2);
+			paintImage(g2);
 			if (model != null && model.isPaintBorder()) {
 				g2.setColor(Color.BLACK);
 				g2.draw(shape);
@@ -99,6 +100,25 @@ public final class JCase extends JComponent {
 		}
 		return Color.WHITE;
 	}
+	
+	private void paintImage(Graphics2D g2) {
+		//ImageIO.read(new File(""));
+		/*if (model.getField() != null) {
+			BufferedImage image = ImageFactory.getImageInstance(model.getField());
+			if (image != null) {
+				g2.drawImage(image, null, null);
+			}
+		}*/
+	}
+	
+	/*private BufferedImage resizeBufferedImage(BufferedImage image, double scaleValue) {
+		AffineTransform tx = new AffineTransform();
+		tx.scale(scaleValue, scaleValue);
+		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+		BufferedImage biNew = new BufferedImage( (int) (image.getWidth() * scaleValue),
+				(int) (image.getHeight() * scaleValue), image.getType());
+		return op.filter(image, biNew);
+	}*/
 	
 	private void paintVibrator(Graphics2D g2) {
 		if (model == null || model.getBorderCaseSide() == null) {

@@ -14,7 +14,7 @@ import fr.ickik.formulamath.view.JCase;
 /**
  * Implementation of the MouseListener.
  * @author Ickik
- * @version 0.1.003, 29 August 2012
+ * @version 0.1.004, 30 August 2012
  * @since 0.3.6
  */
 public class FormulaMathMouseListener implements MouseInputListener {
@@ -48,11 +48,16 @@ public class FormulaMathMouseListener implements MouseInputListener {
 	}
 	
 	private Position getJCasePosition(Point point) {
+		int w = scrollPanel.getHorizontalScrollBar().getModel().getValue();
+		int h = scrollPanel.getVerticalScrollBar().getModel().getValue();
 		for (int i = 0; i < caseArrayList.size(); i++) {
 			for (int j = 0; j < caseArrayList.size(); j++) {
 				JCase c = caseArrayList.get(i).get(j);
-				if (c.getLocation().getX() <= point.getX() && c.getLocation().getX() + c.getWidth() >= point.getX()
-						&& c.getLocation().getY() <= point.getY() && c.getLocation().getY() + c.getHeight() >= point.getY()) {
+				/*if (c.contains(point)) {
+					return new Position(j, i);
+				}*/
+				if (c.getLocation().getX() <= point.getX() + w && c.getLocation().getX() + c.getWidth() >= point.getX() + w
+						&& c.getLocation().getY() <= point.getY() + h && c.getLocation().getY() + c.getHeight() >= point.getY() + h) {
 					return new Position(j, i);
 				}
 			}

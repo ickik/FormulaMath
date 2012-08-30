@@ -52,13 +52,15 @@ import fr.ickik.formulamath.entity.Position;
 import fr.ickik.formulamath.entity.Vector;
 import fr.ickik.formulamath.model.CaseModel;
 import fr.ickik.formulamath.model.FormulaMathMouseListener;
+import fr.ickik.formulamath.model.FormulaMathProperty;
 import fr.ickik.formulamath.model.InformationModel;
+import fr.ickik.formulamath.model.PropertiesModel;
 import fr.ickik.formulamath.model.map.MapDimension;
 
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.2.015, 29 August 2012.
+ * @version 0.2.016, 30 August 2012.
  */
 public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
@@ -222,20 +224,15 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		JLabel descriptionLabel = new JLabel(" ");
 		listener.setDescriptionLabel(descriptionLabel);
 		descriptionLabel.setBorder(BorderFactory.createTitledBorder("Map information"));
-		final JCheckBox gridVisible = new JCheckBox("Grid visible", true);
+		boolean isGridVisible = Boolean.parseBoolean(PropertiesModel.getSingleton().getProperty(FormulaMathProperty.GRID_DISPLAYED));
+		final JCheckBox gridVisible = new JCheckBox("Grid visible", isGridVisible);
+		displayGrid(isGridVisible);
 		gridVisible.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				boolean isSelected = gridVisible.isSelected();
-				for(List<JCase> list : caseArrayList) {
-					for (JCase cas : list) {
-						if (cas.getModel() != null) {
-							cas.getModel().setPaintBorder(isSelected);
-						}
-					}
-				}
-				scrollPane.repaint();
+				PropertiesModel.getSingleton().put(FormulaMathProperty.GRID_DISPLAYED, Boolean.toString(gridVisible.isSelected()));
+				displayGrid(gridVisible.isSelected());
 			}
 		});
 		JPanel info = new JPanel(new GridLayout(2, 1));
@@ -249,6 +246,17 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		panel.add(getZoomPanel());
 		menuPanel.add(panel, BorderLayout.CENTER);
 		return menuPanel;
+	}
+	
+	private void displayGrid(boolean isGridVisible) {
+		for(List<JCase> list : caseArrayList) {
+			for (JCase cas : list) {
+				if (cas.getModel() != null) {
+					cas.getModel().setPaintBorder(isGridVisible);
+				}
+			}
+		}
+		scrollPane.repaint();
 	}
 	
 	private JPanel getZoomPanel() {

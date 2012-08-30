@@ -6,7 +6,7 @@ import fr.ickik.formulamath.view.AbstractFormulaMathFrame;
  * This enum lists all properties of the property file. It is used to store
  * player's data.
  * @author Ickik.
- * @version 0.1.007, 12 June 2012.
+ * @version 0.1.008, 30 August 2012.
  */
 public enum FormulaMathProperty {
 
@@ -53,6 +53,18 @@ public enum FormulaMathProperty {
 		@Override
 		public String getDefaultValue() {
 			return "1";
+		}
+	},
+	
+	GRID_DISPLAYED {
+		@Override
+		public String toString() {
+			return "grid.displayed";
+		}
+
+		@Override
+		public String getDefaultValue() {
+			return "true";
 		}
 	},
 	

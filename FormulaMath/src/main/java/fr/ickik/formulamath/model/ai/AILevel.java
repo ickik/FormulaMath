@@ -36,7 +36,9 @@ public interface AILevel {
 	 * @param player
 	 * @param playerRoadPosition the Map of player <-> index which defines the position in the ideal way.
 	 * The ideal way is defined in the Road in MapManager.
-	 * @return
+	 * @return the optimal vector.
+	 * @throws FormulaMathException is throw when a parameter of this method is null or if a treatment error
+	 * appears.
 	 */
 	Vector getNextPlay(Player player,  Map<Integer, Integer> playerRoadPosition) throws FormulaMathException;
 	

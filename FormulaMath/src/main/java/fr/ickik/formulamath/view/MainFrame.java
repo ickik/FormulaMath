@@ -60,7 +60,7 @@ import fr.ickik.formulamath.model.map.MapDimension;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.2.016, 30 August 2012.
+ * @version 0.2.017, 31 August 2012.
  */
 public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
@@ -496,7 +496,18 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			}
 		});
 		
-		JMenuItem restartMap = new JMenuItem("Restart Map");
+		JMenuItem restartingFormulaMath = new JMenuItem("Restarting Game");
+		restartingFormulaMath.setToolTipText("Restart FormulaMath to define a new game");
+		restartingFormulaMath.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				controller.modelFullReinitialization();
+			}
+		});
+		
+		JMenuItem restartMap = new JMenuItem("Restarting Map");
+		restartMap.setToolTipText("Restart the same configuration on this map");
 		restartMap.addActionListener(new ActionListener() {
 			
 			@Override
@@ -522,6 +533,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		file.add(openMap);
 		file.addSeparator();
 		file.add(restartMap);
+		file.add(restartingFormulaMath);
 		file.addSeparator();
 		file.add(quit);
 		return file;

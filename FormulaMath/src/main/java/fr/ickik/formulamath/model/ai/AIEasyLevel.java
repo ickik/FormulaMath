@@ -6,10 +6,12 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.ickik.formulamath.FormulaMathException;
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Position;
 import fr.ickik.formulamath.entity.RoadDirectionInformation;
 import fr.ickik.formulamath.entity.Vector;
+import fr.ickik.formulamath.model.CaseModel;
 import fr.ickik.formulamath.model.map.MapManager;
 import fr.ickik.formulamath.model.map.Orientation;
 
@@ -18,7 +20,7 @@ import fr.ickik.formulamath.model.map.Orientation;
  * A simple Vector is a vector with a length of 1 case in all direction. It is no dynamic intelligence
  * to move.
  * @author Ickik
- * @version 0.1.000, 18 July 2012
+ * @version 0.1.001, 31 August 2012
  * @since 0.3.9
  */
 public final class AIEasyLevel implements AILevel {
@@ -32,8 +34,14 @@ public final class AIEasyLevel implements AILevel {
 	}
 	
 	@Override
-	public Vector getNextPlay(Player player,  Map<Integer, Integer> playerRoadPosition) {
-		int roadPosition = playerRoadPosition.get(player.getId());
+	public Vector getNextPlay(Player player,  Map<Integer, Integer> playerRoadPosition) throws FormulaMathException {
+		if (player == null) {
+			throw new FormulaMathException("The player parameter should not be null");
+		}
+		int roadPosition = 0;
+		if (playerRoadPosition.get(player.getId()) != null) {
+			roadPosition = playerRoadPosition.get(player.getId());
+		}
 		RoadDirectionInformation r = mapManager.getRoadDirectionInformationList().get(roadPosition);
 		int len = r.getLengthToEnd(player.getPosition()) - 1;
 		Vector vector = null;
@@ -86,12 +94,15 @@ public final class AIEasyLevel implements AILevel {
 				vector = new Vector(-1, 0);
 				break;
 			}
-			if (len < Math.sqrt(vector.getX() * vector.getX() + vector.getY() * vector.getY())) {
+			if (vector != null && len < Math.sqrt(vector.getX() * vector.getX() + vector.getY() * vector.getY())) {
 				isLastPlay = true;
 			}
 		}
-		if (mapManager.getCase(player.getPosition().getY() + vector.getY(), player.getPosition().getX()  + vector.getX()).isOccuped()) {
-			vector = new Vector(0, 0);
+		if (player != null && player.getPosition() != null && vector != null) {
+			CaseModel c = mapManager.getCase(player.getPosition().getY() + vector.getY(), player.getPosition().getX()  + vector.getX());
+			if (c != null && c.isOccuped()) {
+				vector = new Vector(0, 0);
+			}
 		}
 		return vector;
 	}

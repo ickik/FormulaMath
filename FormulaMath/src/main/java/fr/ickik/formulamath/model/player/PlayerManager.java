@@ -9,6 +9,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.ickik.formulamath.FormulaMathException;
 import fr.ickik.formulamath.controler.UpdateCaseListener;
 import fr.ickik.formulamath.entity.InformationMessage;
 import fr.ickik.formulamath.entity.MessageType;
@@ -24,7 +25,7 @@ import fr.ickik.formulamath.model.map.MapManager;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.3.001, 19 July 2012.
+ * @version 0.3.002, 31 August 2012.
  */
 public final class PlayerManager {
 
@@ -254,7 +255,12 @@ public final class PlayerManager {
 			Player p = getCurrentPlayer();
 			log.debug("AI Player {} is under playing", p.toString());
 			
-			Vector vector = computerLevel.getNextPlay(p, playerRoadPosition);
+			Vector vector = null;
+			try {
+				vector = computerLevel.getNextPlay(p, playerRoadPosition);
+			} catch (FormulaMathException e) {
+				e.printStackTrace();
+			}
 			if (vector == null) {
 				p.incrementPlayingCounter();
 				addFinishPlayer(p, false);

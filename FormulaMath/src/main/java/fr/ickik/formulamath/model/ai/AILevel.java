@@ -3,6 +3,7 @@ package fr.ickik.formulamath.model.ai;
 
 import java.util.Map;
 
+import fr.ickik.formulamath.FormulaMathException;
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Position;
 import fr.ickik.formulamath.entity.Vector;
@@ -10,7 +11,7 @@ import fr.ickik.formulamath.entity.Vector;
 /**
  * Interface that defines the generic behavior of computer player.
  * @author Ickik.
- * @version 0.1.000, 31 mai 2012
+ * @version 0.1.001, 31 August 2012
  * @since 0.3.1
  */
 public interface AILevel {
@@ -37,7 +38,7 @@ public interface AILevel {
 	 * The ideal way is defined in the Road in MapManager.
 	 * @return
 	 */
-	Vector getNextPlay(Player player,  Map<Integer, Integer> playerRoadPosition);
+	Vector getNextPlay(Player player,  Map<Integer, Integer> playerRoadPosition) throws FormulaMathException;
 	
 	/**
 	 * Return true if the getNextPlay is the last move that pass the finish line.

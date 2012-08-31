@@ -94,7 +94,7 @@ abstract class AbstractAILevel implements AILevel {
 	@Override
 	public Position getStartingPosition() {
 		List<Position> list = mapManager.getStartingPositionList();
-		if (mapManager.getRoadDirectionInformationList().size() == 1) {
+		if (mapManager.getStartingPositionList().size() == 1) {
 			return list.remove(0);
 		}
 		int index = list.size() / 2;
@@ -117,7 +117,7 @@ abstract class AbstractAILevel implements AILevel {
 	
 	int getFirstMove(int distance) {
 		log.debug("getFirstMove : distance = {}", Integer.toString(distance));
-		Map<Integer,Integer> distanceMap = new HashMap<Integer,Integer>();
+		HashMap<Integer,Integer> distanceMap = new HashMap<Integer,Integer>();
 		if (distance == 1) {
 			return 1;
 		}
@@ -141,9 +141,11 @@ abstract class AbstractAILevel implements AILevel {
 		if (distance < 0 || vitesse <= 0) {
 			return Integer.MAX_VALUE;
 		}
-		int nbLess = getNbStep(distance - vitesse, vitesse - 1, step +1);
-		int nbEqual = getNbStep(distance - vitesse, vitesse, step + 1);
-		return Math.min(nbLess, nbEqual);
+		int d = distance - vitesse;
+		int newStep = step + 1;
+		int nbLess = getNbStep(d, vitesse - 1, newStep);
+		int nbEqual = getNbStep(d, vitesse, newStep);
+		return nbLess <= nbEqual ? nbLess : nbEqual;
 	}
 	
 	/**
@@ -161,10 +163,13 @@ abstract class AbstractAILevel implements AILevel {
 		if (distance < 0 || vitesse <= 0) {
 			return Integer.MAX_VALUE;
 		}
-		int nbLess = getNbStep(distance - vitesse, vitesse - 1, step + 1);
-		int nbEqual = getNbStep(distance - vitesse, vitesse, step + 1);
-		int nbMore = getNbStep(distance - vitesse, vitesse + 1, step + 1);
-		return Math.min(nbMore, Math.min(nbLess, nbEqual));
+		int d = distance - vitesse;
+		int newStep = step + 1;
+		int nbLess = getNbStep(d, vitesse - 1, newStep);
+		int nbEqual = getNbStep(d, vitesse, newStep);
+		int nbMore = getNbStep(d, vitesse + 1, newStep);
+		int prev = nbLess <= nbEqual ? nbLess : nbEqual;
+		return nbMore <= prev ? nbMore : prev;
 	}
 
 	@SuppressWarnings("incomplete-switch")
@@ -908,27 +913,33 @@ abstract class AbstractAILevel implements AILevel {
 		log.trace("Player {} , init vector {}", player.toString(), player.getVector().toString());
 		if (isMovingAvailable(player.getPosition().getX() + player.getVector().getX(), player.getPosition().getY() - player.getVector().getY(), player)) {
 			list.add(player.getVector());
+			log.trace(player.getVector().toString());
 		}
 		
 		if (isMovingAvailable(player.getPosition().getX() + player.getVector().getX() - 1, player.getPosition().getY() - player.getVector().getY(), player)) {
-			list.add(new Vector(player.getVector().getX() - 1, player.getVector().getY()));
+			Vector v1 = new Vector(player.getVector().getX() - 1, player.getVector().getY());
+			list.add(v1);
+			log.trace(v1.toString());
 		}
 		
 		if (isMovingAvailable(player.getPosition().getX() + player.getVector().getX() + 1, player.getPosition().getY() - player.getVector().getY(), player)) {
-			list.add(new Vector(player.getVector().getX() + 1, player.getVector().getY()));
+			Vector v2 = new Vector(player.getVector().getX() + 1, player.getVector().getY());
+			list.add(v2);
+			log.trace(v2.toString());
 		}
 		
 		if (isMovingAvailable(player.getPosition().getX() + player.getVector().getX(), player.getPosition().getY() - player.getVector().getY() + 1, player)) {
-			list.add(new Vector(player.getVector().getX(), player.getVector().getY() - 1));
+			Vector v3 = new Vector(player.getVector().getX(), player.getVector().getY() - 1);
+			list.add(v3);
+			log.trace(v3.toString());
 		}
 		
 		if (isMovingAvailable(player.getPosition().getX() + player.getVector().getX(), player.getPosition().getY() - player.getVector().getY() - 1, player)) {
-			list.add(new Vector(player.getVector().getX(), player.getVector().getY() + 1));
+			Vector v4 = new Vector(player.getVector().getX(), player.getVector().getY() + 1);
+			list.add(v4);
+			log.trace(v4.toString());
 		}
 		log.debug("number of vectors possible : {}", list.size());
-		for(Vector v : list) {
-			log.trace(v.toString());
-		}
 		log.trace("getVectorsPossibilities filtering exiting");
 		return vectorListFiltered(player.getPosition(), list);
 	}
@@ -941,7 +952,7 @@ abstract class AbstractAILevel implements AILevel {
 	 */
 	int getNextPlay(int distance, int vitesse) {
 		log.trace("getNextPlay({}, {})", distance, vitesse);
-		int v = Math.abs(vitesse);
+		int v = vitesse < 0 ? -vitesse : vitesse;
 		if (distance == 0) {
 			if (v == 2) {
 				return -1;

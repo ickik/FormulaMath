@@ -30,7 +30,7 @@ import fr.ickik.formulamath.model.map.Field;
 /**
  * This class create a JPanel which is displayed to give a the first move on map for a human player.
  * @author Ickik
- * @version 0.1.002, 17 July 2012
+ * @version 0.1.003, 31 August 2012
  * @since 0.3
  */
 public final class FirstMovePanel {
@@ -149,7 +149,7 @@ public final class FirstMovePanel {
 	}
 	
 	private int getValue(JTextField xTextField) {
-		if ("".equals(xTextField)) {
+		if ("".equals(xTextField.getText())) {
 			return 0;
 		}
 		return Integer.parseInt(xTextField.getText());

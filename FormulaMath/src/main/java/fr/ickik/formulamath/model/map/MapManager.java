@@ -13,8 +13,6 @@ import org.slf4j.LoggerFactory;
 import fr.ickik.formulamath.entity.DetailledRoadDirectionInformation;
 import fr.ickik.formulamath.entity.DetailledRoadDirectionList;
 import fr.ickik.formulamath.entity.Position;
-import fr.ickik.formulamath.entity.RoadDirectionInformation;
-import fr.ickik.formulamath.entity.RoadDirectionList;
 import fr.ickik.formulamath.model.CaseModel;
 import fr.ickik.formulamath.model.JCaseSide;
 import fr.ickik.formulamath.view.JCase;
@@ -27,7 +25,7 @@ import fr.ickik.formulamath.view.JCase;
  * <b>Warning : </b>Correction of random generator, it starts at 0 but creation is not available and
  * finish the construction. A part of generated maps contains not completed road.
  * @author Ickik.
- * @version 0.1.018, 14 August 2012.
+ * @version 0.1.019, 3rd September 2012.
  */
 public final class MapManager {
 
@@ -40,7 +38,7 @@ public final class MapManager {
 	private final List<Position> startingPositionList = new ArrayList<Position>(ROAD_SIZE);
 	private final List<Position> startingPositionListSave = new ArrayList<Position>(ROAD_SIZE);
 	private final List<Position> finishingLinePositionList = new ArrayList<Position>(2);
-	private final RoadDirectionList roadList = new RoadDirectionList();
+	//private final RoadDirectionList roadList = new RoadDirectionList();
 	private final DetailledRoadDirectionList detailledRoadList = new DetailledRoadDirectionList();
 
 	/**
@@ -142,7 +140,7 @@ public final class MapManager {
 		log.debug("FullReinitialization of map");
 		startingPositionList.clear();
 		finishingLinePositionList.clear();
-		roadList.clear();
+		detailledRoadList.clear();
 		log.debug("End of Map Reinitialization");
 	}
 
@@ -191,7 +189,6 @@ public final class MapManager {
 		Orientation coteDepart = traceStartingLine(positionDepart, positionDepart2);
 		initStartPosition(positionDepart, positionDepart2);
 		Position position = new Position((positionDepart.getX() + positionDepart2.getX()) / 2, (positionDepart.getY() + positionDepart2.getY()) / 2);
-		roadList.add(new RoadDirectionInformation(coteDepart, position, position.clone()));
 		detailledRoadList.add(new DetailledRoadDirectionInformation(coteDepart, coteDepart, position, position.clone()));
 
 		Queue<Direction> previousDirection = new ArrayDeque<Direction>(2);
@@ -233,7 +230,6 @@ public final class MapManager {
 						getCase(positionDepart.getY(), positionDepart.getX() + 1).setBorderCaseSide(JCaseSide.BOTTOM_LEFT_CORNER_REFLEX);
 
 						Position centerEnd = new Position((positionDepart.getX() + positionDepart2.getX() + 1) / 2, (positionDepart.getY() + positionDepart2.getY()) / 2);
-						roadList.add(new RoadDirectionInformation(Orientation.WEST, centerDepart, centerEnd));
 						detailledRoadList.add(new DetailledRoadDirectionInformation(Orientation.NORTH, Orientation.WEST, centerDepart.clone(), centerEnd.clone()));
 						log.debug("{} => {} exiting", coteDepart.name(),direction.name());
 						coteDepart = Orientation.WEST;
@@ -264,7 +260,6 @@ public final class MapManager {
 						traceRoadLine(positionDepart, positionDepart2);
 					}
 					Position centerEnd = new Position((positionDepart.getX() + positionDepart2.getX()) / 2, (positionDepart.getY() + positionDepart2.getY()) / 2);
-					roadList.add(new RoadDirectionInformation(Orientation.NORTH, centerDepart, centerEnd));
 					detailledRoadList.add(new DetailledRoadDirectionInformation(Orientation.NORTH, Orientation.NORTH, centerDepart.clone(), centerEnd.clone()));
 					log.debug("{} => {} exiting", coteDepart.name(), direction.name());
 					break;
@@ -295,7 +290,6 @@ public final class MapManager {
 
 						log.debug(coteDepart.name() + " => " + direction.name() + " exiting");
 						centerEnd = new Position((positionDepart.getX() + positionDepart2.getX() - 1) / 2, (positionDepart.getY() + positionDepart2.getY()) / 2);
-						roadList.add(new RoadDirectionInformation(Orientation.EAST, centerDepart, centerEnd));
 						detailledRoadList.add(new DetailledRoadDirectionInformation(Orientation.NORTH, Orientation.EAST, centerDepart.clone(), centerEnd.clone()));
 						coteDepart = Orientation.EAST;
 					}
@@ -330,7 +324,6 @@ public final class MapManager {
 						getCase(positionDepart.getY() - 1, positionDepart.getX()).setBorderCaseSide(JCaseSide.BOTTOM_RIGHT_CORNER_REFLEX);
 
 						Position centerEnd = new Position((positionDepart.getX() + positionDepart2.getX()) / 2, (positionDepart.getY() + positionDepart2.getY() - 1) / 2);
-						roadList.add(new RoadDirectionInformation(Orientation.SOUTH, centerDepart, centerEnd));
 						detailledRoadList.add(new DetailledRoadDirectionInformation(Orientation.WEST, Orientation.SOUTH, centerDepart.clone(), centerEnd.clone()));
 						log.debug(coteDepart.name() + " => " + direction.name() + " exiting");
 						coteDepart = Orientation.SOUTH;
@@ -363,7 +356,6 @@ public final class MapManager {
 						traceRoadLine(positionDepart, positionDepart2);
 					}
 					Position centerEnd = new Position((positionDepart.getX() + positionDepart2.getX()) / 2, (positionDepart.getY() + positionDepart2.getY()) / 2);
-					roadList.add(new RoadDirectionInformation(Orientation.WEST, centerDepart, centerEnd));
 					detailledRoadList.add(new DetailledRoadDirectionInformation(Orientation.WEST, Orientation.WEST, centerDepart.clone(), centerEnd.clone()));
 					log.debug(coteDepart.name() + " => " + direction.name() + " ended");
 					break;
@@ -396,7 +388,6 @@ public final class MapManager {
 						getCase(positionDepart2.getY() + 1, positionDepart2.getX()).setBorderCaseSide(JCaseSide.TOP_RIGHT_CORNER_REFLEX);
 
 						centerEnd = new Position((positionDepart.getX() + positionDepart2.getX()) / 2, (positionDepart.getY() + positionDepart2.getY() + 1) / 2);
-						roadList.add(new RoadDirectionInformation(Orientation.NORTH, centerDepart, centerEnd));
 						detailledRoadList.add(new DetailledRoadDirectionInformation(Orientation.WEST,Orientation.NORTH, centerDepart.clone(), centerEnd.clone()));
 						coteDepart = Orientation.NORTH;
 					}
@@ -430,7 +421,6 @@ public final class MapManager {
 						getCase(positionDepart.getY() + ROAD_SIZE, positionDepart.getX()).setBorderCaseSide(JCaseSide.BOTTOM_RIGHT_CORNER_REFLEX);
 
 						Position centerEnd = new Position((positionDepart.getX() + positionDepart2.getX() - 1) / 2, (positionDepart.getY() + positionDepart2.getY()) / 2);
-						roadList.add(new RoadDirectionInformation(Orientation.EAST, centerDepart, centerEnd));
 						detailledRoadList.add(new DetailledRoadDirectionInformation(Orientation.SOUTH,Orientation.EAST, centerDepart.clone(), centerEnd.clone()));
 						log.debug(coteDepart.name() + " => " + direction.name() + " exiting");
 						coteDepart = Orientation.EAST;
@@ -460,7 +450,6 @@ public final class MapManager {
 						traceRoadLine(positionDepart, positionDepart2);
 					}
 					Position centerEnd = new Position((positionDepart.getX() + positionDepart2.getX()) / 2, (positionDepart.getY() + positionDepart2.getY()) / 2);
-					roadList.add(new RoadDirectionInformation(Orientation.SOUTH, centerDepart, centerEnd));
 					detailledRoadList.add(new DetailledRoadDirectionInformation(Orientation.SOUTH, Orientation.SOUTH, centerDepart.clone(), centerEnd.clone()));
 					log.debug(coteDepart.name() + " => " + direction.name() + " exiting");
 					break;
@@ -490,7 +479,6 @@ public final class MapManager {
 						getCase(positionDepart2.getY(), positionDepart2.getX() + 1).setBorderCaseSide(JCaseSide.TOP_LEFT_CORNER_REFLEX);
 
 						centerEnd = new Position((positionDepart.getX() + positionDepart2.getX() + 1) / 2, (positionDepart.getY() + positionDepart2.getY()) / 2);
-						roadList.add(new RoadDirectionInformation(Orientation.WEST, centerDepart, centerEnd));
 						detailledRoadList.add(new DetailledRoadDirectionInformation(Orientation.SOUTH, Orientation.WEST, centerDepart.clone(), centerEnd.clone()));
 						log.debug(coteDepart.name() + " => " + direction.name() + " exiting");
 						coteDepart = Orientation.WEST;
@@ -529,7 +517,6 @@ public final class MapManager {
 						
 						
 						Position centerEnd = new Position((positionDepart.getX() + positionDepart2.getX()) / 2, (positionDepart.getY() + positionDepart2.getY() + 1) / 2);
-						roadList.add(new RoadDirectionInformation(Orientation.NORTH, centerDepart, centerEnd));
 						detailledRoadList.add(new DetailledRoadDirectionInformation(Orientation.EAST, Orientation.NORTH, centerDepart.clone(), centerEnd.clone()));
 						log.debug("{} => {} exiting", coteDepart.name(), direction.name());
 						coteDepart = Orientation.NORTH;
@@ -564,7 +551,6 @@ public final class MapManager {
 						traceRoadLine(positionDepart, positionDepart2);
 					}
 					Position centerEnd = new Position((positionDepart.getX() + positionDepart2.getX()) / 2, (positionDepart.getY() + positionDepart2.getY()) / 2);
-					roadList.add(new RoadDirectionInformation(Orientation.EAST, centerDepart, centerEnd));
 					detailledRoadList.add(new DetailledRoadDirectionInformation(Orientation.EAST, Orientation.EAST, centerDepart.clone(), centerEnd.clone()));
 					log.debug("{} => {} exiting", coteDepart.name(), direction.name());
 					break;
@@ -594,7 +580,6 @@ public final class MapManager {
 						getCase(positionDepart2.getY(), positionDepart2.getX() - ROAD_SIZE).setBorderCaseSide(JCaseSide.BOTTOM_LEFT_CORNER_REFLEX);
 
 						centerEnd = new Position((positionDepart.getX() + positionDepart2.getX()) / 2, (positionDepart.getY() + positionDepart2.getY() - 1) / 2);
-						roadList.add(new RoadDirectionInformation(Orientation.SOUTH, centerDepart, centerEnd));
 						detailledRoadList.add(new DetailledRoadDirectionInformation(Orientation.EAST, Orientation.SOUTH, centerDepart.clone(), centerEnd.clone()));
 						log.debug("{} => {} exiting", coteDepart.name(), direction.name());
 						coteDepart = Orientation.SOUTH;
@@ -604,10 +589,10 @@ public final class MapManager {
 			}
 		}
 		traceFinishingLine(coteDepart, positionDepart, positionDepart2);
-		updateLastDirectionRoad();
+		//updateLastDirectionRoad();
 		log.debug("constructRoad end");
-		log.debug("Road list operational : size {}",roadList.size());
-		log.debug("{}", roadList.toString());
+		log.debug("Road list operational : size {}",detailledRoadList.size());
+		log.debug("{}", detailledRoadList.toString());
 		if (detailledRoadList.get(0).getBegin().equals(detailledRoadList.get(0).getEnd())) {
 			detailledRoadList.removeFirst();
 		}
@@ -621,7 +606,7 @@ public final class MapManager {
 		}
 	}
 	
-	private void updateLastDirectionRoad() {
+	/*private void updateLastDirectionRoad() {
 		switch(roadList.getLast().getOrientation()) {
 		case NORTH :
 			roadList.getLast().getEnd().setY(0);
@@ -640,7 +625,7 @@ public final class MapManager {
 			detailledRoadList.getLast().getEnd().setX(mapSize - 1);
 			break;
 		}
-	}
+	}*/
 	
 	private boolean checkDirection(Orientation orientation, int length, Position positionDepart, Position positionDepart2) {
 		boolean solutionAvailable = true;
@@ -1137,9 +1122,9 @@ public final class MapManager {
 	 * Return the list of position of ideal way to run the race.
 	 * @return the list of position of ideal way to run the race.
 	 */
-	public List<RoadDirectionInformation> getRoadDirectionInformationList() {
+	/*public List<RoadDirectionInformation> getRoadDirectionInformationList() {
 		return roadList;
-	}
+	}*/
 	
 	public List<DetailledRoadDirectionInformation> getDetailledRoadDirectionInformationList() {
 		return detailledRoadList;
@@ -1158,8 +1143,8 @@ public final class MapManager {
 		this.detailledRoadList.addAll(mapManager.getDetailledRoadDirectionInformationList());
 		this.finishingLinePositionList.clear();
 		this.finishingLinePositionList.addAll(mapManager.getFinishingLinePositionList());
-		this.roadList.clear();
-		this.roadList.addAll(mapManager.getRoadDirectionInformationList());
+		//this.roadList.clear();
+		//this.roadList.addAll(mapManager.getRoadDirectionInformationList());
 		this.startingPositionList.clear();
 		this.startingPositionListSave.clear();
 		this.startingPositionList.addAll(mapManager.getStartingPositionList());
@@ -1177,7 +1162,7 @@ public final class MapManager {
 	/**
 	 * Verify that the shape given in argument intersects a JCase with a field model given in
 	 * argument.
-	 * @param shape the possible instected shape.
+	 * @param shape the possible intersected shape.
 	 * @param terrain the field of the shape.
 	 * @return true if the shape intersects a JCase component which has a model containing a Field terrain,
 	 * false otherwise.

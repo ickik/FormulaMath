@@ -20,7 +20,7 @@ import fr.ickik.formulamath.model.map.Orientation;
  * A simple Vector is a vector with a length of 1 case in all direction. It is no dynamic intelligence
  * to move.
  * @author Ickik
- * @version 0.1.001, 31 August 2012
+ * @version 0.1.002, 3rd Septembre 2012
  * @since 0.3.9
  */
 public final class AIEasyLevel implements AILevel {
@@ -42,13 +42,13 @@ public final class AIEasyLevel implements AILevel {
 		if (playerRoadPosition.get(player.getId()) != null) {
 			roadPosition = playerRoadPosition.get(player.getId());
 		}
-		RoadDirectionInformation r = mapManager.getRoadDirectionInformationList().get(roadPosition);
+		RoadDirectionInformation r = mapManager.getDetailledRoadDirectionInformationList().get(roadPosition);
 		int len = r.getLengthToEnd(player.getPosition()) - 1;
 		Vector vector = null;
 		log.debug("AI rest length of the vector:{}", len);
 		log.trace("Orientation: {}", r.getOrientation());
 		if (len == 1 || len == -1) {
-			RoadDirectionInformation nextRoadDirection = mapManager.getRoadDirectionInformationList().get(roadPosition + 1);
+			RoadDirectionInformation nextRoadDirection = mapManager.getDetailledRoadDirectionInformationList().get(roadPosition + 1);
 			switch (r.getOrientation()) {
 			case NORTH:
 				if (nextRoadDirection.getOrientation() == Orientation.EAST) {
@@ -115,7 +115,7 @@ public final class AIEasyLevel implements AILevel {
 	@Override
 	public Vector getFirstMove(Player player, Map<Integer, Integer> playerRoadPosition) {
 		int roadPosition = playerRoadPosition.get(player.getId());
-		RoadDirectionInformation r = mapManager.getRoadDirectionInformationList().get(roadPosition);
+		RoadDirectionInformation r = mapManager.getDetailledRoadDirectionInformationList().get(roadPosition);
 		Vector vector = null;
 		switch(r.getOrientation()) {
 		case NORTH:

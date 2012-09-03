@@ -536,10 +536,18 @@ public final class PlayerManager {
 		computerLevel.reinitIsLastPlay();
 	}
 
+	/**
+	 * Set the Information Message model.
+	 * @param informationModel the information model.
+	 */
 	public void setInformationMessageModel(InformationModel informationModel) {
 		this.informationModel = informationModel;
 	}
 
+	/**
+	 * Set an Artificial Intelligence (AIs are categorized in level.).
+	 * @param computerLevel the AI.
+	 */
 	public void setComputerLevel(AILevel computerLevel) {
 		this.computerLevel = computerLevel;
 	}

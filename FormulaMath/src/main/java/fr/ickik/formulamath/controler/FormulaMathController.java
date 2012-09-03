@@ -52,6 +52,7 @@ public final class FormulaMathController {
 	private final AboutFrame aboutFrame;
 	private final StatFrame statFrame;
 	private final InformationModel informationModel;
+	private boolean isSaved = false;
 	
 	private static final Logger log = LoggerFactory.getLogger(FormulaMathController.class);
 	
@@ -162,8 +163,8 @@ public final class FormulaMathController {
 		playerManager.fullReinitialization();
 		mapManager.fullReinitialization();
 		closeStatFrame();
-		//mainFrame.close();
-		//openConfigurationFrame();
+		mainFrame.close();
+		openConfigurationFrame();
 	}
 	
 	/**
@@ -223,8 +224,14 @@ public final class FormulaMathController {
 				log.debug("Saving properties ok");
 			   future.cancel(true); // may or may not desire this
 			}*/
-			PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.VERSION);
-			PropertiesModel.getSingleton().save();
+			if (!isSaved) {
+				PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.VERSION);
+				PropertiesModel.getSingleton().save();
+				isSaved = true;
+				log.debug("Properties saved");
+			} else {
+				log.debug("Properties already saved");
+			}
 		} catch (IOException e) {
 			log.error("Error saving properties for quiting : {} ", e.getMessage());
 			throw new FormulaMathException("Error during saving properties file");

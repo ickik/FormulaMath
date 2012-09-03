@@ -25,7 +25,7 @@ import fr.ickik.formulamath.model.map.MapManager;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.3.002, 31 August 2012.
+ * @version 0.3.003, 3 September 2012.
  */
 public final class PlayerManager {
 
@@ -512,6 +512,9 @@ public final class PlayerManager {
 	 * Reinitializes all variable. It remove all data.
 	 */
 	public void fullReinitialization() {
+		for (Player player : playerList) {
+			player.fullReinitializationPlayer();
+		}
 		playerList.clear();
 		finishPositionList.clear();
 		playerRoadPosition.clear();

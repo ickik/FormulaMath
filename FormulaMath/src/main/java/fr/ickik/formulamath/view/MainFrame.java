@@ -30,6 +30,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -104,12 +105,27 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		caseArrayList = new ArrayList<List<JCase>>(mapSize + MAP_MARGIN);
 	}
 	
+	/**
+	 * Display the main JFrame. It creates the frame with the map given in argument and add a vertical menu.
+	 * This frame is creating in this method. It is not just a 'setVisible(true)'.<br>
+	 * Do not call every time this method to update the display, it has an expensive cost.
+	 * @param carte the map model to display in the frame. The menu is a default menu.
+	 */
 	public void display(List<List<CaseModel>> carte) {
+		if (scrollPane != null) {
+			caseArrayList.clear();
+			scrollPane.getViewport().removeAll();
+			scrollPane.getParent().getParent().removeAll();
+		}
 		initMap(carte);
 		createMainFrame();
 		controller.chooseStartPosition();
 	}
 	
+	/**
+	 * Update the view to replay the same map.
+	 * @param carte the map to reinitialize.
+	 */
 	public void updateDisplay(List<List<CaseModel>> carte) {
 		caseArrayList.clear();
 		scrollPane.getViewport().removeAll();
@@ -126,7 +142,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		int y = 0;
 		int endOfMapIndex = sideSize - (MAP_MARGIN / 2);
 		int marge = MAP_MARGIN / 2;
-		if (carte.size() < MapDimension.MEDIUM.getValue()) {
+		if (carte.size() < MapDimension.MEDIUM.getValue() && caseSize * 2 < MAX_ZOOM_SIZE) {
 			caseSize*=2;
 		}
 		for (int i = 0; i < sideSize; i++) {
@@ -155,38 +171,40 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		mainFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		mainFrame.add(getSplitPane(), BorderLayout.CENTER);
 		mainFrame.setJMenuBar(getMenuBar());
-		
-		mainFrame.addWindowListener(new WindowListener() {
-			
-			@Override
-			public void windowOpened(WindowEvent arg0) {}
-			
-			@Override
-			public void windowIconified(WindowEvent arg0) {}
-			
-			@Override
-			public void windowDeiconified(WindowEvent arg0) {}
-			
-			@Override
-			public void windowDeactivated(WindowEvent arg0) {}
-			
-			@Override
-			public void windowClosing(WindowEvent arg0) {
-				try {
-					controller.saveProperties();
-				} catch (FormulaMathException e) {
-					displayErrorMessage(e.getMessage());
+		if (mainFrame.getWindowListeners().length == 0) {
+			mainFrame.addWindowListener(new WindowListener() {
+
+				@Override
+				public void windowOpened(WindowEvent arg0) {}
+
+				@Override
+				public void windowIconified(WindowEvent arg0) {}
+
+				@Override
+				public void windowDeiconified(WindowEvent arg0) {}
+
+				@Override
+				public void windowDeactivated(WindowEvent arg0) {}
+
+				@Override
+				public void windowClosing(WindowEvent arg0) {
+					try {
+						controller.saveProperties();
+					} catch (FormulaMathException e) {
+						displayErrorMessage(e.getMessage());
+					}
 				}
-			}
-			
-			@Override
-			public void windowClosed(WindowEvent arg0) {}
-			
-			@Override
-			public void windowActivated(WindowEvent arg0) {}
-		});
+
+				@Override
+				public void windowClosed(WindowEvent arg0) {}
+
+				@Override
+				public void windowActivated(WindowEvent arg0) {}
+			});
+		}
 		displayFrame();
 		mainFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
+		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		log.trace("End createMainFrame()");
 	}
 
@@ -407,7 +425,6 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				c.setSize(d);
 			}
 		}
-//		mainFrame.validate();
 		scrollPane.validate();
 	}
 	
@@ -496,13 +513,17 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			}
 		});
 		
-		JMenuItem restartingFormulaMath = new JMenuItem("Restarting Game");
+		JMenuItem restartingFormulaMath = new JMenuItem("Restarting a new Game");
 		restartingFormulaMath.setToolTipText("Restart FormulaMath to define a new game");
 		restartingFormulaMath.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				controller.modelFullReinitialization();
+				int result = JOptionPane.showConfirmDialog(mainFrame, "Are you sure you want to end this map race? The session would be considered as loses", 
+						getTitle(), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+				if (result == JOptionPane.YES_OPTION) {
+					controller.modelFullReinitialization();
+				}
 			}
 		});
 		
@@ -512,7 +533,11 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				controller.modelReinitialization();
+				int result = JOptionPane.showConfirmDialog(mainFrame, "Are you sure you want to end this map race? The session would be considered as loses", 
+						getTitle(), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+				if (result == JOptionPane.YES_OPTION) {
+					controller.modelReinitialization();
+				}
 			}
 		});
 		

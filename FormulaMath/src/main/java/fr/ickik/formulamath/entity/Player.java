@@ -124,8 +124,7 @@ public class Player {
 	 * Reinitializes all player data.
 	 */
 	public void fullReinitializationPlayer() {
-		movingList.clear();
-		playingCounter = 0;
+		reinitializePlayer();
 		GENERAL_ID = 1;
 	}
 	

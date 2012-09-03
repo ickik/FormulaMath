@@ -12,7 +12,7 @@ import fr.ickik.formulamath.model.player.PlayerType;
  * the name, the type of the player ({@link PlayerType}), a {@link Color},
  * a position and the last move.
  * @author Patrick Allgeyer.
- * @version 0.1.004, 10 July 2012.
+ * @version 0.1.005, 3 Septembre 2012.
  */
 public class Player {
 
@@ -118,6 +118,15 @@ public class Player {
 	public void reinitializePlayer() {
 		movingList.clear();
 		playingCounter = 0;
+	}
+	
+	/**
+	 * Reinitializes all player data.
+	 */
+	public void fullReinitializationPlayer() {
+		movingList.clear();
+		playingCounter = 0;
+		GENERAL_ID = 1;
 	}
 	
 //	public String getOrientation() {

@@ -113,8 +113,7 @@ public final class AIEasyLevel implements AILevel {
 
 	@Override
 	public Vector getFirstMove(Player player, Map<Integer, Integer> playerRoadPosition) {
-		int roadPosition = playerRoadPosition.get(player.getId());
-		DetailledRoadDirectionInformation r = mapManager.getDetailledRoadDirectionInformationList().get(roadPosition);
+		DetailledRoadDirectionInformation r = mapManager.getDetailledRoadDirectionInformationList().get(0);
 		Vector vector = null;
 		switch(r.getOrientation()) {
 		case NORTH:
@@ -130,6 +129,7 @@ public final class AIEasyLevel implements AILevel {
 			vector = new Vector(-1, 0);
 			break;
 		}
+		playerRoadPosition.put(player.getId(), 0);
 		return vector;
 	}
 

@@ -7,9 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.ickik.formulamath.FormulaMathException;
+import fr.ickik.formulamath.entity.DetailledRoadDirectionInformation;
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Position;
-import fr.ickik.formulamath.entity.RoadDirectionInformation;
 import fr.ickik.formulamath.entity.Vector;
 import fr.ickik.formulamath.model.CaseModel;
 import fr.ickik.formulamath.model.map.MapManager;
@@ -20,7 +20,7 @@ import fr.ickik.formulamath.model.map.Orientation;
  * A simple Vector is a vector with a length of 1 case in all direction. It is no dynamic intelligence
  * to move.
  * @author Ickik
- * @version 0.1.002, 3rd Septembre 2012
+ * @version 0.1.003, 4th September 2012
  * @since 0.3.9
  */
 public final class AIEasyLevel implements AILevel {
@@ -42,37 +42,36 @@ public final class AIEasyLevel implements AILevel {
 		if (playerRoadPosition.get(player.getId()) != null) {
 			roadPosition = playerRoadPosition.get(player.getId());
 		}
-		RoadDirectionInformation r = mapManager.getDetailledRoadDirectionInformationList().get(roadPosition);
+		DetailledRoadDirectionInformation r = mapManager.getDetailledRoadDirectionInformationList().get(roadPosition);
 		int len = r.getLengthToEnd(player.getPosition()) - 1;
 		Vector vector = null;
 		log.debug("AI rest length of the vector:{}", len);
 		log.trace("Orientation: {}", r.getOrientation());
-		if (len == 1 || len == -1) {
-			RoadDirectionInformation nextRoadDirection = mapManager.getDetailledRoadDirectionInformationList().get(roadPosition + 1);
-			switch (r.getOrientation()) {
+		if (len == 1 || len == -1 || r.getInitialOrientation() != r.getOrientation()) {
+			switch (r.getInitialOrientation()) {
 			case NORTH:
-				if (nextRoadDirection.getOrientation() == Orientation.EAST) {
+				if (r.getOrientation() == Orientation.EAST) {
 					vector = new Vector(1, 1);
 				} else {
 					vector = new Vector(-1, 1);
 				}
 				break;
 			case SOUTH:
-				if (nextRoadDirection.getOrientation() == Orientation.EAST) {
+				if (r.getOrientation() == Orientation.EAST) {
 					vector = new Vector(1, -1);
 				} else {
 					vector = new Vector(-1, -1);
 				}
 				break;
 			case WEST:
-				if (nextRoadDirection.getOrientation() == Orientation.NORTH) {
+				if (r.getOrientation() == Orientation.NORTH) {
 					vector = new Vector(-1, 1);
 				} else {
 					vector = new Vector(-1, -1);
 				}
 				break;
 			case EAST:
-				if (nextRoadDirection.getOrientation() == Orientation.NORTH) {
+				if (r.getOrientation() == Orientation.NORTH) {
 					vector = new Vector(1, 1);
 				} else {
 					vector = new Vector(1, -1);
@@ -115,7 +114,7 @@ public final class AIEasyLevel implements AILevel {
 	@Override
 	public Vector getFirstMove(Player player, Map<Integer, Integer> playerRoadPosition) {
 		int roadPosition = playerRoadPosition.get(player.getId());
-		RoadDirectionInformation r = mapManager.getDetailledRoadDirectionInformationList().get(roadPosition);
+		DetailledRoadDirectionInformation r = mapManager.getDetailledRoadDirectionInformationList().get(roadPosition);
 		Vector vector = null;
 		switch(r.getOrientation()) {
 		case NORTH:

@@ -36,7 +36,7 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 	 * Constructor which disabled the calling frame given in argument. The
 	 * calling frame is disable the time this frame is existing. It enable it
 	 * when the user close this frame.
-	 * @param callingFrame the calling frame to disable.
+	 * @param controller the controller of the application.
 	 */
 	public StatFrame(FormulaMathController controller) {
 		this.controller = controller;
@@ -48,6 +48,10 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 		getFrame().add(panel);
 	}
 	
+	/**
+	 * Display this frame. The data displayed are given in argument.
+	 * @param statsList list of statistics displayed.
+	 */
 	public void display(List<Stats> statsList) {
 		statPanel.add(displayStats(statsList));
 		displayFrame();
@@ -115,8 +119,8 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 	}
 	
 	private JPanel createButton() {
-		JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
-		JButton replay = new JButton("Replay");
+		JPanel buttonPanel = new JPanel(new GridLayout(1, 3));
+		JButton replay = new JButton("Replay game");
 		replay.addActionListener(new ActionListener() {
 			
 			@Override
@@ -140,7 +144,7 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 				controller.closeStatFrame();
 			}
 		});
-		//buttonPanel.add(replay);
+		buttonPanel.add(replay);
 		buttonPanel.add(replayMap);
 		buttonPanel.add(button);
 		return buttonPanel;

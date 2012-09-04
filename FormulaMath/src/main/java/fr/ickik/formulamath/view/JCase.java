@@ -307,10 +307,10 @@ public final class JCase extends JComponent {
 		yShifting2 = height;
 		for (int j = 1; j < 8; j++) {
 			Shape s2 = new Rectangle2D.Double(x2 + (j * xShifting2), y2 + (j * yShifting2), width2, height2);
-			if (j % 2 == 1) {
-				g2.setColor(Color.RED);
-			} else {
+			if (j % 2 != 0) {
 				g2.setColor(Color.WHITE);
+			} else {
+				g2.setColor(Color.RED);
 			}
 			g2.fill(s2);
 		}
@@ -337,10 +337,10 @@ public final class JCase extends JComponent {
 		xShifting = width;
 		for (int j = 1; j < 8; j++) {
 			Shape s = new Rectangle2D.Double(x + (j * xShifting), y + (j * yShifting), width, height);
-			if (j % 2 == 1) {
-				g2.setColor(Color.RED);
-			} else {
+			if (j % 2 != 0) {
 				g2.setColor(Color.WHITE);
+			} else {
+				g2.setColor(Color.RED);
 			}
 			g2.fill(s);
 		}
@@ -382,10 +382,10 @@ public final class JCase extends JComponent {
 		xShifting = width;
 		for (int j = 0; j < 8; j++) {
 			Shape s = new Rectangle2D.Double(x + (j * xShifting), y + (j * yShifting), width, height);
-			if (j % 2 == 1) {
-				g2.setColor(Color.RED);
-			} else {
+			if (j % 2 != 0) {
 				g2.setColor(Color.WHITE);
+			} else {
+				g2.setColor(Color.RED);
 			}
 			g2.fill(s);
 		}
@@ -396,10 +396,10 @@ public final class JCase extends JComponent {
 		yShifting2 = height;
 		for (int j = 0; j < 7; j++) {
 			Shape s2 = new Rectangle2D.Double(x2 + (j * xShifting2), y2 + (j * yShifting2), width2, height2);
-			if (j % 2 == 1) {
-				g2.setColor(Color.RED);
-			} else {
+			if (j % 2 != 0) {
 				g2.setColor(Color.WHITE);
+			} else {
+				g2.setColor(Color.RED);
 			}
 			g2.fill(s2);
 		}

@@ -499,9 +499,9 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				if (result == JFileChooser.APPROVE_OPTION) {
 					try {
 						controller.loadMap(fileChooser.getSelectedFile());
-					} catch (IOException e) {
+					} catch (FormulaMathException e) {
 						log.error("The map could not be loaded : {}", e.getMessage());
-						displayErrorMessage("The map could not be loaded");
+						displayErrorMessage(e.getMessage());
 						try {
 							controller.saveProperties();
 						} catch (FormulaMathException ex) {

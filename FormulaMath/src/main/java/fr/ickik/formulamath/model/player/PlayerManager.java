@@ -545,7 +545,7 @@ public final class PlayerManager {
 	}
 
 	/**
-	 * Set an Artificial Intelligence (AIs are categorized in level.).
+	 * Set an Artificial Intelligence (AIs are categorized in level).
 	 * @param computerLevel the AI.
 	 */
 	public void setComputerLevel(AILevel computerLevel) {

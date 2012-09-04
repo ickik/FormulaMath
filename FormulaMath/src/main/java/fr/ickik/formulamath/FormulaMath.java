@@ -9,7 +9,7 @@ import fr.ickik.formulamath.model.player.PlayerManager;
 /**
  * Main class which contains the main static method.
  * @author Ickik
- * @version 0.1.004, 24 July 2012
+ * @version 0.1.005, 4th September 2012
  */
 public class FormulaMath {
 
@@ -27,7 +27,14 @@ public class FormulaMath {
 				MapManager mapManager = new MapManager();
 				PlayerManager playerManager = new PlayerManager(mapManager);
 				FormulaMathController controller = new FormulaMathController(playerManager, mapManager);
-				controller.openConfigurationFrame();
+				/*UserModel model = new UserModel();
+				if (model.isKeyValide()) {*/
+					controller.openConfigurationFrame();
+				/*} else {
+					JOptionPane.showMessageDialog(null, "The serial number is invalide", "ERROR!", JOptionPane.ERROR_MESSAGE);
+					SerialNumberFrame s = new SerialNumberFrame(model, controller);
+					s.display();
+				}*/
 			}
 		}.start();
 	}

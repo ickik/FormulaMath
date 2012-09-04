@@ -16,8 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import fr.ickik.formulamath.FormulaMathException;
+import fr.ickik.formulamath.entity.DetailledRoadDirectionInformation;
 import fr.ickik.formulamath.entity.Position;
-import fr.ickik.formulamath.entity.RoadDirectionInformation;
 import fr.ickik.formulamath.model.map.Field;
 import fr.ickik.formulamath.model.map.MapManager;
 import fr.ickik.formulamath.model.map.Orientation;
@@ -25,7 +26,7 @@ import fr.ickik.formulamath.model.map.Orientation;
 /**
  * This model saves and load map to permit the player to replay maps.
  * @author Ickik
- * @version 0.1.006, 29 August 2012
+ * @version 0.1.007, 4th September 2012
  * @since 0.2
  */
 public final class FormulaMathSaver {
@@ -66,7 +67,8 @@ public final class FormulaMathSaver {
 	
 	private StringBuilder getIdealWayToString(MapManager manager) {
 		StringBuilder str = new StringBuilder();
-		for (RoadDirectionInformation road : manager.getRoadDirectionInformationList()) {
+		for (DetailledRoadDirectionInformation road : manager.getDetailledRoadDirectionInformationList()) {
+			str.append(road.getInitialOrientation().ordinal()).append(",");
 			str.append(road.getOrientation().ordinal()).append(",");
 			str.append(road.getBegin().getX()).append(",");
 			str.append(road.getBegin().getY()).append(",");
@@ -101,42 +103,51 @@ public final class FormulaMathSaver {
 	 * Load the file and constructs a {@link MapManager} with data.
 	 * @param file the file to load.
 	 * @return an instance of {@link MapManager}.
-	 * @throws IOException is thrown if an error occurs the loading.
+	 * @throws FormulaMathException is thrown if an error occurs the loading.
 	 */
-	public MapManager loadMap(File file) throws IOException {
-		FileInputStream inputStream = new FileInputStream(file);
-		FileChannel channel = inputStream.getChannel();
-		ByteBuffer buffer =  ByteBuffer.allocate(BUFFER_SIZE);
-		StringBuilder str = new StringBuilder();
-		while (channel.read(buffer) > 0) {
-			buffer.flip();
-			str.append(decoder.decode(buffer));
-			buffer.clear();
+	public MapManager loadMap(File file) throws FormulaMathException {
+		try {
+			FileInputStream inputStream = new FileInputStream(file);
+		
+			FileChannel channel = inputStream.getChannel();
+			ByteBuffer buffer =  ByteBuffer.allocate(BUFFER_SIZE);
+			StringBuilder str = new StringBuilder();
+			while (channel.read(buffer) > 0) {
+				buffer.flip();
+				str.append(decoder.decode(buffer));
+				buffer.clear();
+			}
+			channel.close();
+			inputStream.close();
+			String[] array = str.toString().split("\n");
+			int size = readSize(array[0]);
+			MapManager manager = new MapManager();
+			manager.init(size);
+			int end = readMap(manager, array);
+			end = readRoadIdealWay(manager, array, end);
+			managerTreatment(manager);
+			return manager;
+		} catch (IOException e) {
+			throw new FormulaMathException("The saved file could not be loaded");
 		}
-		channel.close();
-		inputStream.close();
-		String[] array = str.toString().split("\n");
-		int size = readSize(array[0]);
-		MapManager manager = new MapManager();
-		manager.init(size);
-		int end = readMap(manager, array);
-		end = readRoadIdealWay(manager, array, end);
-		managerTreatment(manager);
-		return manager;
 	}
 	
-	private int readRoadIdealWay(MapManager manager, String[] array, int endIndex) {
+	private int readRoadIdealWay(MapManager manager, String[] array, int endIndex) throws FormulaMathException {
 		int size = array.length;
 		int i;
 		Pattern pattern = Pattern.compile("[0-3],[0-9]+,[0-9]+,[0-9]+,[0-9]+;");
-		for (i = endIndex + 1; i < size && pattern.matcher(array[i]).matches(); i++) {
+		for (i = endIndex + 1; i < size; i++) {
 			String line = array[i];
+			if (!pattern.matcher(line).matches()) {
+				throw new FormulaMathException("The saved file was corrupted");
+			}
 			String[] values = line.split(",");
-			int ordinal = Integer.parseInt(values[0]);
-			Position begin = new Position(Integer.parseInt(values[1]), Integer.parseInt(values[2]));
-			Position end = new Position(Integer.parseInt(values[3]), Integer.parseInt(values[4].replace(";", "")));
-			RoadDirectionInformation road = new RoadDirectionInformation(Orientation.values()[ordinal], begin, end);
-			manager.getRoadDirectionInformationList().add(road);
+			int initialOrdinal = Integer.parseInt(values[0]);
+			int ordinal = Integer.parseInt(values[1]);
+			Position begin = new Position(Integer.parseInt(values[2]), Integer.parseInt(values[3]));
+			Position end = new Position(Integer.parseInt(values[4]), Integer.parseInt(values[5].replace(";", "")));
+			DetailledRoadDirectionInformation road = new DetailledRoadDirectionInformation(Orientation.values()[initialOrdinal], Orientation.values()[ordinal], begin, end);
+			manager.getDetailledRoadDirectionInformationList().add(road);
 		}
 		return i;
 	}

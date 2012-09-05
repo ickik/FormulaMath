@@ -40,7 +40,7 @@ import fr.ickik.formulamath.view.StatFrame;
  * Controller of the application in MVC design pattern. It receive event from the view to
  * transmit them to the appropriate model if needed.
  * @author Ickik
- * @version 0.1.014, 14 August 2012
+ * @version 0.1.016, 5th September 2012
  * @since 0.2
  */
 public final class FormulaMathController {
@@ -52,7 +52,6 @@ public final class FormulaMathController {
 	private final AboutFrame aboutFrame;
 	private final StatFrame statFrame;
 	private final InformationModel informationModel;
-	private boolean isSaved = false;
 	
 	private static final Logger log = LoggerFactory.getLogger(FormulaMathController.class);
 	
@@ -117,7 +116,6 @@ public final class FormulaMathController {
 		log.debug("Close configuration frame");
 		configurationFrame.close();
 		log.debug(mapManager.toString());
-		log.debug(mapManager.getRoadDirectionInformationList().toString());
 		log.debug(mapManager.getDetailledRoadDirectionInformationList().toString());
 		log.debug("creation of main frame");
 		mainFrame.display(mapManager.getMap());
@@ -199,39 +197,9 @@ public final class FormulaMathController {
 				log.trace("Information model already stopped");
 			}
 			log.debug("Saving properties...");
-			/*ExecutorService executor = Executors.newCachedThreadPool();
-			Callable<Object> task = new Callable<Object>() {
-				public Object call() {
-					log.debug("Saving properties...");
-					PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.VERSION);
-					try {
-						PropertiesModel.getSingleton().save();
-					} catch (IOException e) {
-						log.error("Error saving properties for quiting : {} ", e.getMessage());
-					}
-					return null;
-				}
-			};
-			Future<Object> future = executor.submit(task);
-			try {
-				future.get(5, TimeUnit.SECONDS); 
-			} catch (TimeoutException ex) {
-				log.debug("TimeoutException...");
-			   return;
-			} catch (InterruptedException e) {
-			} catch (ExecutionException e) {
-			} finally {
-				log.debug("Saving properties ok");
-			   future.cancel(true); // may or may not desire this
-			}*/
-			if (!isSaved) {
-				PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.VERSION);
-				PropertiesModel.getSingleton().save();
-				isSaved = true;
-				log.debug("Properties saved");
-			} else {
-				log.debug("Properties already saved");
-			}
+			PropertiesModel.getSingleton().putDefaultProperty(FormulaMathProperty.VERSION);
+			PropertiesModel.getSingleton().save();
+			log.debug("Properties saved");
 		} catch (IOException e) {
 			log.error("Error saving properties for quiting : {} ", e.getMessage());
 			throw new FormulaMathException("Error during saving properties file");
@@ -242,7 +210,7 @@ public final class FormulaMathController {
 		return FormulaMathSaver.getInstance().saveMap(mapManager, saveFile);
 	}
 	
-	public void loadMap(File loadFile) throws IOException {
+	public void loadMap(File loadFile) throws FormulaMathException {
 		MapManager mapManager = FormulaMathSaver.getInstance().loadMap(loadFile);
 		this.mapManager.mergeMapManager(mapManager);
 		mainFrame.updateDisplay(mapManager.getMap());
@@ -315,6 +283,15 @@ public final class FormulaMathController {
 		double x = d * (pos.getX() - (dimension.getWidth() * 20 / screenDimension.getWidth()));
 		double y = d * (pos.getY() - (dimension.getHeight() * 20 / screenDimension.getHeight()));
 		return new double[]{x, y};
+	}
+	
+	public Position focusPlayerPosition() {
+		log.debug("Focus on current player : {}", playerManager.getCurrentPlayer().toString());
+		Position pos = playerManager.getCurrentPlayer().getPosition();
+		if (pos.getX() == 0 && pos.getY() == 0) {
+			return mapManager.getStartingPositionList().get(1);
+		}
+		return playerManager.getCurrentPlayer().getPosition();
 	}
 
 	public void putMap(List<List<JCase>> caseArrayList) {

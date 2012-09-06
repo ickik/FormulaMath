@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -21,9 +22,9 @@ import fr.ickik.formulamath.model.JTextFieldLimit;
 import fr.ickik.formulamath.model.UserModel;
 
 /**
- * 
+ * Create a {@link JFrame} to permit the user entering a serial key.
  * @author Ickik
- * @version 0.1.000, 4th September 2012
+ * @version 0.1.001, 6th September 2012
  * @since 0.3.10
  */
 public final class SerialNumberFrame extends AbstractFormulaMathFrame {
@@ -96,7 +97,6 @@ public final class SerialNumberFrame extends AbstractFormulaMathFrame {
 				} else {
 					displayErrorMessage("Key invalide");
 				}
-				//controller.enterKey(key.toString());
 			}
 		});
 		
@@ -132,8 +132,8 @@ public final class SerialNumberFrame extends AbstractFormulaMathFrame {
 		
 		JPanel emailPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		emailPanel.add(new JLabel("Email :"));
-		this.emailTextField.setText("");
-		emailPanel.add(this.emailTextField);
+		emailTextField.setText("");
+		emailPanel.add(emailTextField);
 		emailPanel.add(getRequestKeyButton());
 		panel.add(emailPanel);
 		JPanel entryPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -154,6 +154,7 @@ public final class SerialNumberFrame extends AbstractFormulaMathFrame {
 	
 	private JButton getRequestKeyButton() {
 		JButton button = new JButton("Request Key");
+		button.setToolTipText("An email will be sent with a valid key to the given email address");
 		button.addActionListener(new ActionListener() {
 			
 			@Override
@@ -161,17 +162,18 @@ public final class SerialNumberFrame extends AbstractFormulaMathFrame {
 				String email = emailTextField.getText();
 				if (isEmailValide(email)) {
 					model.keyRequest(email);
+					displayMessage("An email will be sent with a valid key to the given email address");
 				} else {
-					displayErrorMessage("Email not valide");
+					displayErrorMessage("Email address not valide");
 				}
+			}
+			
+			private boolean isEmailValide(String emailAddress) {
+				Pattern pattern = Pattern.compile("^[A-Z0-9._%+-]+@(?:[A-Z0-9-]+\\.)+[A-Z]{2,4}$");
+				return pattern.matcher(emailAddress).matches();
 			}
 		});
 		return button;
-	}
-	
-	private boolean isEmailValide(String emailAddress) {
-		Pattern pattern = Pattern.compile("^[A-Z0-9._%+-]+@(?:[A-Z0-9-]+\\.)+[A-Z]{2,4}$");
-		return pattern.matcher(emailAddress).matches();
 	}
 	
 }

@@ -20,7 +20,7 @@ import fr.ickik.formulamath.model.map.Orientation;
  * A simple Vector is a vector with a length of 1 case in all direction. It is no dynamic intelligence
  * to move.
  * @author Ickik
- * @version 0.1.003, 4th September 2012
+ * @version 0.1.004, 6th September 2012
  * @since 0.3.9
  */
 public final class AIEasyLevel implements AILevel {
@@ -46,7 +46,7 @@ public final class AIEasyLevel implements AILevel {
 		int len = r.getLengthToEnd(player.getPosition()) - 1;
 		Vector vector = null;
 		log.debug("AI rest length of the vector:{}", len);
-		log.trace("Orientation: {}", r.getOrientation());
+		log.trace("InitialOrientation: {} -> {}", r.getInitialOrientation(), r.getOrientation());
 		if (len == 1 || len == -1 || r.getInitialOrientation() != r.getOrientation()) {
 			switch (r.getInitialOrientation()) {
 			case NORTH:
@@ -78,13 +78,14 @@ public final class AIEasyLevel implements AILevel {
 				}
 				break;
 			}
+			playerRoadPosition.put(player.getId(), roadPosition + 1);
 		} else {
 			switch(r.getOrientation()) {
 			case NORTH:
-				vector = new Vector(0, -1);
+				vector = new Vector(0, 1);
 				break;
 			case SOUTH:
-				vector = new Vector(0, 1);
+				vector = new Vector(0, -1);
 				break;
 			case EAST:
 				vector = new Vector(1, 0);
@@ -115,12 +116,12 @@ public final class AIEasyLevel implements AILevel {
 	public Vector getFirstMove(Player player, Map<Integer, Integer> playerRoadPosition) {
 		DetailledRoadDirectionInformation r = mapManager.getDetailledRoadDirectionInformationList().get(0);
 		Vector vector = null;
-		switch(r.getOrientation()) {
+		switch(r.getInitialOrientation()) {
 		case NORTH:
-			vector = new Vector(0, -1);
+			vector = new Vector(0, 1);
 			break;
 		case SOUTH:
-			vector = new Vector(0, 1);
+			vector = new Vector(0, -1);
 			break;
 		case EAST:
 			vector = new Vector(1, 0);

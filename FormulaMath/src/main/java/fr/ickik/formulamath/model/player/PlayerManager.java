@@ -25,7 +25,7 @@ import fr.ickik.formulamath.model.map.MapManager;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.3.003, 3 September 2012.
+ * @version 0.3.004, 6th September 2012.
  */
 public final class PlayerManager {
 
@@ -225,10 +225,17 @@ public final class PlayerManager {
 		return null;
 	}
 	
-	private void addFinishPlayer(Player p, boolean isWinning) {
+	/**
+	 * Add the player given in argument to the list of finishing player. If the
+	 * isWinning parameter is true, the method adds the player at the beginning of the
+	 * list, false it adds the player at the end of the list.
+	 * @param player the player to add to the list.
+	 * @param isWinning true if the player cross the finishing line does not matter the position, false otherwise.
+	 */
+	private void addFinishPlayer(Player player, boolean isWinning) {
 		int begin, end;
-		log.trace("add player {} into finish list", p.toString());
-		log.trace("{} is {}", p.toString(), isWinning ? "winning" : "losing");
+		log.trace("add player {} into finish list", player.toString());
+		log.trace("{} is {}", player.toString(), isWinning ? "winning" : "losing");
 		if (isWinning) {
 			begin = 0;
 			end = NUMBER_OF_PLAYER_MAX;
@@ -239,8 +246,8 @@ public final class PlayerManager {
 		log.trace("Initialization of loop from {} to {}", begin, end);
 		for (int i = begin; (isWinning) ? i < end : i > end; i = (isWinning) ? i+1 : i-1) {
 			if (finishPositionList.get(i) == null) {
-				log.debug("the player {} finish at {} position", p.toString(), Integer.toString(i));
-				finishPositionList.set(i, p);
+				log.debug("the player {} finish at {} position", player.toString(), Integer.toString(i));
+				finishPositionList.set(i, player);
 				break;
 			}
 		}

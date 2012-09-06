@@ -61,7 +61,7 @@ import fr.ickik.formulamath.model.map.MapDimension;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.2.017, 31 August 2012.
+ * @version 0.2.018, 6th September 2012.
  */
 public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
@@ -411,9 +411,10 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				double[] coordinateArray = controller.focusPlayerPosition(mainFrame.getSize());
-				scrollPane.getHorizontalScrollBar().getModel().setValue(new Double(coordinateArray[0] * scrollPane.getHorizontalScrollBar().getModel().getMaximum() / 100).intValue());
-				scrollPane.getVerticalScrollBar().getModel().setValue(new Double(coordinateArray[1] * scrollPane.getVerticalScrollBar().getModel().getMaximum() / 100).intValue());
+				Position p = controller.focusPlayerPosition();
+				JCase c = caseArrayList.get(p.getY()).get(p.getX());
+				scrollPane.getHorizontalScrollBar().getModel().setValue(c.getX());
+				scrollPane.getVerticalScrollBar().getModel().setValue(c.getY());
 			}
 		};
 	}

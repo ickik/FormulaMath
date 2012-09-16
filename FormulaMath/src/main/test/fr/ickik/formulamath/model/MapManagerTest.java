@@ -18,7 +18,7 @@ public class MapManagerTest {
 		MapManager manager = new MapManager();
 		manager.init(size);
 		assertEquals(manager.getMapSize(), size);
-		assertEquals(manager.getRoadDirectionInformationList().size(), 0);
+		assertEquals(manager.getDetailledRoadDirectionInformationList().size(), 0);
 		assertEquals(manager.getFinishingLinePositionList().size(), 0);
 		assertEquals(manager.getStartingPositionList().size(), 0);
 		for (int i = 0; i< size ; i++) {
@@ -37,7 +37,7 @@ public class MapManagerTest {
 		manager.init(size);
 		assertEquals(manager.getMapSize(), size);
 		manager.constructRoad();
-		assertNotEquals(manager.getRoadDirectionInformationList().size(), 0);
+		assertNotEquals(manager.getDetailledRoadDirectionInformationList().size(), 0);
 		assertEquals(manager.getFinishingLinePositionList().size(), 2);
 		assertEquals(manager.getStartingPositionList().size(), MapManager.ROAD_SIZE);
 	}
@@ -47,9 +47,9 @@ public class MapManagerTest {
 		MapManager manager = new MapManager();
 		manager.init(size);
 		manager.constructRoad();
-		int roadSize = manager.getRoadDirectionInformationList().size();
+		int roadSize = manager.getDetailledRoadDirectionInformationList().size();
 		manager.reinitialization();
-		assertEquals(manager.getRoadDirectionInformationList().size(), roadSize);
+		assertEquals(manager.getDetailledRoadDirectionInformationList().size(), roadSize);
 		assertEquals(manager.getFinishingLinePositionList().size(), 2);
 		assertEquals(manager.getStartingPositionList().size(), MapManager.ROAD_SIZE);
 	}
@@ -60,7 +60,7 @@ public class MapManagerTest {
 		manager.init(size);
 		manager.constructRoad();
 		manager.fullReinitialization();
-		assertEquals(manager.getRoadDirectionInformationList().size(), 0);
+		assertEquals(manager.getDetailledRoadDirectionInformationList().size(), 0);
 		assertEquals(manager.getFinishingLinePositionList().size(), 0);
 		assertEquals(manager.getStartingPositionList().size(), 0);
 	}

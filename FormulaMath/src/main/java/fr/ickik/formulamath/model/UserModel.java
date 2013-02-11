@@ -31,12 +31,12 @@ public final class UserModel {
 			prop.put("mail.smtps.auth", "true");
 			Session session = Session.getDefaultInstance(prop,null);
 			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("formulamath@gmail.com"));
+			message.setFrom(new InternetAddress(emailAddress));
 			InternetAddress[] internetAddresses = new InternetAddress[1];
 			internetAddresses[0] = new InternetAddress("formulamath@gmail.com");
 			message.setRecipients(Message.RecipientType.TO,internetAddresses);
 			message.setSubject("Key request");
-			message.setText(getReversedMacAddress());
+			message.setText(getReversedMacAddress() + "-" + FormulaMathProperties.);
 			message.setHeader("X-Mailer", "Java");
 			message.setSentDate(new Date());
 			session.setDebug(true);

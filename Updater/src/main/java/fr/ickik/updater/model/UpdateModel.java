@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -31,7 +32,7 @@ import fr.ickik.updater.UpdaterListener;
  * and search the last release to update. It download and placed it in the right directory.
  * The updater overrides all existing files and then start the application.
  * @author Ickik
- * @version 0.1.008, 1 August 2012
+ * @version 0.1.009, 1 February 2013
  */
 public final class UpdateModel {
 
@@ -46,7 +47,9 @@ public final class UpdateModel {
 	private static final String xmlConfigurationFile = "versions.xml";
 	private static final String extension = ".jar";
 	private static final String APPLICATION = "FormulaMath-";
-
+	private static final String APPLICATION_PATH = System.getProperty("user.home") + "/.FormulaMath/";
+	public static final String UPDATER_VERSION = "1.0.1";
+	
 	/**
 	 * Default constructor.
 	 */
@@ -76,7 +79,7 @@ public final class UpdateModel {
 	
 	public void startApplication() {
 		try {
-			Desktop.getDesktop().open(new File(APPLICATION + currentVersion + extension));
+			Desktop.getDesktop().open(new File(APPLICATION_PATH + "/" + APPLICATION + currentVersion + extension));
 			System.exit(0);
 		} catch(Exception exception) {
 			exception.printStackTrace();
@@ -127,7 +130,7 @@ public final class UpdateModel {
 
 			is = new BufferedInputStream(connection.getInputStream());
 
-			destinationFile = new FileOutputStream(destination);
+			destinationFile = new FileOutputStream(APPLICATION_PATH + "/" + destination);
 			
 			byte[] data = new byte[bufferSize];
 
@@ -209,24 +212,21 @@ public final class UpdateModel {
 	
 	private String loadCurrentVersion() {
 		try {
-			URL[] urlArray = new URL[] {new File(APPLICATION + currentVersion + extension).toURI().toURL()};
+			File file = new File(APPLICATION_PATH + "/" + APPLICATION + PropertiesModel.getSingleton().getProperty(FormulaMathProperty.VERSION) + extension);
+			if (!file.exists()) {
+				return null;
+			}
+			URL[] urlArray = new URL[] {file.toURI().toURL()};
+			JarURLConnection c = (JarURLConnection) urlArray[0].openConnection();
 			ClassLoader classLoader = new URLClassLoader(urlArray);
 			Class<?> classe = Class.forName("fr.ickik.formulamath.view.AbstractFormulaMathFrame", false, classLoader);
 			Field field = classe.getDeclaredField("VERSION");
+			c.getJarFile().close();
 			classe = null;
 			classLoader = null;
-			return (String) field.get(null);
-		} catch (MalformedURLException e) {
-			logger.error("loadCurrentVersion : {}", e.getMessage());
-		} catch (ClassNotFoundException e) {
-			logger.error("loadCurrentVersion : {}", e.getMessage());
-		} catch (NoSuchFieldException e) {
-			logger.error("loadCurrentVersion : {}", e.getMessage());
-		} catch (SecurityException e) {
-			logger.error("loadCurrentVersion : {}", e.getMessage());
-		} catch (IllegalArgumentException e) {
-			logger.error("loadCurrentVersion : {}", e.getMessage());
-		} catch (IllegalAccessException e) {
+			String version = (String) field.get(null);
+			return version;
+		} catch (Exception e) {
 			logger.error("loadCurrentVersion : {}", e.getMessage());
 		}
 		return null;

@@ -10,7 +10,7 @@ import fr.ickik.updater.model.UpdateModel;
 /**
  * Main class which contains the main static method.
  * @author Ickik
- * @version 0.1.002, 31 mai 2012
+ * @version 0.1.003, 1 February 2013.
  */
 public final class Updater {
 
@@ -52,7 +52,7 @@ public final class Updater {
 	private static boolean checkVersion() {
 		String version = System.getProperty("java.version");
 		logger.debug("Current java version : {}", version);
-		if (version.matches("1\\.[6-7].*")) {
+		if (version.matches("1\\.[7].*")) {
 			return true;
 		}
 		return false;

@@ -10,18 +10,23 @@
 				<maxFileSize>4MB</maxFileSize>
 			</timeBasedFileNamingAndTriggeringPolicy>
 		</rollingPolicy>
-		<encoder>
-			<pattern>%date %level %logger{5} [%file : %line] %msg%n</pattern>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>%-25(%date) %-6(%level) %-40([%file : %line]) %msg%n</pattern>
 		</encoder>
 	</appender>
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>%date %level %logger{5} [%file : %line] %msg%n</pattern>
+			<pattern>%-25(%date) %-6(%level) %-40([%file : %line]) %msg%n</pattern>
 		</encoder>
 	</appender>
 
-	<root level="trace">
+	<logger name="fr.ickik.formulamath" level="TRACE" additivity="false">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="STDOUT" />
+	</logger>
+	
+	<root level="INFO">
 		<appender-ref ref="FILE" />
 		<appender-ref ref="STDOUT" />
 	</root>

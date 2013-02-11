@@ -2,7 +2,6 @@ package fr.ickik.updater;
 
 import java.awt.Frame;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.slf4j.Logger;
@@ -12,7 +11,7 @@ import org.slf4j.LoggerFactory;
  * This class extends the thread group class to redefine the behavior when an
  * exception is thrown.
  * @author Ickik
- * @version 0.1.000, 10 mai. 2012
+ * @version 0.1.001, 06 August 2012
  */
 public final class ExecutionThreadGroup extends ThreadGroup {
 
@@ -74,7 +73,7 @@ public final class ExecutionThreadGroup extends ThreadGroup {
 //}
 
 	private Frame findActiveFrame() {
-		Frame[] frames = JFrame.getFrames();
+		Frame[] frames = Frame.getFrames();
 		for (int i = 0; i < frames.length; i++) {
 			Frame frame = frames[i];
 			if (frame.isVisible() || frame.isActive()) {

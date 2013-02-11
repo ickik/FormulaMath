@@ -4,7 +4,7 @@
 	<groupId>FormulaMath</groupId>
 	<artifactId>FormulaMath</artifactId>
 	<version>0.3.10</version>
-	<name>FormulaMathGame</name>
+	<name>FormulaMath</name>
 
 	<build>
 		<plugins>
@@ -36,11 +36,13 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.6.2</version>
+			<!-- <version>1.7.2</version> -->
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>0.9.30</version>
+			<!-- <version>1.0.9</version> -->
 		</dependency>
 		<!-- dependency>
 			<groupId>javax.mail</groupId>

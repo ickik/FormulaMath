@@ -18,7 +18,7 @@ import java.util.Properties;
  * This model load and save {@link FormulaMathProperty} in the file
  * in user's directory.
  * @author Ickik.
- * @version 0.1.002, 23 mar. 2012.
+ * @version 0.1.003, 5 February 2013.
  */
 final class PropertiesModel {
 	private final String userPath;
@@ -34,6 +34,11 @@ final class PropertiesModel {
 		userPath = System.getProperty("user.home");
 		existingDirectory();
 		this.properties = loadProperties();
+		putDefaultProperty(FormulaMathProperty.UPDATER_VERSION);
+		try {
+			save();
+		} catch (IOException e) {
+		}
 	}
 	
 	/**

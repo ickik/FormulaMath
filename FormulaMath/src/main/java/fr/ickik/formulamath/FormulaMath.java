@@ -41,7 +41,7 @@ public class FormulaMath {
 	
 	private static boolean checkVersion() {
 		String version = System.getProperty("java.version");
-		if (version.matches("1\\.[6-7].*")) {
+		if (version.matches("1\\.[7].*")) {
 			return true;
 		}
 		return false;

@@ -25,7 +25,7 @@ import fr.ickik.formulamath.model.Stats;
  * per turn, the variance, the square type and a graphic which resume the number of
  * vector played during the game.
  * @author Ickik
- * @version 0.1.010, 5 July 2012
+ * @version 0.1.012, 8 February 2013.
  */
 public final class StatFrame extends AbstractFormulaMathFrame {
 
@@ -53,6 +53,7 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 	 * @param statsList list of statistics displayed.
 	 */
 	public void display(List<Stats> statsList) {
+		statPanel.removeAll();
 		statPanel.add(displayStats(statsList));
 		displayFrame();
 		getFrame().setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -85,7 +86,7 @@ public final class StatFrame extends AbstractFormulaMathFrame {
 	private JScrollPane displayStats(List<Stats> statsList) {
 		JPanel statsPanel = new JPanel(new GridLayout(statsList.size(), 1));
 		for (int i = 0; i < statsList.size(); i++) {
-			statsPanel.add(getPlayerStatsPanel(i, statsList.get(i)));
+			statsPanel.add(getPlayerStatsPanel(i + 1, statsList.get(i)));
 		}
 		return new JScrollPane(statsPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	}

@@ -34,6 +34,18 @@ enum FormulaMathProperty {
 		public String getDefaultValue() {
 			return "0.2.1";
 		}
+	},
+	
+	UPDATER_VERSION {
+		@Override
+		public String toString() {
+			return "updater.version";
+		}
+
+		@Override
+		public String getDefaultValue() {
+			return "1.0.1";
+		}
 	};
 	
 	/**

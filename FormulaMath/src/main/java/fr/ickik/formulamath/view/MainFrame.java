@@ -202,6 +202,7 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				public void windowActivated(WindowEvent arg0) {}
 			});
 		}
+		
 		displayFrame();
 		mainFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

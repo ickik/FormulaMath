@@ -175,14 +175,17 @@ abstract class AbstractAILevel implements AILevel {
 	@SuppressWarnings("incomplete-switch")
 	@Override
 	public Vector getFirstMove(Player player, Map<Integer, Integer> playerRoadPosition) {
+		log.debug("getFirstMove for {}", player);
 		DetailledRoadDirectionInformation info = mapManager.getDetailledRoadDirectionInformationList().get(0);
 		
 		Vector vector = null;
 
 		if (mapManager.getDetailledRoadDirectionInformationList().size() == 1) {
+			log.trace("The road is a right line");
 			vector = getVector(info.getOrientation(), mapManager.getMapSize());
 			playerRoadPosition.put(player.getId(), 0);
 		} else {
+			log.trace("Curve exists in the road");
 			int len = info.getLength();
 			if (info.getInitialOrientation() == info.getOrientation() && len > 5) {
 				int val = getFirstMove(len);

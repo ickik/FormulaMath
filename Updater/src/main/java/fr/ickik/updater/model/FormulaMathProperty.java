@@ -1,12 +1,30 @@
 package fr.ickik.updater.model;
 
+import java.io.File;
+
 /**
  * This enum lists all properties of the property file. It is used to store
  * player's data.
  * @author Ickik.
- * @version 0.1.003, 23 apr. 2012.
+ * @version 0.1.004, 11th February 2013.
  */
 enum FormulaMathProperty {
+	
+	/**
+	 * Path of the updater file.
+	 */
+	UPDATER_PATH {
+
+		@Override
+		public String toString() {
+			return "updater.path";
+		}
+		
+		@Override
+		public String getDefaultValue() {
+			return  (new File("")).getAbsolutePath();
+		}
+	},
 	
 	/**
 	 * Server address to update.

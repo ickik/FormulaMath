@@ -1,12 +1,14 @@
 package fr.ickik.formulamath.model;
 
+import java.io.File;
+
 import fr.ickik.formulamath.view.AbstractFormulaMathFrame;
 
 /**
  * This enum lists all properties of the property file. It is used to store
  * player's data.
  * @author Ickik.
- * @version 0.1.009, 4th September 2012.
+ * @version 0.1.010, 11th February 2013.
  */
 public enum FormulaMathProperty {
 
@@ -193,6 +195,22 @@ public enum FormulaMathProperty {
 		@Override
 		public String getDefaultValue() {
 			return "javax.swing.plaf.metal.MetalLookAndFeel";
+		}
+	},
+	
+	/**
+	 * Path of the updater file.
+	 */
+	UPDATER_PATH {
+
+		@Override
+		public String toString() {
+			return "updater.path";
+		}
+		
+		@Override
+		public String getDefaultValue() {
+			return  (new File("")).getAbsolutePath();
 		}
 	},
 	

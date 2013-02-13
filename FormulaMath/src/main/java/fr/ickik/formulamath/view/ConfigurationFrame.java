@@ -1,8 +1,6 @@
 package fr.ickik.formulamath.view;
 
 import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -41,7 +39,7 @@ import fr.ickik.formulamath.model.player.PlayerType;
  * The user can choose between Human and Computer players;
  * give a name to every player.
  * @author Ickik.
- * @version 0.2.011, 3rd September 2012
+ * @version 0.2.012, 11th February 2013.
  */
 public class ConfigurationFrame extends AbstractFormulaMathFrame {
 
@@ -77,7 +75,7 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.add(getConfigurationPanel(), BorderLayout.CENTER);
 		panel.add(getNumberPlayerPanel(), BorderLayout.NORTH);
-		File help = new File("./help.pdf");
+		File help = new File(System.getProperty("user.home") + "/.FormulaMath/help.pdf");
 		if (help.exists()) {
 			log.debug("Help file exist");
 			panel.add(getButtonHelp(), BorderLayout.SOUTH);
@@ -139,8 +137,8 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 				}
 			}
 		});
-		panel.add(okButton);
 		panel.add(cancelAndQuit);
+		panel.add(okButton);
 		return panel;
 	}
 	
@@ -211,7 +209,8 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 	}
 
 	private JPanel getButtonHelp() {
-		JPanel panel = new JPanel(new GridBagLayout());
+		//JPanel panel = new JPanel(new GridBagLayout());
+		JPanel panel = new JPanel(new GridLayout(1,3));
 		JButton okButton = new JButton("OK");
 		okButton.setMnemonic(KeyEvent.VK_O);
 		getFrame().getRootPane().setDefaultButton(okButton);
@@ -237,21 +236,25 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 				}
 			}
 		});
-		GridBagConstraints grid = new GridBagConstraints();
+		panel.add(cancelAndQuit);
+		panel.add(helpButton);
+		panel.add(okButton);
+		/*GridBagConstraints grid = new GridBagConstraints();
 		grid.fill = GridBagConstraints.HORIZONTAL;
 		grid.gridx = 0;
-		grid.gridwidth = 2;
-		grid.weightx=1;
-		panel.add(okButton, grid);
+		grid.gridwidth = 1;
+		//grid.weightx=1;
+		panel.add(cancelAndQuit, grid);
 		grid.fill = GridBagConstraints.HORIZONTAL;
 		grid.gridx = 2;
 		grid.gridwidth = 2;
-		grid.weightx=1;
-		panel.add(cancelAndQuit, grid);
-		grid.fill = GridBagConstraints.HORIZONTAL;
-		grid.weightx=0.5;
-		grid.gridx = 4;
+		//grid.weightx=1;
 		panel.add(helpButton, grid);
+		grid.fill = GridBagConstraints.HORIZONTAL;
+		grid.weightx=1;
+		grid.gridwidth = 2;
+		grid.gridx = 4;
+		panel.add(okButton, grid);*/
 		return panel;
 	}
 	

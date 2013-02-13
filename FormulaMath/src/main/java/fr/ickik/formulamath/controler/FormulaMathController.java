@@ -40,7 +40,7 @@ import fr.ickik.formulamath.view.StatFrame;
  * Controller of the application in MVC design pattern. It receive event from the view to
  * transmit them to the appropriate model if needed.
  * @author Ickik
- * @version 0.1.016, 5th September 2012
+ * @version 0.1.017, 13th February 2013.
  * @since 0.2
  */
 public final class FormulaMathController {
@@ -86,6 +86,11 @@ public final class FormulaMathController {
 		}
 	}*/
 	
+	/**
+	 * Initializes the MapManager and the PlayerManager.
+	 * @param size the size in case of the map.
+	 * @param level the level of the game (0 (hardest) to 2 (easiest)).
+	 */
 	public void initManager(int size, int level) {
 		log.debug("initialization of the map manager with a dimension of {} case", size);
 		mapManager.init(size);
@@ -100,7 +105,7 @@ public final class FormulaMathController {
 	public void openHelpFile() throws FormulaMathException {
 		if (Desktop.isDesktopSupported()) {
 			try {
-				Desktop.getDesktop().open(new File("./help.pdf"));
+				Desktop.getDesktop().open(new File(System.getProperty("user.home") + "/.FormulaMath/help.pdf"));
 			} catch (IOException e) {
 				log.error("Help file not found or corrupted! {}", e.getMessage());
 				throw new FormulaMathException(e.getMessage());

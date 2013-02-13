@@ -17,7 +17,7 @@ import fr.ickik.formulamath.model.map.Orientation;
 /**
  * Class implements a high level computer intelligence.
  * @author Ickik
- * @version 0.1.003, 8 February 2013.
+ * @version 0.1.004, 13 February 2013.
  * @since 0.3.9
  */
 public final class AIHighLevel extends AbstractAILevel {
@@ -50,7 +50,7 @@ public final class AIHighLevel extends AbstractAILevel {
 		if (playerRoadPosition.get(player.getId()) != null) {
 			roadPosition = playerRoadPosition.get(player.getId());
 		}
-		log.debug("roadPoistion found : {}", roadPosition);
+		log.debug("roadPosition found : {}", roadPosition);
 		DetailledRoadDirectionInformation r = mapManager.getDetailledRoadDirectionInformationList().get(roadPosition);
 		log.trace("Detailled road found : {}", r);
 		int len = r.getLengthToEnd(player.getPosition()) - 1;
@@ -101,22 +101,30 @@ public final class AIHighLevel extends AbstractAILevel {
 				switch (r.getOrientation()) {
 				case NORTH:
 					if ((v.getY() == vector.getY() && player.getPosition().getX() == r.getEnd().getX() && vector.getX() == 0) || (v.getY() == vector.getY() - 1 && vector.getX() == 0)) {
-						tmpVector = v;
+						if (tmpVector.getX() > v.getX()) {
+							tmpVector = v;
+						}
 					}
 					break;
 				case SOUTH:
 					if ((v.getY() == vector.getY() && player.getPosition().getX() == r.getEnd().getX() && vector.getX() == 0) || (v.getY() == vector.getY() - 1 && vector.getX() == 0)) {
-						tmpVector = v;
+						if (tmpVector.getX() < v.getX()) {
+							tmpVector = v;
+						}
 					}
 					break;
 				case WEST:
 					if ((v.getX() == vector.getX() && player.getPosition().getY() == r.getEnd().getY() && vector.getY() == 0) || (v.getX() == vector.getX() - 1 && vector.getY() == 0)) {
-						tmpVector = v;
+						if (tmpVector.getY() > v.getY()) {
+							tmpVector = v;
+						}
 					}
 					break;
 				case EAST:
 					if ((v.getX() == vector.getX() && player.getPosition().getY() == r.getEnd().getY() && vector.getY() == 0) || (v.getX() == vector.getX() - 1 && vector.getY() == 0)) {
-						tmpVector = v;
+						if (tmpVector.getY() < v.getY()) {
+							tmpVector = v;
+						}
 					}
 					break;
 				}
@@ -155,31 +163,37 @@ public final class AIHighLevel extends AbstractAILevel {
 			log.debug("Easiest solution {}", tmpVector);
 			return tmpVector;
 		}
-		log.trace("Player in curve");
-		Position endPosition = r.getEnd();
-		log.trace("End position of the curve : {}", endPosition);
-		for (Vector v : solutionList) {
-			Position tmp = new Position(player.getPosition().getX() + v.getX(), player.getPosition().getY() - v.getY());
-			if (endPosition.equals(tmp) && !mapManager.getCase(tmp.getY(), tmp.getX()).isOccuped()) {
-				playerRoadPosition.put(player.getId(), roadPosition + 1);
-				log.debug("Solution found to equals the end of the curve {}", v);
-				return v;
-			}
-		}
-
-		int minValue = Integer.MAX_VALUE;
-		log.trace("No solution found, search an approx. solution");
-		for (Vector v : solutionList) {
-			Position tmp = new Position(player.getPosition().getX() + v.getX(), player.getPosition().getY() - v.getY());
-			int val = getNextVector(v, tmp, r.getInitialOrientation(), r.getOrientation(), endPosition, 1);
-			if (val < minValue) {
-				minValue = val;
-				vector = v;
-			}
-		}
 		
-		playerRoadPosition.put(player.getId(), roadPosition + 1);
-		log.debug("Returned approx. vector {}", vector);
+		/*if (r.getInitialOrientation() == r.getOrientation()) {
+			log.trace("Player in right line");
+			
+		} else {*/
+			log.trace("Player in curve");
+			Position endPosition = r.getEnd();
+			log.trace("End position of the curve : {}", endPosition);
+			for (Vector v : solutionList) {
+				Position tmp = new Position(player.getPosition().getX() + v.getX(), player.getPosition().getY() - v.getY());
+				if (endPosition.equals(tmp) && !mapManager.getCase(tmp.getY(), tmp.getX()).isOccuped()) {
+					playerRoadPosition.put(player.getId(), roadPosition + 1);
+					log.debug("Solution found to equals the end of the curve {}", v);
+					return v;
+				}
+			}
+	
+			int minValue = Integer.MAX_VALUE;
+			log.trace("No solution found, search an approx. solution");
+			for (Vector v : solutionList) {
+				Position tmp = new Position(player.getPosition().getX() + v.getX(), player.getPosition().getY() - v.getY());
+				int val = getNextVector(v, tmp, r.getInitialOrientation(), r.getOrientation(), endPosition, 1);
+				if (val < minValue) {
+					minValue = val;
+					vector = v;
+				}
+			}
+			log.trace("Approx solution {} in {} turn", vector, minValue);
+			playerRoadPosition.put(player.getId(), roadPosition + 1);
+			log.debug("Returned approx. vector {}", vector);
+		//}
 		return vector;
 	}
 	
@@ -187,6 +201,9 @@ public final class AIHighLevel extends AbstractAILevel {
 		List<Vector> list = getVectorsSolution(position, vector);
 		
 		for (Vector vect : list) {
+			if (vect.getX() == 0 && vect.getY() == 0) {
+				continue;
+			}
 			switch(currentOrientation) {
 			case NORTH:
 				switch(nextOrientation) {

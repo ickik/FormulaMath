@@ -41,6 +41,10 @@ public final class PlayerManager {
 	 * Map representing the index of the user (represented by the id) in the road model.
 	 */
 	private final Map<Integer, Integer> playerRoadPosition = new HashMap<Integer, Integer>();
+	
+	/**
+	 * Number maximum of player who can play the game.
+	 */
 	public static final int NUMBER_OF_PLAYER_MAX = 4;
 	private static final Logger log = LoggerFactory.getLogger(PlayerManager.class);
 	

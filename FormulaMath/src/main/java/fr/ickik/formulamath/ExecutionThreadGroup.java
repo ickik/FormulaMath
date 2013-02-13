@@ -27,11 +27,7 @@ public class ExecutionThreadGroup extends ThreadGroup {
 	}
 
 	public void uncaughtException(Thread t, Throwable e) {
-		e.printStackTrace();
-		log.error("File: " + t.getClass().getCanonicalName() + " Thred:{}", t.getName() + " " + e.getMessage());
-		//log.error("Cause : {}", e.getCause().getMessage());
-		log.error(e.getLocalizedMessage());
-		log.error(e.getStackTrace().toString());
+		log.error("{}", e);
 		JOptionPane.showMessageDialog(findActiveFrame(), e.toString(), AbstractFormulaMathFrame.getTitle() + " - Exception Occurred", JOptionPane.ERROR_MESSAGE);
 		System.exit(1);
 	}

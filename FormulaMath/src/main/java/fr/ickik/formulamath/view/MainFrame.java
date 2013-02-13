@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.event.WindowStateListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,7 +62,7 @@ import fr.ickik.formulamath.model.map.MapDimension;
 /**
  * This class create the main frame of the application.
  * @author Ickik.
- * @version 0.2.018, 6th September 2012.
+ * @version 0.2.019, 13th February 2013.
  */
 public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNorrisListener, UpdateCaseListener {
 
@@ -202,6 +203,18 @@ public final class MainFrame extends AbstractFormulaMathFrame implements ChuckNo
 				public void windowActivated(WindowEvent arg0) {}
 			});
 		}
+		
+		mainFrame.addWindowStateListener(new WindowStateListener() {
+			
+			@Override
+			public void windowStateChanged(WindowEvent arg0) {
+				if (arg0.getOldState() == Frame.MAXIMIZED_BOTH && mainFrame.getExtendedState() != Frame.MAXIMIZED_BOTH) {
+					int w = (int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2);
+					int h = (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2);
+					mainFrame.setSize(w, h);
+				}
+			}
+		});
 		
 		displayFrame();
 		mainFrame.setExtendedState(Frame.MAXIMIZED_BOTH);

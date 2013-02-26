@@ -27,7 +27,7 @@ public class ExecutionThreadGroup extends ThreadGroup {
 	}
 
 	public void uncaughtException(Thread t, Throwable e) {
-		log.error("{}", e);
+		log.error("", e);
 		JOptionPane.showMessageDialog(findActiveFrame(), e.toString(), AbstractFormulaMathFrame.getTitle() + " - Exception Occurred", JOptionPane.ERROR_MESSAGE);
 		System.exit(1);
 	}

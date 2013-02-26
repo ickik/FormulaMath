@@ -25,7 +25,7 @@ import fr.ickik.formulamath.model.map.MapManager;
 /**
  * The class which manages all players.
  * @author Ickik.
- * @version 0.3.004, 6th September 2012.
+ * @version 0.3.005, 21th February 2012.
  */
 public final class PlayerManager {
 
@@ -422,7 +422,7 @@ public final class PlayerManager {
 					log.debug("Computer first move");
 					Vector vector = computerLevel.getFirstMove(p, playerRoadPosition);
 					
-					log.debug("Vector determined : {}", vector.toString());
+					log.debug("First move vector determined : {}", vector.toString());
 					log.debug("AI initial position {}", p.getPosition().toString());
 					mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(MapManager.EMPTY_PLAYER);
 					p.getPosition().setX(p.getPosition().getX() + vector.getX());
@@ -430,10 +430,14 @@ public final class PlayerManager {
 					p.getVector().setX(vector.getX());
 					p.getVector().setY(vector.getY());
 					p.incrementPlayingCounter();
+					
 					mapManager.getCase(p.getPosition().getY(), p.getPosition().getX()).setIdPlayer(p.getId());
 					updateIndexPlayerGame();
 					log.debug("AI new position {}", p.getPosition().toString());
 					fireUpdateCaseListener(p);
+					if (vector.getX() == mapManager.getMapSize() - 1 || vector.getY() == mapManager.getMapSize()) {
+						addFinishPlayer(p, true);
+					}
 				} else {
 					log.debug("Human turn first move");
 					fireDisplayPlayerFirstMovePossibilities(p);

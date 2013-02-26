@@ -1,10 +1,8 @@
 package fr.ickik.formulamath.view;
 
-import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
@@ -24,12 +22,13 @@ import fr.ickik.formulamath.controler.FormulaMathController;
 import fr.ickik.formulamath.entity.Player;
 import fr.ickik.formulamath.entity.Vector;
 import fr.ickik.formulamath.model.map.Field;
+import fr.ickik.formulamath.view.event.JCaseMouseListener;
 
 /**
  * Panel creation class. It creates the panel for Human player to choose the
  * start position on the starting line.
  * @author Ickik
- * @version 0.1.007, 17 July 2012
+ * @version 0.1.009, 21th February 2013.
  * @since 0.3
  */
 public final class PlayVectorChooserPanel {
@@ -73,6 +72,7 @@ public final class PlayVectorChooserPanel {
 		log.trace("Player position on map : ( {}, {} )", xTrayPanel, yTrayPanel);
 		final List<JCase> solutionCaseList = new ArrayList<JCase>();
 		final List<MouseListener> mouseListenerList = new ArrayList<MouseListener>();
+		//final List<JCaseChangeListener> changeListenerList = new ArrayList<JCaseChangeListener>();
 		for (int i = 0; i < vectorList.size();) {
 			Vector v = vectorList.get(i);
 			JCase c = caseArrayList.get(yTrayPanel).get(xTrayPanel);
@@ -101,12 +101,16 @@ public final class PlayVectorChooserPanel {
 		panel.setLayout(new GridLayout(vectorList.size(), 1));
 		final JRadioButton[] solution = new JRadioButton[vectorList.size()];
 		for (int i = 0; i < vectorList.size(); i++) {
-			JRadioButton box = new JRadioButton("( " + Integer.toString(vectorList.get(i).getX()) + " , " + Integer.toString(vectorList.get(i).getY()) + " )");
+			final JRadioButton box = new JRadioButton("( " + Integer.toString(vectorList.get(i).getX()) + " , " + Integer.toString(vectorList.get(i).getY()) + " )");
 			box.setEnabled(true);
 			box.setSelected(false);
+			final JCase cas = solutionCaseList.get(i);
+			//JCaseChangeListener listener = new JCaseChangeListener(cas, box, player);
+			//box.addChangeListener(listener);
+			//changeListenerList.add(listener);
 			group.add(box);
 			solution[i] = box;
-			mouseListenerList.add(initMouseListener(solutionCaseList.get(i), box));
+			mouseListenerList.add(initMouseListener(cas, box));
 			panel.add(box);
 		}
 		panel.validate();
@@ -122,8 +126,12 @@ public final class PlayVectorChooserPanel {
 				Vector vector = vectorList.get(selected);
 				log.trace("Play button pushed, checkbox selected : {}", selected);
 				log.debug("Vector selected : {}", vector.toString());
+				//int index = 0;
 				for (JToggleButton button : solution) {
 					button.setEnabled(false);
+					//button.setSelected(false);
+					//button.removeChangeListener(changeListenerList.get(index));
+					//index++;
 				}
 				for (int i = 0; i < solutionCaseList.size(); i++) {
 					solutionCaseList.get(i).removeMouseListener(mouseListenerList.get(i));
@@ -165,39 +173,11 @@ public final class PlayVectorChooserPanel {
 		}
 	}
 	
-	private MouseListener initMouseListener(final JCase jCase, final JRadioButton radioButton) {
-		MouseListener listener = getSolutionMouseListener(jCase, radioButton);
+	private MouseListener initMouseListener(JCase jCase, JRadioButton radioButton) {
+		MouseListener listener = new JCaseMouseListener(jCase, radioButton);
 		jCase.addMouseListener(listener);
 		radioButton.addMouseListener(listener);
 		return listener;
-	}
-	
-	private MouseListener getSolutionMouseListener(final JCase jCase, final JRadioButton radioButton) {
-		return new MouseListener() {
-			private final Color color = radioButton.getForeground();
-			@Override
-			public void mouseReleased(MouseEvent e) {}
-			
-			@Override
-			public void mousePressed(MouseEvent e) {}
-			
-			@Override
-			public void mouseExited(MouseEvent e) {
-				jCase.getModel().setBackgroundColor(null);
-				radioButton.setForeground(color);
-				jCase.repaint();
-			}
-			
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				jCase.getModel().setBackgroundColor(Color.WHITE);
-				radioButton.setForeground(Color.RED);
-				jCase.repaint();
-			}
-			
-			@Override
-			public void mouseClicked(MouseEvent arg0) {}
-		};
 	}
 	
 	private int getCoordinateLimit(int coordinate, int mapSize) {

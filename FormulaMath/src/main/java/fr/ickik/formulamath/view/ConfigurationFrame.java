@@ -212,6 +212,8 @@ public class ConfigurationFrame extends AbstractFormulaMathFrame {
 		//JPanel panel = new JPanel(new GridBagLayout());
 		JPanel panel = new JPanel(new GridLayout(1,3));
 		JButton okButton = new JButton("OK");
+		//JButton okButton = new ValidationButton("OK");
+
 		okButton.setMnemonic(KeyEvent.VK_O);
 		getFrame().getRootPane().setDefaultButton(okButton);
 		okButton.addActionListener(getOKActionListener());

@@ -24,7 +24,7 @@ import fr.ickik.formulamath.view.MainFrame;
 /**
  * Abstract class which defines common methods for Artificial Intelligence Classes.
  * @author Ickik
- * @version 0.1.001, 31 August 2012
+ * @version 0.1.004, 22th February 2013.
  * @since 0.3.9
  */
 abstract class AbstractAILevel implements AILevel {
@@ -38,9 +38,10 @@ abstract class AbstractAILevel implements AILevel {
 	}
 	
 	List<Vector> vectorListFiltered(Position position, List<Vector> list) {
+		log.trace("vectorListFiltered({} , {})", position, list);
 		int marge = MainFrame.MAP_MARGIN / 2;
-		int xTrayPanel = position.getX() + marge;
-		int yTrayPanel = position.getY() + marge;
+		int xTrayPanel = getCoordinateLimit(position.getX() + marge, mapManager.getMapSize());
+		int yTrayPanel = getCoordinateLimit(position.getY() + marge, mapManager.getMapSize());
 		log.trace("Player position :{}", position.toString());
 		log.trace("Player position on map : ( {}, {} )", xTrayPanel, yTrayPanel);
 		for (int i = 0; i < list.size();) {
@@ -65,6 +66,7 @@ abstract class AbstractAILevel implements AILevel {
 				i++;
 			}
 		}
+		log.trace("end of vectorListFiltered : {}", list);
 		return list;
 	}
 	
@@ -104,13 +106,13 @@ abstract class AbstractAILevel implements AILevel {
 	private Vector getVector(Orientation orientation, int value) {
 		switch (orientation) {
 		case NORTH:
-			return new Vector(0, mapManager.getMapSize());
+			return new Vector(0, value);
 		case WEST:
-			return new Vector(-mapManager.getMapSize(), 0);
+			return new Vector(-value, 0);
 		case SOUTH:
-			return new Vector(0, -mapManager.getMapSize());
+			return new Vector(0, -value);
 		case EAST:
-			return new Vector(mapManager.getMapSize(), 0);
+			return new Vector(value, 0);
 		}
 		return null;
 	}
@@ -175,24 +177,28 @@ abstract class AbstractAILevel implements AILevel {
 	@SuppressWarnings("incomplete-switch")
 	@Override
 	public Vector getFirstMove(Player player, Map<Integer, Integer> playerRoadPosition) {
-		log.debug("getFirstMove for {}", player);
+		log.debug("getFirstMove for {}", player.toString());
 		DetailledRoadDirectionInformation info = mapManager.getDetailledRoadDirectionInformationList().get(0);
 		
 		Vector vector = null;
 
 		if (mapManager.getDetailledRoadDirectionInformationList().size() == 1) {
 			log.trace("The road is a right line");
-			vector = getVector(info.getOrientation(), mapManager.getMapSize());
+			vector = getVector(info.getOrientation(), mapManager.getMapSize() - 1);
 			playerRoadPosition.put(player.getId(), 0);
 		} else {
 			log.trace("Curve exists in the road");
 			int len = info.getLength();
-			if (info.getInitialOrientation() == info.getOrientation() && len > 5) {
+			if (info.getInitialOrientation() == info.getOrientation()) {
 				int val = getFirstMove(len);
 				log.trace("length of the road : {}, road :{}", len, info.toString());
 				log.trace("length of the first move found : {}", val);
 				vector = getVector(info.getOrientation(), val);
-				playerRoadPosition.put(player.getId(), 0);
+				if (len > 4) {
+					playerRoadPosition.put(player.getId(), 0);
+				} else {
+					playerRoadPosition.put(player.getId(), 1);
+				}
 			} else {
 				List<Position> list = mapManager.getStartingPositionListSave();
 				int index = list.indexOf(player.getPosition());

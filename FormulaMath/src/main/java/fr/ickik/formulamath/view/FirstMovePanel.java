@@ -30,7 +30,7 @@ import fr.ickik.formulamath.model.map.Field;
 /**
  * This class create a JPanel which is displayed to give a the first move on map for a human player.
  * @author Ickik
- * @version 0.1.003, 31 August 2012
+ * @version 0.1.004, 19 February 2013.
  * @since 0.3
  */
 public final class FirstMovePanel {
@@ -90,6 +90,10 @@ public final class FirstMovePanel {
 						displayMessage("Player on it");
 						return;
 					}
+				} else if (c2.getModel() == null) {
+					log.warn("The future position is not on the map");
+					displayMessage("The position is out of the map");
+					return;
 				}
 				
 				Shape line = new Line2D.Double(c.getX() + (c.getWidth() / 2), c.getY() + (c.getHeight() / 2), c2.getX() + (c.getWidth() / 2), c2.getY() + (c.getHeight() / 2));
